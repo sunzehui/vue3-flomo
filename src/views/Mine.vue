@@ -10,6 +10,11 @@ import {
   Refresh,
   Search,
 } from "@element-plus/icons";
+import Memo from "./Memo.vue";
+import DailyRecord from "../components/DailyRecord.vue";
+import { useRouter } from "vue-router";
+const route = useRouter();
+const thisPage = route.currentRoute.value.query.source || "default";
 </script>
 
 <template>
@@ -17,7 +22,9 @@ import {
     <div class="left">
       <UserTitle username="sunzehui" :isPro="true" />
       <UserStatistical :memo="3" :tag="2" :day="3" />
-      <div class="checking">这里展示图表</div>
+      <div class="checking">
+        <DailyRecord />
+      </div>
       <ul class="bar-list">
         <li class="active">
           <div class="icon">
@@ -136,7 +143,7 @@ import {
     width: 240px;
 
     .checking {
-      height: 230px;
+      height: 140px;
       @apply w-full;
     }
     .bar-list {

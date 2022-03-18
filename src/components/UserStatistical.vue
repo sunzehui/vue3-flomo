@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, toRefs } from "vue";
+import { toRefs } from "vue";
 const Props = defineProps<{
   memo: number;
   tag: number;
