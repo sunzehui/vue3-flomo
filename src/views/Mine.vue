@@ -98,7 +98,9 @@
           <span>DAY</span>
         </div>
       </div>
-      <div class="checking">这里展示图表</div>
+      <div class="checking">
+        <DailyRecord />
+      </div>
       <ul class="bar-list">
         <li class="active">
           <div class="icon">
@@ -338,6 +340,7 @@ svg {
   .left {
     @apply h-full;
     width: 240px;
+    padding: 0 10px;
     .user {
       @apply flex py-3;
       .username {
@@ -469,6 +472,7 @@ svg {
   }
   main {
     // @apply bg-blue-300 h-full;
+    margin-left: 0;
     width: 640px;
     nav {
       display: flex;
@@ -650,4 +654,5 @@ import {
   Refresh,
   Search,
 } from "@element-plus/icons";
+import DailyRecord from "../components/DailyRecord.vue";
 </script>
