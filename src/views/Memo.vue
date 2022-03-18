@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" setup>
 import { Refresh, Search } from "@element-plus/icons";
 </script>
 <template>
@@ -130,6 +130,10 @@ import { Refresh, Search } from "@element-plus/icons";
 i {
   font-style: normal;
 }
+svg {
+  display: inline;
+}
+
 nav {
   display: flex;
   padding: 10px 0 10px 0;

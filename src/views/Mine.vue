@@ -210,10 +210,6 @@
 </template>
 
 <style lang="scss" scoped>
-svg {
-  display: inline;
-}
-
 .wrapper {
   @apply h-screen mx-auto flex justify-center space-x-8;
   .left {
