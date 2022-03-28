@@ -2,6 +2,7 @@
 import { ElTooltip } from "element-plus";
 import "element-plus/es/components/Tooltip/style/css";
 import { onMounted, reactive } from "vue-demi";
+
 // moment 拿日期排列12 * 7次 从本周最后一天开始排
 // 排到最后 reverse
 // month 提取方法
@@ -20,6 +21,7 @@ const createStateGrid = () => {
 
   const stateGrid = [] as WeekRecord[][];
   let lastDay = moment(endOfWeek).add(1, "day").format("YYYY/MM/DD");
+
   for (let i = 0; i < 12; i++) {
     stateGrid[i] = new Array();
     for (let j = 0; j < 7; j++) {
@@ -27,6 +29,7 @@ const createStateGrid = () => {
       lastDay = moment(lastDay).subtract(1, "day").format("YYYY/MM/DD");
     }
   }
+
   //方便展示，颠倒顺序
   stateGrid.reverse();
 

@@ -3,7 +3,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "target": "es5",
+    "lib": ["dom","es5","ES2015.Promise","ES2015","es2017"],
+    
   },
   "exclude": ["node_modules", "dist"],
   "typeAcquisition": {

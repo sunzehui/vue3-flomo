@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Refresh, Search } from "@element-plus/icons";
+import Editer from "../components/Editer.vue";
 </script>
 <template>
   <div class="memo-view">
@@ -15,31 +16,7 @@ import { Refresh, Search } from "@element-plus/icons";
         <i><Search /></i>
       </div>
     </nav>
-    <div class="input-container">
-      <textarea name="text-input" id="" cols="30" rows="10"> </textarea>
-      <ul class="suggestion">
-        <li>欢迎</li>
-      </ul>
-      <div class="bar">
-        <span class="tag-icon">
-          <svg
-            data-v-554cce5b=""
-            width="16px"
-            height="16px"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              data-v-554cce5b=""
-              d="M8.39 12.648a1.32 1.32 0 0 0-.015.18c0 .305.21.508.5.508.266 0 .492-.172.555-.477l.554-2.703h1.204c.421 0 .617-.234.617-.547 0-.312-.188-.53-.617-.53h-.985l.516-2.524h1.265c.43 0 .618-.227.618-.547 0-.313-.188-.524-.618-.524h-1.046l.476-2.304a1.06 1.06 0 0 0 .016-.164.51.51 0 0 0-.516-.516.54.54 0 0 0-.539.43l-.523 2.554H7.617l.477-2.304c.008-.04.015-.118.015-.164a.512.512 0 0 0-.523-.516.539.539 0 0 0-.531.43L6.53 5.484H5.414c-.43 0-.617.22-.617.532 0 .312.187.539.617.539h.906l-.515 2.523H4.609c-.421 0-.609.219-.609.531 0 .313.188.547.61.547h.976l-.516 2.492c-.008.04-.015.125-.015.18 0 .305.21.508.5.508.265 0 .492-.172.554-.477l.555-2.703h2.242l-.515 2.492zm-1-6.109h2.266l-.515 2.563H6.859l.532-2.563z"
-            ></path>
-          </svg>
-
-          <button class="save" disabled>发送</button>
-        </span>
-      </div>
-    </div>
+    <Editer />
     <ul class="card-container">
       <li>
         <div class="header">
@@ -186,75 +163,7 @@ nav {
     }
   }
 }
-.input-container {
-  border: 2px solid #e8e8e8;
-  border-radius: 8px;
-  padding-top: 20px;
-  position: relative;
-  background: #fff;
-  margin: 10px 0;
-  textarea {
-    border: none;
-    outline: 0;
-    height: 42px;
-    resize: none;
-    min-height: 42px;
-    max-height: 50vh;
-    width: 100%;
-    overflow-y: hidden;
-    min-height: 1rem;
-    &:focus {
-      outline: 0;
-      box-shadow: none;
-    }
-  }
-  .suggestion {
-    display: none;
-  }
-  .bar {
-    display: flex;
-    width: 100%;
-    height: 40px;
-    padding: 0 10px;
-    align-items: center;
-    position: relative;
-    span {
-      cursor: pointer;
-    }
-    button {
-      position: absolute;
-      right: 6px;
-      bottom: 4px;
-      border-color: #aaddc6;
-      background: #55bb8e;
-      color: #fff;
-      font-size: 12px;
-      display: inline-block;
-      line-height: 12px;
-      white-space: nowrap;
-      cursor: pointer;
-      border: 1px solid #dcdfe6;
-      -webkit-appearance: none;
-      text-align: center;
-      box-sizing: border-box;
-      outline: 0;
-      margin: 0;
-      transition: 0.1s;
-      font-weight: 500;
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      padding: 9px 15px;
-      border-radius: 4px;
-      &:disabled {
-        cursor: not-allowed;
-        background-color: #aaddc6;
-        color: white;
-      }
-    }
-  }
-}
+
 .card-container {
   > li {
     position: relative;
