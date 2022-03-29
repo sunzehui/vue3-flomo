@@ -1,7 +1,8 @@
 <!-- sc -->
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from "vue";
-import { ElSelect, ElOption, ElButton } from "element-plus";
+import { ElSelect, ElOption } from "element-plus";
+import { isEmpty } from "lodash-es";
 import "element-plus/es/components/Select/style/css";
 const computeSelectPos = (input: HTMLTextAreaElement) => {
   // 初始位置
@@ -38,6 +39,7 @@ const computeSelectPos = (input: HTMLTextAreaElement) => {
     y: inputY + spanY,
   };
 };
+
 const suggestionRef = ref(null);
 const isSuggestionShow = ref(false);
 // 控制联想框展示，不传hidden默认切换
@@ -70,7 +72,8 @@ type suggestionType = {
   active?: boolean;
 };
 const suggestionList = ref<suggestionType[] | null>(null);
-const textareaRef = ref();
+const textareaContent = ref("");
+const textareaRef = ref(null);
 
 const fetchTag = () => {
   // 拉取tag填入suggestion
@@ -117,42 +120,45 @@ onMounted(() => {
   fetchTag();
 });
 document.onclick = () => {
-  console.log(1);
-
   handleSuggestionHidden(true);
 };
 const onTextInput = () => {
   textareaRef.value.style.height = "auto";
   textareaRef.value.style.height = textareaRef.value.scrollHeight + "px";
+  textareaContent.value = textareaRef.value.value;
 };
 const onKeyDown = (event: KeyboardEvent) => {
   const key = event.key;
   console.log(key);
 
   // 当输入#时开启联想菜单
-  if (key === "#") {
+  if (key === "#" || key === "#") {
     handleSuggestionHidden(false);
+    return false;
   }
-  // 当输入“上，下“方向键时切换active标签
-  if (isSuggestionShow.value && (key === "ArrowUp" || key === "ArrowDown")) {
+  if (event.key == "Enter" && event.ctrlKey) {
+    saveArticle(123);
+  }
+  // 仅当联想菜单展示时
+  if (isSuggestionShow.value) {
+    // 当输入“上，下“方向键时切换active标签
     event.stopPropagation();
     event.preventDefault();
-  }
-  if (key === "ArrowUp") {
-    setItemActive(-1);
-  } else if (key === "ArrowDown") {
-    setItemActive(1);
-  }
-
-  // 敲空格隐藏
-  if (key === " ") {
-    handleSuggestionHidden(true);
-  }
-  // 敲回车选中 仅当联想菜单展示时
-  if (key === "Enter" && isSuggestionShow.value) {
-    const activeItem = suggestionList.value.find((item) => item.active);
-    insertContent(activeItem.name);
-    handleSuggestionHidden(true);
+    if (key === "ArrowUp") {
+      setItemActive(-1);
+    } else if (key === "ArrowDown") {
+      setItemActive(1);
+    }
+    // 敲空格隐藏
+    if (key === " ") {
+      handleSuggestionHidden(true);
+    }
+    // 敲回车选中
+    if (key === "Enter") {
+      const activeItem = suggestionList.value.find((item) => item.active);
+      insertContent(activeItem.name);
+      handleSuggestionHidden(true);
+    }
   }
 };
 
@@ -160,22 +166,33 @@ const onKeyDown = (event: KeyboardEvent) => {
  * 插入内容
  * bug：插入之后应当回到原来光标位置
  *  */
-const insertContent = (content) => {
+const insertContent = (content: string) => {
   const { selectionEnd: selectionEnd } = textareaRef.value;
   const memoSelectionIndex = selectionEnd;
-  const currentContent = textareaRef.value.value;
+  const currentContent = textareaContent.value;
   const placement =
     currentContent.slice(0, selectionEnd) +
     content +
     currentContent.slice(selectionEnd);
-  textareaRef.value.value = placement;
+  textareaContent.value = placement;
+  // 插入完成后，设置光标位置
   textareaRef.value.selectionEnd = memoSelectionIndex + content.length;
 };
 
-const itemClicked = ($event) => {
-  const target = $event.target.innerText;
+const itemClicked = ($event: Event) => {
+  const target = ($event.target as HTMLSpanElement).innerText;
   // 将联想框中的内容添加到textarea中
   insertContent(target);
+};
+const saveArticle = () => {
+  console.log("save");
+  console.log(textareaContent.value);
+};
+const handleSave = ($event: Event) => {
+  $event.preventDefault();
+  $event.stopPropagation();
+
+  saveArticle();
 };
 
 /**
@@ -191,6 +208,7 @@ const itemClicked = ($event) => {
     <textarea
       name="text-input"
       ref="textareaRef"
+      v-model="textareaContent"
       @input="onTextInput"
       @keydown="onKeyDown"
     ></textarea>
@@ -207,7 +225,13 @@ const itemClicked = ($event) => {
       <span class="tag-icon">
         <!-- <div style="display: inline-block; margin-left: 20px">哈哈</div> -->
 
-        <button class="save" disabled>发送</button>
+        <button
+          class="save"
+          @click="handleSave($event)"
+          :disabled="isEmpty(textareaContent)"
+        >
+          发送
+        </button>
       </span>
     </div>
   </div>
