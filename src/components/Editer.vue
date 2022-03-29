@@ -1,6 +1,6 @@
 <!-- sc -->
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { ElSelect, ElOption, ElButton } from "element-plus";
 import "element-plus/es/components/Select/style/css";
 const computeSelectPos = (input: HTMLTextAreaElement) => {
@@ -39,7 +39,7 @@ const computeSelectPos = (input: HTMLTextAreaElement) => {
   };
 };
 const suggestionRef = ref(null);
-
+const isSuggestionShow = ref(false);
 // 控制联想框展示，不传hidden默认切换
 const toggleSuggestionShow = (x: number, y: number, hidden = null) => {
   suggestionRef.value.style.top = y + "px";
@@ -48,10 +48,13 @@ const toggleSuggestionShow = (x: number, y: number, hidden = null) => {
 
   if (hidden === null) {
     suggestionRef.value.classList.toggle("hidden");
+    isSuggestionShow.value = !isSuggestionShow.value;
   } else if (hidden === true) {
     suggestionRef.value.classList.add("hidden");
+    isSuggestionShow.value = false;
   } else {
     suggestionRef.value.classList.remove("hidden");
+    isSuggestionShow.value = true;
   }
 };
 const handleSuggestionHidden = (hidden = null) => {
@@ -61,14 +64,61 @@ const handleSuggestionHidden = (hidden = null) => {
   const offsetTop = y + 22;
   toggleSuggestionShow(offsetLeft, offsetTop, hidden);
 };
+type suggestionType = {
+  name: string;
+  id: string;
+  active?: boolean;
+};
+const suggestionList = ref<suggestionType[] | null>(null);
 const textareaRef = ref();
+
 const fetchTag = () => {
   // 拉取tag填入suggestion
+  suggestionList.value = [
+    {
+      name: "tag1",
+      id: "tag1",
+      active: true,
+    },
+    {
+      name: "tag2",
+      id: "tag2",
+    },
+    {
+      name: "tag3",
+      id: "tag3",
+    },
+  ];
+};
+
+// 设置候选项active
+const setItemActive = (isNext: number = 1) => {
+  const list = suggestionList.value;
+  const reset = () => {
+    list.forEach((item) => {
+      item.active = false;
+    });
+  };
+  if (isNext === 1) {
+    // 向上
+    const currentIndex = list.findIndex((item) => item.active);
+    reset();
+    const target = currentIndex + 1 < list.length ? currentIndex + 1 : 0;
+    list[target].active = true;
+  } else {
+    // 向下
+    const currentIndex = list.findIndex((item) => item.active);
+    reset();
+    const target = currentIndex - 1 > 0 ? currentIndex - 1 : 0;
+    list[target].active = true;
+  }
 };
 onMounted(() => {
   fetchTag();
 });
 document.onclick = () => {
+  console.log(1);
+
   handleSuggestionHidden(true);
 };
 const onTextInput = () => {
@@ -77,14 +127,65 @@ const onTextInput = () => {
 };
 const onKeyDown = (event: KeyboardEvent) => {
   const key = event.key;
-  // 输入 # 开启联想
   console.log(key);
 
+  // 当输入#时开启联想菜单
   if (key === "#") {
     handleSuggestionHidden(false);
   }
+  // 当输入“上，下“方向键时切换active标签
+  if (isSuggestionShow.value && (key === "ArrowUp" || key === "ArrowDown")) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  if (key === "ArrowUp") {
+    setItemActive(-1);
+  } else if (key === "ArrowDown") {
+    setItemActive(1);
+  }
+
+  // 敲空格隐藏
+  if (key === " ") {
+    handleSuggestionHidden(true);
+  }
+  // 敲回车选中 仅当联想菜单展示时
+  if (key === "Enter" && isSuggestionShow.value) {
+    const activeItem = suggestionList.value.find((item) => item.active);
+    insertContent(activeItem.name);
+    handleSuggestionHidden(true);
+  }
 };
+
+/**
+ * 插入内容
+ * bug：插入之后应当回到原来光标位置
+ *  */
+const insertContent = (content) => {
+  const { selectionEnd: selectionEnd } = textareaRef.value;
+  const memoSelectionIndex = selectionEnd;
+  const currentContent = textareaRef.value.value;
+  const placement =
+    currentContent.slice(0, selectionEnd) +
+    content +
+    currentContent.slice(selectionEnd);
+  textareaRef.value.value = placement;
+  textareaRef.value.selectionEnd = memoSelectionIndex + content.length;
+};
+
+const itemClicked = ($event) => {
+  const target = $event.target.innerText;
+  // 将联想框中的内容添加到textarea中
+  insertContent(target);
+};
+
+/**
+ *
+ * @TODO 提交后，提取文章出现的现有标签
+ * 大概是 # 开头 结束条件：空格 换行 或 下一个#之前
+ * ，做成标签列表,展示 日后过滤
+ */
 </script>
+
 <template>
   <div class="input-container">
     <textarea
@@ -93,9 +194,14 @@ const onKeyDown = (event: KeyboardEvent) => {
       @input="onTextInput"
       @keydown="onKeyDown"
     ></textarea>
-    <div class="suggestion" ref="suggestionRef">
-      <span class="active">haha</span>
-      <span>nihao</span>
+    <div
+      class="suggestion hidden"
+      ref="suggestionRef"
+      @click="itemClicked($event)"
+    >
+      <template v-for="item of suggestionList">
+        <span :class="{ active: item.active }">{{ item.name }}</span>
+      </template>
     </div>
     <div class="bar">
       <span class="tag-icon">
@@ -131,19 +237,24 @@ const onKeyDown = (event: KeyboardEvent) => {
     }
   }
   .suggestion {
-    // display: none;
     position: absolute;
     background-color: black;
     padding: 5px;
     z-index: 99;
     border-radius: 5px;
-    // absolute cursor pointer 失效 hover失效
+    display: flex;
+    flex-direction: column;
+    &.hidden {
+      display: none;
+    }
     span {
       color: white;
       padding: 3px 20px;
       margin-bottom: 4px;
       border-radius: 6px;
       cursor: pointer;
+      user-select: none;
+
       &:last-child {
         margin-bottom: 0;
       }
