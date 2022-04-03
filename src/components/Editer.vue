@@ -1,6 +1,6 @@
 <!-- sc -->
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { nextTick, onMounted, reactive, ref } from "vue";
 import { ElSelect, ElOption } from "element-plus";
 import { isEmpty } from "lodash-es";
 import "element-plus/es/components/Select/style/css";
@@ -156,7 +156,7 @@ const onKeyDown = (event: KeyboardEvent) => {
     // 敲回车选中
     if (key === "Enter") {
       const activeItem = suggestionList.value.find((item) => item.active);
-      insertContent(activeItem.name);
+      insertContent(activeItem.name + " ");
       handleSuggestionHidden(true);
     }
   }
@@ -166,6 +166,7 @@ const onKeyDown = (event: KeyboardEvent) => {
  * 插入内容
  * bug：插入之后应当回到原来光标位置
  *  */
+
 const insertContent = (content: string) => {
   const { selectionEnd: selectionEnd } = textareaRef.value;
   const memoSelectionIndex = selectionEnd;
@@ -176,18 +177,26 @@ const insertContent = (content: string) => {
     currentContent.slice(selectionEnd);
   textareaContent.value = placement;
   // 插入完成后，设置光标位置
-  textareaRef.value.selectionEnd = memoSelectionIndex + content.length;
+  textareaRef.value.blur();
+  nextTick(() => {
+    textareaRef.value.selectionEnd = memoSelectionIndex + content.length;
+    textareaRef.value.focus();
+  });
 };
 
 const itemClicked = ($event: Event) => {
   const target = ($event.target as HTMLSpanElement).innerText;
   // 将联想框中的内容添加到textarea中
-  insertContent(target);
+  insertContent(target + " ");
 };
 const saveArticle = () => {
-  console.log("save");
-  console.log(textareaContent.value);
+  const tags = extractTags(textareaContent.value);
+  const ArticleVO = {
+    tags,
+    content: textareaContent.value,
+  };
 };
+
 const handleSave = ($event: Event) => {
   $event.preventDefault();
   $event.stopPropagation();
@@ -201,6 +210,10 @@ const handleSave = ($event: Event) => {
  * 大概是 # 开头 结束条件：空格 换行 或 下一个#之前
  * ，做成标签列表,展示 日后过滤
  */
+const extractTags = (content: string) => {
+  const tags = content.match(/#[^\s#]+/g);
+  return tags;
+};
 </script>
 
 <template>
