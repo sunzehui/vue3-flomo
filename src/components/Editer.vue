@@ -1,9 +1,21 @@
 <!-- sc -->
 <script lang="ts" setup>
-import { nextTick, onMounted, reactive, ref } from "vue";
+import { nextTick, PropType, ref, watch } from "vue";
 import { ElSelect, ElOption } from "element-plus";
 import { isEmpty } from "lodash-es";
 import "element-plus/es/components/Select/style/css";
+import type { NewAticle, tagType } from "../types/article";
+const props = defineProps({
+  tags: {
+    type: Array as PropType<tagType[]>,
+    default: [],
+  },
+  save: {
+    type: Function as PropType<(ArticleVO: NewAticle) => Promise<boolean>>,
+    required: true,
+  },
+});
+
 const computeSelectPos = (input: HTMLTextAreaElement) => {
   // 初始位置
   const {
@@ -65,34 +77,22 @@ const handleSuggestionHidden = (hidden = null) => {
   const offsetLeft = x + 15;
   const offsetTop = y + 22;
   toggleSuggestionShow(offsetLeft, offsetTop, hidden);
+  return false;
 };
-type suggestionType = {
-  name: string;
-  id: string;
-  active?: boolean;
+const handleIconClick = (event: Event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  insertContent("#");
+  if (props.tags.length === 0) {
+    return false;
+  }
+  handleSuggestionHidden(false);
 };
-const suggestionList = ref<suggestionType[] | null>(null);
+
+const suggestionList = ref<tagType[]>(props.tags);
 const textareaContent = ref("");
 const textareaRef = ref(null);
-
-const fetchTag = () => {
-  // 拉取tag填入suggestion
-  suggestionList.value = [
-    {
-      name: "tag1",
-      id: "tag1",
-      active: true,
-    },
-    {
-      name: "tag2",
-      id: "tag2",
-    },
-    {
-      name: "tag3",
-      id: "tag3",
-    },
-  ];
-};
 
 // 设置候选项active
 const setItemActive = (isNext: number = 1) => {
@@ -116,34 +116,38 @@ const setItemActive = (isNext: number = 1) => {
     list[target].active = true;
   }
 };
-onMounted(() => {
-  fetchTag();
-});
+
 document.onclick = () => {
   handleSuggestionHidden(true);
 };
-const onTextInput = () => {
+watch(textareaContent, () => {
   textareaRef.value.style.height = "auto";
   textareaRef.value.style.height = textareaRef.value.scrollHeight + "px";
-  textareaContent.value = textareaRef.value.value;
-};
+  // textareaContent.value = textareaRef.value.value;
+});
 const onKeyDown = (event: KeyboardEvent) => {
   const key = event.key;
   console.log(key);
 
   // 当输入#时开启联想菜单
-  if (key === "#" || key === "#") {
+  if ((key === "#" || key === "#") && props.tags.length) {
     handleSuggestionHidden(false);
     return false;
   }
   if (event.key == "Enter" && event.ctrlKey) {
-    saveArticle(123);
+    saveArticle();
   }
   // 仅当联想菜单展示时
   if (isSuggestionShow.value) {
+    // 删除键
+    if (key === "Backspace") {
+      handleSuggestionHidden(true);
+      return;
+    }
     // 当输入“上，下“方向键时切换active标签
     event.stopPropagation();
     event.preventDefault();
+
     if (key === "ArrowUp") {
       setItemActive(-1);
     } else if (key === "ArrowDown") {
@@ -164,7 +168,6 @@ const onKeyDown = (event: KeyboardEvent) => {
 
 /**
  * 插入内容
- * bug：插入之后应当回到原来光标位置
  *  */
 
 const insertContent = (content: string) => {
@@ -195,25 +198,30 @@ const saveArticle = () => {
     tags,
     content: textareaContent.value,
   };
+
+  props.save(ArticleVO).then((result) => {
+    loading.value = false;
+  });
 };
 
 const handleSave = ($event: Event) => {
   $event.preventDefault();
   $event.stopPropagation();
-
+  loading.value = true;
   saveArticle();
 };
 
 /**
  *
- * @TODO 提交后，提取文章出现的现有标签
+ *  提交后，提取文章出现的现有标签
  * 大概是 # 开头 结束条件：空格 换行 或 下一个#之前
  * ，做成标签列表,展示 日后过滤
  */
 const extractTags = (content: string) => {
-  const tags = content.match(/#[^\s#]+/g);
+  const tags = Array.from(content.match(/#[^\s#]+/g) || []);
   return tags;
 };
+const loading = ref(false);
 </script>
 
 <template>
@@ -222,7 +230,6 @@ const extractTags = (content: string) => {
       name="text-input"
       ref="textareaRef"
       v-model="textareaContent"
-      @input="onTextInput"
       @keydown="onKeyDown"
     ></textarea>
     <div
@@ -235,23 +242,23 @@ const extractTags = (content: string) => {
       </template>
     </div>
     <div class="bar">
-      <span class="tag-icon">
-        <!-- <div style="display: inline-block; margin-left: 20px">哈哈</div> -->
-
-        <button
-          class="save"
-          @click="handleSave($event)"
-          :disabled="isEmpty(textareaContent)"
-        >
-          发送
-        </button>
-      </span>
+      <span class="tag-icon" @click="handleIconClick($event)"> # </span>
+      <button
+        class="save"
+        @click="handleSave($event)"
+        :disabled="isEmpty(textareaContent)"
+      >
+        发送
+      </button>
     </div>
+    <!-- 展示loading将其他隐藏 -->
+    <div class="loading-box">loading...</div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .input-container {
+  overflow: hidden;
   border: 2px solid #e8e8e8;
   border-radius: 8px;
   padding-top: 20px;
@@ -306,6 +313,18 @@ const extractTags = (content: string) => {
       display: block;
     }
   }
+  .loading-box {
+    visibility: hidden;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+  }
   .bar {
     display: flex;
     width: 100%;
@@ -315,6 +334,12 @@ const extractTags = (content: string) => {
     position: relative;
     span {
       cursor: pointer;
+      user-select: none;
+    }
+    .tag-icon {
+      display: inline-block;
+      margin-left: 20px;
+      font-size: 0.9em;
     }
     button {
       position: absolute;
@@ -348,6 +373,12 @@ const extractTags = (content: string) => {
         color: white;
       }
     }
+  }
+}
+.loading {
+  position: relative;
+  .loading-box {
+    visibility: visible;
   }
 }
 </style>
