@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { Refresh, Search } from "@element-plus/icons";
+import { reactive } from "vue";
 import Editer from "../components/Editer.vue";
 import MemoCard from "../components/MemoCard.vue";
+const memoList = reactive([]);
 </script>
 <template>
   <div class="memo-view">
@@ -19,7 +21,9 @@ import MemoCard from "../components/MemoCard.vue";
     </nav>
     <Editer :tags="[]" :save="(v) => Promise.resolve(true)" />
     <ul class="card-container">
-      <MemoCard />
+      <template v-for="memo of memoList">
+        <MemoCard :article="memo" />
+      </template>
     </ul>
   </div>
 </template>
