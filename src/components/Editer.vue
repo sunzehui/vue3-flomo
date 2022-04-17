@@ -55,11 +55,7 @@ const computeSelectPos = (input: HTMLTextAreaElement) => {
 const suggestionRef = ref(null);
 const isSuggestionShow = ref(false);
 // 控制联想框展示，不传hidden默认切换
-const toggleSuggestionShow = (x: number, y: number, hidden = null) => {
-  suggestionRef.value.style.top = y + "px";
-  suggestionRef.value.style.left = x + "px";
-  console.log(hidden);
-
+const toggleSuggestionHidden = (hidden = null) => {
   if (hidden === null) {
     suggestionRef.value.classList.toggle("hidden");
     isSuggestionShow.value = !isSuggestionShow.value;
@@ -76,7 +72,10 @@ const handleSuggestionHidden = (hidden = null) => {
   // 防止挡字，加点偏移
   const offsetLeft = x + 15;
   const offsetTop = y + 22;
-  toggleSuggestionShow(offsetLeft, offsetTop, hidden);
+  suggestionRef.value.style.top = offsetTop + "px";
+  suggestionRef.value.style.left = offsetLeft + "px";
+
+  toggleSuggestionHidden(hidden);
   return false;
 };
 const handleIconClick = (event: Event) => {
@@ -118,7 +117,7 @@ const setItemActive = (isNext: number = 1) => {
 };
 
 document.onclick = () => {
-  handleSuggestionHidden(true);
+  toggleSuggestionHidden(true);
 };
 watch(textareaContent, () => {
   textareaRef.value.style.height = "auto";
@@ -141,7 +140,7 @@ const onKeyDown = (event: KeyboardEvent) => {
   if (isSuggestionShow.value) {
     // 删除键
     if (key === "Backspace") {
-      handleSuggestionHidden(true);
+      toggleSuggestionHidden(true);
       return;
     }
     // 当输入“上，下“方向键时切换active标签
@@ -155,13 +154,13 @@ const onKeyDown = (event: KeyboardEvent) => {
     }
     // 敲空格隐藏
     if (key === " ") {
-      handleSuggestionHidden(true);
+      toggleSuggestionHidden(true);
     }
     // 敲回车选中
     if (key === "Enter") {
       const activeItem = suggestionList.value.find((item) => item.active);
       insertContent(activeItem.name + " ");
-      handleSuggestionHidden(true);
+      toggleSuggestionHidden(true);
     }
   }
 };

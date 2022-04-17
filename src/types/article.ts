@@ -8,3 +8,10 @@ export type tagType = {
   id: string;
   active?: boolean;
 };
+export interface Article {
+  id: number;
+  tags: tagType[];
+  content: string;
+  time: string;
+  link: string;
+}
