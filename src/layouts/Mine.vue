@@ -10,11 +10,25 @@ import {
   Refresh,
   Search,
 } from "@element-plus/icons";
-import Memo from "./Memo.vue";
 import DailyRecord from "../components/DailyRecord.vue";
 import { useRouter } from "vue-router";
+import { computed } from "@vue/reactivity";
 const route = useRouter();
-const thisPage = route.currentRoute.value.query.source || "default";
+
+const switchRoutes = (e) => {
+  console.log(e.target);
+};
+
+const page = computed(() => {
+  const thisPage = route.currentRoute.value.query.source || "default";
+
+  return route.currentRoute.value.path;
+});
+console.log(page.value == "/wechat");
+
+defineExpose({
+  switchRoutes,
+});
 </script>
 
 <template>
@@ -26,28 +40,28 @@ const thisPage = route.currentRoute.value.query.source || "default";
         <DailyRecord />
       </div>
       <ul class="bar-list">
-        <li class="active">
-          <div class="icon">
-            <Menu />
-          </div>
-          <span>MEMO</span>
+        <li :class="{ active: page === '/memo' }" @click="$router.push('memo')">
+          <Menu class="icon" />MEMO
         </li>
-        <li>
-          <div class="icon">
-            <Comment style="width: 1em; height: 1em" />
-          </div>
+        <li
+          :class="{ active: page === '/wechat' }"
+          @click="$router.push('wechat')"
+        >
+          <Comment class="icon" />
           <span>微信输入</span>
         </li>
-        <li>
-          <div class="icon">
-            <TrendCharts style="width: 1em; height: 1em" />
-          </div>
+        <li
+          :class="{ active: page === '/review' }"
+          @click="$router.push('review')"
+        >
+          <TrendCharts class="icon" />
           <span>每日回顾</span>
         </li>
-        <li>
-          <div class="icon">
-            <DeleteFilled style="width: 1em; height: 1em" />
-          </div>
+        <li
+          :class="{ active: page === '/recycle' }"
+          @click="$router.push('recycle')"
+        >
+          <DeleteFilled class="icon" />
           <span>回收站</span>
         </li>
       </ul>
@@ -130,7 +144,7 @@ const thisPage = route.currentRoute.value.query.source || "default";
       </div>
     </div>
     <main>
-      <Memo v-show="thisPage === 'default'" />
+      <router-view></router-view>
     </main>
   </div>
 </template>
@@ -155,9 +169,12 @@ const thisPage = route.currentRoute.value.query.source || "default";
       padding-inline-start: 0;
       margin: 8px 0 18px;
       li {
-        @apply flex cursor-pointer text-sm py-2 rounded-md;
+        @apply flex cursor-pointer text-sm py-2 pl-2 rounded-md;
         .icon {
-          @apply w-4 h-4 mx-3 mr-1 inline-block;
+          // @apply w-4 h-4 mx-3 mr-1 inline-block;
+          width: 1em;
+          display: inline-block;
+          margin-right: 10px;
         }
 
         &:hover {

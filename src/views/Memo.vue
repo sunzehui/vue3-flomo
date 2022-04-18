@@ -5,6 +5,7 @@ import Editer from "../components/Editer.vue";
 import MemoCard from "../components/MemoCard.vue";
 const memoList = reactive([]);
 </script>
+
 <template>
   <div class="memo-view">
     <nav>
