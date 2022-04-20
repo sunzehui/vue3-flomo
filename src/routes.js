@@ -12,12 +12,13 @@ export const routes = [
 
   {
     path: "/",
+
     component: () => import("./layouts/Mine.vue"),
     children: [
       {
         path: "",
         meta: { title: "个人主页" },
-        component: () => import("./views/Memo.vue"),
+        redirect: "/memo",
       },
       {
         path: "/about",
