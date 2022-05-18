@@ -1,35 +1,89 @@
+<script lang="ts" setup>
+import { ref } from "vue";
+import { Form as VForm, Field as VField, ErrorMessage } from "vee-validate";
+import { useUserStore } from "@/store/user";
+import { useRouter } from "vue-router";
+const username = ref("188888888");
+const password = ref("sunzehui");
+const eyeShow = ref(false);
+const usernameRule = (username) => {
+  const isEmpty = username.length === 0;
+  if (isEmpty) {
+    return "用户名不能为空！";
+  }
+  const isEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(username);
+  if (isEmail) {
+    return true;
+  }
+  const isValidName = /^[a-zA-Z0-9]{6,18}$/.test(username);
+  if (isValidName) {
+    return true;
+  }
+  return "用户名不符合规范，请检查！";
+};
+
+const passwordRule = (password) => {
+  const notEmpty = password.length > 0;
+  const isValid = /(?=^.{6,}$).*$/.test(password);
+  return notEmpty && isValid;
+};
+const router = useRouter();
+const userStore = useUserStore();
+
+const onSubmit = () => {
+  userStore.setToken("1234567890");
+
+  console.log({ username, password });
+
+  router.push({
+    path: "/memo",
+  });
+};
+</script>
+
 <template>
   <div class="min-h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
     <div class="max-w-xs w-full space-y-6 -translate-y-1/3">
       <div>
         <h3 class="text-3xl text-center font-bold">flomo</h3>
       </div>
-      <form class="mt-8 space-y-2" action="#" method="POST">
+      <VForm class="mt-8 space-y-2" @submit="onSubmit">
         <div class="rounded-md shadow-sm space-y-3">
           <div>
             <label for="email-address" class="sr-only">手机号码/邮箱</label>
-            <input
+            <VField
               id="email-address"
               name="email"
               type="email"
               autocomplete="email"
-              required
+              :rules="usernameRule"
+              v-model="username"
               class="appearance-none relative block w-full px-3 py-2 border border-gray-200 placeholder-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm h-10"
               placeholder="手机号码/邮箱"
             />
+            <ErrorMessage
+              name="email"
+              class="text-red-500 text-xs italic"
+            ></ErrorMessage>
           </div>
           <div class="relative">
             <label for="password" class="sr-only">密码</label>
-            <input
+            <VField
               id="password"
               name="password"
-              type="password"
+              :type="eyeShow ? 'text' : 'password'"
               autocomplete="current-password"
-              required
+              :rules="passwordRule"
+              v-model="password"
               class="appearance-none relative block w-full px-4 py-2 border border-gray-200 placeholder-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm h-10"
               placeholder="密码"
             />
-            <div class="eye_open">
+
+            <ErrorMessage
+              name="password"
+              class="text-red-500 text-xs italic"
+            ></ErrorMessage>
+            <div class="eye_open" @click="eyeShow = false" v-show="eyeShow">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -50,7 +104,7 @@
               </svg>
             </div>
 
-            <div class="eye_close">
+            <div class="eye_close" @click="eyeShow = true" v-show="!eyeShow">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-6 w-6"
@@ -80,27 +134,17 @@
         <div class="w-full text-center">
           <a href="/reset" class="mt-4 text-blue-400"> 忘记密码 </a>
         </div>
-      </form>
+      </VForm>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "login",
-};
-</script>
-
 <style scoped lang="scss">
 .eye_open,
 .eye_close {
-  @apply absolute top-1/2 right-2 w-4 h-4 -translate-y-1/2;
+  @apply absolute top-1/2 right-2 h-full w-8 -translate-y-1/2;
   svg {
-    @apply h-full w-full;
+    @apply w-4 h-4 absolute top-1/2 right-2 -translate-y-1/2;
   }
-}
-
-.eye_close {
-  display: none;
 }
 </style>

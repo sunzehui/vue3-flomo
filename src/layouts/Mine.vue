@@ -14,6 +14,7 @@ import DailyRecord from "../components/DailyRecord.vue";
 import Tag from "../components/Tag.vue";
 import { useRouter } from "vue-router";
 import { computed } from "@vue/reactivity";
+import { provide } from "vue";
 
 const route = useRouter();
 
@@ -30,6 +31,8 @@ console.log(page.value == "/wechat");
 const filterArticle = (event) => {
   console.log(event);
 };
+const updateQuery = () => {};
+provide("updateQuery", updateQuery);
 defineExpose({
   switchRoutes,
 });
@@ -73,37 +76,7 @@ defineExpose({
         <h4 class="tag-title">置顶标签</h4>
         <ul class="tag-list">
           <li>
-            <span>
-              <i class="sharp-icon">
-                <svg
-                  data-v-9eff3224=""
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    data-v-9eff3224=""
-                    opacity="0.01"
-                    width="18"
-                    height="18"
-                    fill="currentColor"
-                  ></rect>
-                  <path
-                    data-v-9eff3224=""
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M6.153 7.5L5.838 10.5H3V12H5.6805L5.28675 15.75H6.795L7.18875 12H10.1805L9.78675 15.75H11.295L11.6888 12H15V10.5H11.847L12.162 7.5H15V6H12.3195L12.7133 2.25H11.205L10.8113 6H7.8195L8.21325 2.25H6.705L6.31125 6H3V7.5H6.153ZM10.3387 10.5H7.34625L7.66125 7.5H10.6537L10.3387 10.5Z"
-                    fill="currentColor"
-                  ></path>
-                </svg>
-              </i>
-              <label>欢迎</label>
-            </span>
-            <div class="right-arrow-icon">
-              <ArrowRight style="height: 1em; width: 1em" />
-            </div>
+            <Tag link="">欢迎</Tag>
           </li>
         </ul>
       </div>
@@ -116,7 +89,11 @@ defineExpose({
       </div>
     </div>
     <main>
-      <router-view></router-view>
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" :key="$route.name" />
+        </keep-alive>
+      </router-view>
     </main>
   </div>
 </template>
@@ -189,8 +166,16 @@ defineExpose({
     font-style: normal;
   }
   main {
-    // @apply bg-blue-300 h-full;
     width: 640px;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .left {
+    display: none;
+  }
+  .wrapper main {
+    margin-left: 0 !important;
   }
 }
 </style>

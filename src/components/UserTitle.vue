@@ -13,7 +13,7 @@ const { username, isPro } = toRefs(props);
       <span class="title">{{ username }}</span
       ><span class="pro" :class="{ active: isPro }">PRO</span>
     </span>
-    <div class="flex items-center">
+    <div class="icons">
       <div class="notify mr-2">
         <svg
           data-v-356cff01=""
@@ -94,7 +94,7 @@ const { username, isPro } = toRefs(props);
 
 <style scoped lang="scss">
 .user {
-  @apply flex py-3;
+  @apply flex py-3 items-center;
   .username {
     flex: 1;
     cursor: pointer;
@@ -122,6 +122,9 @@ const { username, isPro } = toRefs(props);
         background: #212f4b;
       }
     }
+  }
+  .icons {
+    @apply flex items-center gap-2;
   }
   .notify,
   .setting {

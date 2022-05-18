@@ -13,6 +13,7 @@ const reducerActicon = (event: Event) => {
   console.log(type);
 };
 const article = reactive(props.article);
+console.log({ article });
 </script>
 
 <template>
@@ -48,7 +49,7 @@ const article = reactive(props.article);
     </div>
     <div class="footer">
       <ul class="tag-view">
-        <li v-for="item of article.tags" v-keys="item.id">{{ item.name }}</li>
+        <li v-for="item of article.tags" :key="item.id">{{ item.name }}</li>
       </ul>
     </div>
   </li>

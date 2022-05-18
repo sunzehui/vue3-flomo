@@ -9,7 +9,7 @@ export type tagType = {
   active?: boolean;
 };
 export interface Article {
-  id: number;
+  id: string;
   tags: tagType[];
   content: string;
   time: string;

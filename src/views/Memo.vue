@@ -3,7 +3,20 @@ import { Refresh, Search } from "@element-plus/icons";
 import { reactive } from "vue";
 import Editer from "../components/Editer.vue";
 import MemoCard from "../components/MemoCard.vue";
-const memoList = reactive([]);
+const memoList = reactive([
+  {
+    id: "1",
+    tags: [
+      {
+        name: "日常",
+        id: "2",
+      },
+    ],
+    content: "写下所思所想...",
+    time: "2022-5-1",
+    link: "#",
+  },
+]);
 </script>
 
 <template>
@@ -20,9 +33,9 @@ const memoList = reactive([]);
         <i><Search /></i>
       </div>
     </nav>
-    <Editer :tags="[]" :save="(v) => Promise.resolve(true)" />
+    <Editer :tags="[]" />
     <ul class="card-container">
-      <template v-for="memo of memoList">
+      <template v-for="memo of memoList" :key="memo.id">
         <MemoCard :article="memo" />
       </template>
     </ul>

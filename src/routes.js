@@ -12,7 +12,6 @@ export const routes = [
 
   {
     path: "/",
-
     component: () => import("./layouts/Mine.vue"),
     children: [
       {
@@ -49,6 +48,7 @@ export const routes = [
   },
   {
     path: "/login",
+    name: "Login",
     meta: { title: "登录" },
     component: () => import("./views/Login.vue"),
   },

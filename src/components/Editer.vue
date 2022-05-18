@@ -10,10 +10,6 @@ const props = defineProps({
     type: Array as PropType<tagType[]>,
     default: [],
   },
-  save: {
-    type: Function as PropType<(ArticleVO: NewAticle) => Promise<boolean>>,
-    required: true,
-  },
 });
 
 const computeSelectPos = (input: HTMLTextAreaElement) => {
@@ -197,8 +193,14 @@ const saveArticle = () => {
     tags,
     content: textareaContent.value,
   };
-
-  props.save(ArticleVO).then((result) => {
+  const save = (v: typeof ArticleVO) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(v);
+      }, 1000);
+    });
+  };
+  save(ArticleVO).then((result) => {
     loading.value = false;
   });
 };
@@ -207,6 +209,8 @@ const handleSave = ($event: Event) => {
   $event.preventDefault();
   $event.stopPropagation();
   loading.value = true;
+  console.log(loading.value);
+
   saveArticle();
 };
 
@@ -251,7 +255,7 @@ const loading = ref(false);
       </button>
     </div>
     <!-- 展示loading将其他隐藏 -->
-    <div class="loading-box">loading...</div>
+    <div class="loading-box" v-show="loading">loading...</div>
   </div>
 </template>
 
@@ -268,6 +272,8 @@ const loading = ref(false);
     border: none;
     outline: 0;
     height: 42px;
+    padding: 0 10px;
+    box-sizing: border-box;
     resize: none;
     min-height: 42px;
     max-height: 50vh;
@@ -313,7 +319,6 @@ const loading = ref(false);
     }
   }
   .loading-box {
-    visibility: hidden;
     display: flex;
     height: 100%;
     width: 100%;
@@ -330,6 +335,7 @@ const loading = ref(false);
     height: 40px;
     padding: 0 10px;
     align-items: center;
+    box-sizing: border-box;
     position: relative;
     span {
       cursor: pointer;
@@ -337,7 +343,7 @@ const loading = ref(false);
     }
     .tag-icon {
       display: inline-block;
-      margin-left: 20px;
+      // margin-left: 20px;
       font-size: 0.9em;
     }
     button {
