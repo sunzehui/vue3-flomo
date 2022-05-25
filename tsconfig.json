@@ -4,9 +4,10 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "target": "es5",
+    "target": "es6",
     "lib": ["dom","es5","ES2015.Promise","ES2015","es2017"],
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "moduleResolution": "node"
   },
   "exclude": ["node_modules", "dist"],
   "typeAcquisition": {
