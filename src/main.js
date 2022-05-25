@@ -3,7 +3,7 @@ import "./tailwind.css";
 import App from "./App.vue";
 import { routes } from "./routes.js";
 import { createRouter, createWebHistory } from "vue-router";
-import applyMiddleware from "./middleware/index.js";
+import applyMiddleware from "./middleware";
 import { createPinia } from "pinia";
 const app = createApp(App);
 const pinia = createPinia();

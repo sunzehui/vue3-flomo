@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "allowJs": true,
+    "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
     },
+    "module": "esnext",
     "target": "es6",
-    "lib": ["dom","es5","ES2015.Promise","ES2015","es2017"],
+    "lib": ["esnext","dom","es5","ES2015.Promise","ES2015","es2017"],
     "jsx": "preserve",
     "moduleResolution": "node"
   },
   "exclude": ["node_modules", "dist"],
+  // "include": ["./src/**/*"],
   "typeAcquisition": {
         "include": [
             "lodash"

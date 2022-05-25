@@ -1,6 +1,7 @@
 import { useUserStore } from "@/store/user";
+import { Router } from "vue-router";
 
-export default function loginGuard(router) {
+export default function loginGuard(router: Router) {
   router.beforeEach((to, from, next) => {
     const userStore = useUserStore();
     const isAuthenticated = userStore.isAuthenticated;

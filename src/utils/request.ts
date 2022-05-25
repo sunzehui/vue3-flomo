@@ -1,7 +1,7 @@
 import Axios from "axios";
 import { ElMessage } from "element-plus";
 
-const baseURL = import.meta.env.VITE_PROXY_URL;
+const baseURL = import.meta.env.VITE_APP_URL as string | undefined;
 
 const axios = Axios.create({
   baseURL,
