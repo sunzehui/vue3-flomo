@@ -8,28 +8,57 @@ import { onMounted, reactive } from "vue";
 // month 提取方法
 // 每周弹出最后一天，然后提取全部month后去重，重复填充空字符串，不重复保留
 
-import moment from "moment";
 import * as _ from "lodash";
+
+import * as Moment from "moment";
+import { extendMoment } from "moment-range";
+
+const moment = extendMoment(Moment);
+
 interface WeekRecord {
   date: string;
   memo_count: number;
   color?: "";
 }
+const createMonthArray = (start, end) => {
+  const startDate = moment(start);
+  const endDate = moment(end);
+  const startDay = Number(startDate.format("DD"));
+  let monthArray = [];
+  console.log(startDate, startDate.month());
+
+  for (let i = startDate.month() + 1; i <= endDate.month() + 1; i++) {
+    if (i == startDate.month() + 1) {
+      const restDay = startDate.daysInMonth() - startDay;
+      console.log({ restDay });
+
+      const _arr = [startDate.month() + 1];
+      _arr.length = restDay % 7;
+      monthArray = monthArray.concat(_arr);
+    } else if (i == endDate.month() + 1) {
+      monthArray = monthArray.concat([endDate.month() + 1, "", "", ""]);
+    } else {
+      monthArray = monthArray.concat([i, "", "", ""]);
+    }
+  }
+  console.log(Array.from(monthArray));
+
+  return reactive(monthArray);
+};
 // 创建初始记录表
 const createStateGrid = () => {
   const endOfWeek = moment().endOf("week");
 
   const stateGrid = [] as WeekRecord[][];
-  let lastDay = moment(endOfWeek).add(1, "day").format("YYYY/MM/DD");
+  let lastDay = moment(endOfWeek).add(1, "day").format("YYYY-MM-DD");
 
   for (let i = 0; i < 12; i++) {
     stateGrid[i] = new Array();
     for (let j = 0; j < 7; j++) {
       stateGrid[i].push({ date: lastDay, memo_count: 0 });
-      lastDay = moment(lastDay).subtract(1, "day").format("YYYY/MM/DD");
+      lastDay = moment(lastDay).subtract(1, "day").format("YYYY-MM-DD");
     }
   }
-
   //方便展示，颠倒顺序
   stateGrid.reverse();
 
@@ -41,7 +70,7 @@ const createStateGrid = () => {
 };
 
 let stateGrid = createStateGrid();
-
+let monthArray = createMonthArray(stateGrid[0][0].date, stateGrid[11][6].date);
 // 绿色深度样式：循环时判断daily_memo_count >10 深色，
 // 5>x>10 绿色
 // >5 亮绿色
@@ -55,21 +84,18 @@ const colorSwitch = (count: number): string => {
   }
   return "";
 };
+const props = defineProps<{
+  grid: {
+    [key: string]: number;
+  };
+}>();
 
 // 从服务端拉取记录，填充到表格
 const updateRocordCount = (dataGrid: WeekRecord[][]) => {
-  const data = reactive({
-    memo_count: 10,
-    daily_memo_count: {
-      "2022\/03\/17": 1,
-      "2022\/03\/16": 1,
-      "2022\/03\/13": 3,
-      "2022\/03\/08": 5,
-    },
-  });
-  const memoCount = data?.daily_memo_count;
-  const memoCountByDate = _.keys(memoCount);
+  const memoCount = props?.grid;
 
+  const memoCountByDate = _.keys(memoCount);
+  console.log(memoCount);
   dataGrid.forEach((week) => {
     week.forEach((record) => {
       const day = record.date;
@@ -79,6 +105,7 @@ const updateRocordCount = (dataGrid: WeekRecord[][]) => {
     });
   });
 };
+
 onMounted(() => {
   // 页面加载完毕钩子
   updateRocordCount(stateGrid);
@@ -98,18 +125,9 @@ onMounted(() => {
     </div>
   </div>
   <div class="month-title grid">
-    <span class="tag">1月</span>
-    <span class="tag"></span>
-    <span class="tag"></span>
-    <span class="tag"></span>
-    <span class="tag"></span>
-    <span class="tag">2月</span>
-    <span class="tag"></span>
-    <span class="tag"></span>
-    <span class="tag"></span>
-    <span class="tag">3月</span>
-    <span class="tag"></span>
-    <span class="tag"></span>
+    <span class="tag" v-for="tag in monthArray" :key="tag">{{
+      tag ? tag + "月" : ""
+    }}</span>
   </div>
 </template>
 

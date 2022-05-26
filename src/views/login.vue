@@ -3,10 +3,11 @@ import { ref } from "vue";
 import { Form as VForm, Field as VField, ErrorMessage } from "vee-validate";
 import { useUserStore } from "@/store/user";
 import { useRouter } from "vue-router";
-import axios from "@/utils/request";
+import { ApiUserLogin } from "@/api/user";
 
-const username = ref("188888888");
+const username = ref("sunzehui");
 const password = ref("sunzehui");
+
 const eyeShow = ref(false);
 const usernameRule = (username) => {
   const isEmpty = username.length === 0;
@@ -32,14 +33,19 @@ const passwordRule = (password) => {
 const router = useRouter();
 const userStore = useUserStore();
 
-const onSubmit = () => {
-  userStore.setToken("1234567890");
-
-  console.log({ username, password });
-
-  router.push({
-    path: "/memo",
+const onSubmit = async () => {
+  const user = await ApiUserLogin({
+    username: username.value,
+    password: password.value,
   });
+  console.log(user);
+
+  if (user) {
+    userStore.setToken(user.data.token);
+    router.push({
+      path: "/memo",
+    });
+  }
 };
 </script>
 
@@ -60,7 +66,7 @@ const onSubmit = () => {
               autocomplete="email"
               :rules="usernameRule"
               v-model="username"
-              class="appearance-none relative block w-full px-3 py-2 border border-gray-200 placeholder-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm h-10"
+              class="flomo-input on-active"
               placeholder="手机号码/邮箱"
             />
             <ErrorMessage
@@ -77,7 +83,7 @@ const onSubmit = () => {
               autocomplete="current-password"
               :rules="passwordRule"
               v-model="password"
-              class="appearance-none relative block w-full px-4 py-2 border border-gray-200 placeholder-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm h-10"
+              class="flomo-input on-active"
               placeholder="密码"
             />
 
@@ -147,6 +153,12 @@ const onSubmit = () => {
   @apply absolute top-1/2 right-2 h-full w-8 -translate-y-1/2;
   svg {
     @apply w-4 h-4 absolute top-1/2 right-2 -translate-y-1/2;
+  }
+}
+.flomo-input {
+  @apply appearance-none relative block w-full px-3 py-2 border border-gray-200 placeholder-gray-300 text-gray-900 rounded-md sm:text-sm h-10;
+  &:on-active {
+    @apply focus:outline-white focus:ring-indigo-500 focus:border-indigo-500 focus:z-10;
   }
 }
 </style>

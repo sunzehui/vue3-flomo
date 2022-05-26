@@ -14,13 +14,13 @@ import DailyRecord from "../components/DailyRecord.vue";
 import Tag from "../components/Tag.vue";
 import { useRouter } from "vue-router";
 import { computed } from "@vue/reactivity";
-import { provide } from "vue";
+import { onMounted, provide } from "vue";
+import { useUserStore } from "@/store/user";
+import { ApiUserStatistic } from "@/api/user";
 
 const route = useRouter();
 
-const switchRoutes = (e) => {
-  console.log(e.target);
-};
+const userStore = useUserStore();
 
 const page = computed(() => {
   const thisPage = route.currentRoute.value.query.source || "default";
@@ -33,18 +33,27 @@ const filterArticle = (event) => {
 };
 const updateQuery = () => {};
 provide("updateQuery", updateQuery);
-defineExpose({
-  switchRoutes,
+onMounted(() => {
+  userStore.getStatisticInfo();
+  userStore.getUserInfo();
 });
+setTimeout(() => {
+  console.log(userStore.memo_count);
+  console.log(userStore.daily_grid);
+}, 2000);
 </script>
 
 <template>
   <div class="wrapper">
     <div class="left">
-      <UserTitle username="sunzehui" :isPro="true" />
-      <UserStatistical :memo="3" :tag="2" :day="3" />
+      <UserTitle :username="userStore.username" :isPro="true" />
+      <UserStatistical
+        :memo="userStore.memo_count.memoCount"
+        :tag="userStore.memo_count.tagCount"
+        :day="userStore.memo_count.day"
+      />
       <div class="checking">
-        <DailyRecord />
+        <DailyRecord :grid="userStore.daily_grid" />
       </div>
       <ul class="bar-list">
         <li :class="{ active: page === '/memo' }" @click="$router.push('memo')">
