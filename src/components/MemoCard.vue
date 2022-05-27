@@ -13,7 +13,6 @@ const reducerActicon = (event: Event) => {
   console.log(type);
 };
 const article = reactive(props.article);
-console.log({ article });
 </script>
 
 <template>

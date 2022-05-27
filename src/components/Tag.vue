@@ -1,5 +1,5 @@
 <template>
-  <span class="tag" @click="handleClick($event)">
+  <span @click.prevent="handleClick" :class="{ active: isClickMe, tag: true }">
     <svg
       class="sharp-icon"
       data-v-9eff3224=""
@@ -31,15 +31,33 @@
   </span>
 </template>
 <script setup lang="ts">
-import { inject } from "vue";
+import { inject, ref, watch } from "vue";
 import { ArrowRight } from "@element-plus/icons";
+import { useRoute, useRouter } from "vue-router";
 const props = defineProps<{
   link: string;
 }>();
 const updateQuery = inject("updateQuery", (...args) => {});
+const isClickMe = ref(false);
+const route = useRoute();
+watch(
+  () => route.query,
+  (newVal) => {
+    const { tag } = newVal;
+    if (tag == props.link) {
+      isClickMe.value = true;
+    } else {
+      isClickMe.value = false;
+    }
+  }
+);
+
 const handleClick = () => {
   updateQuery({
-    tag: props.link,
+    name: "memo",
+    query: {
+      tag: props.link,
+    },
   });
 };
 </script>
@@ -50,6 +68,9 @@ span.tag {
   align-items: center;
   cursor: pointer;
   user-select: none;
+  border-radius: 0.375rem;
+
+  padding-left: 0.5rem;
   .sharp-icon {
     display: inline-block;
     margin-right: 6px;
@@ -67,6 +88,10 @@ span.tag {
     background: #efefef;
     border-radius: 5px;
     color: #9d9d9d;
+  }
+  &.active {
+    background: #55bb8e;
+    color: white;
   }
 }
 </style>

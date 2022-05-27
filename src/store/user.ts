@@ -23,6 +23,7 @@ export const useUserStore = defineStore("user", {
         daily_grid: {},
         username: "浮墨用户",
       }),
+      a: 7,
     };
   },
   actions: {

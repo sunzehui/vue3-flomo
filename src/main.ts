@@ -1,19 +1,14 @@
 import { createApp } from "vue";
 import "./tailwind.css";
 import App from "./App.vue";
-import { routes } from "./routes.js";
+import { routes, router } from "./routes";
 import { createRouter, createWebHistory } from "vue-router";
 import applyMiddleware from "./middleware";
 import { createPinia } from "pinia";
 import "element-plus/es/components/message/style/css";
 const app = createApp(App);
 const pinia = createPinia();
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
-
+console.warn = () => {};
 applyMiddleware(router);
 
 app.use(pinia);

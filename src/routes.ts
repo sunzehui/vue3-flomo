@@ -1,12 +1,6 @@
+import { createRouter, createWebHistory } from "vue-router";
 import About from "./views/About.vue";
 import NotFound from "./views/NotFound.vue";
-
-/** @type {import('vue-router').RouterOptions['routes']} */
-// example of route level code-splitting
-// this generates a separate chunk (About.[hash].js) for this route
-// which is lazy-loaded when the route is visited.
-// component: () => import('./views/About.vue')
-
 export const routes = [
   // { path: "/", component: Home, meta: { title: "Home" } },
 
@@ -17,6 +11,7 @@ export const routes = [
       {
         path: "",
         meta: { title: "个人主页" },
+
         redirect: "/memo",
       },
       {
@@ -27,20 +22,24 @@ export const routes = [
       {
         path: "/memo",
         meta: { title: "个人主页" },
+        name: "memo",
         component: () => import("./views/Memo.vue"),
       },
       {
         path: "/wechat",
+        name: "wechat",
         meta: { title: "微信输入" },
         component: () => import("./views/Wechat.vue"),
       },
       {
         path: "/review",
+        name: "review",
         meta: { title: "每日回顾" },
         component: () => import("./views/Review.vue"),
       },
       {
         path: "/recycle",
+        name: "recycle",
         meta: { title: "回收站" },
         component: () => import("./views/Recycle.vue"),
       },
@@ -55,3 +54,7 @@ export const routes = [
 
   { path: "/:path(.*)", component: NotFound },
 ];
+export const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});

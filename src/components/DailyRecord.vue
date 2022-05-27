@@ -25,12 +25,10 @@ const createMonthArray = (start, end) => {
   const endDate = moment(end);
   const startDay = Number(startDate.format("DD"));
   let monthArray = [];
-  console.log(startDate, startDate.month());
 
   for (let i = startDate.month() + 1; i <= endDate.month() + 1; i++) {
     if (i == startDate.month() + 1) {
       const restDay = startDate.daysInMonth() - startDay;
-      console.log({ restDay });
 
       const _arr = [startDate.month() + 1];
       _arr.length = _.toInteger(restDay / 7);
@@ -41,7 +39,6 @@ const createMonthArray = (start, end) => {
       monthArray = monthArray.concat([i, "", "", ""]);
     }
   }
-  console.log(Array.from(monthArray));
 
   return reactive(monthArray);
 };
