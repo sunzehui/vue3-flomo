@@ -33,7 +33,7 @@ const createMonthArray = (start, end) => {
       console.log({ restDay });
 
       const _arr = [startDate.month() + 1];
-      _arr.length = restDay % 7;
+      _arr.length = _.toInteger(restDay / 7);
       monthArray = monthArray.concat(_arr);
     } else if (i == endDate.month() + 1) {
       monthArray = monthArray.concat([endDate.month() + 1, "", "", ""]);
@@ -125,9 +125,10 @@ onMounted(() => {
     </div>
   </div>
   <div class="month-title grid">
-    <span class="tag" v-for="tag in monthArray" :key="tag">{{
-      tag ? tag + "月" : ""
-    }}</span>
+    <template v-for="tag in monthArray" :key="tag">
+      <span class="tag">{{ tag ? tag + "月" : "" }}</span>
+    </template>
+    <span class="tag"></span>
   </div>
 </template>
 
