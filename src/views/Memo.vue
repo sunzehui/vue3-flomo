@@ -1,33 +1,24 @@
 <script lang="ts" setup>
 import { Refresh, Search } from "@element-plus/icons";
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import Editer from "../components/Editer.vue";
 import MemoCard from "../components/MemoCard.vue";
-const memoList = reactive([
-  {
-    id: "1",
-    tags: [
-      {
-        name: "日常",
-        id: "2",
-      },
-    ],
-    content: "写下所思所想...",
-    time: "2022-5-1",
-    link: "#",
-  },
-]);
+import MemoTitle from "@/components/MemoTitle.vue";
+import { useArticleStore } from "@/store/article";
+import { storeToRefs } from "pinia";
+
+const articleStore = useArticleStore();
+onMounted(() => {
+  articleStore.getArticleList();
+});
+
+const { articleList: memoList } = storeToRefs(articleStore);
 </script>
 
 <template>
   <div class="memo-view">
     <nav>
-      <span>
-        MEMO
-        <i>
-          <Refresh />
-        </i>
-      </span>
+      <MemoTitle />
       <div class="input-wrapper">
         <input type="text" />
         <i><Search /></i>
@@ -35,8 +26,13 @@ const memoList = reactive([
     </nav>
     <Editer :tags="[]" />
     <ul class="card-container">
-      <template v-for="memo of memoList" :key="memo.id">
+      <template v-for="(memo, index) of memoList" :key="memo.id">
         <MemoCard :article="memo" />
+        <MemoCard
+          v-if="index === memoList.length - 1"
+          :article="memo"
+          :isLast="true"
+        />
       </template>
     </ul>
   </div>
@@ -54,22 +50,7 @@ nav {
   display: flex;
   padding: 10px 0 10px 0;
   line-height: 40px;
-  span > label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #5f5f5f;
-  }
-  span {
-    flex: 1;
-    font-size: 18px;
-    font-weight: bold;
-    color: #5f5f5f;
-    @apply relative;
-    svg {
-      height: 14px;
-      width: 14px;
-    }
-  }
+  justify-content: space-between;
   .input-wrapper {
     position: relative;
     font-size: 14px;
@@ -102,7 +83,16 @@ nav {
     }
   }
 }
-
+.memo-view {
+  height: 100%;
+}
 .card-container {
+  overflow-y: scroll;
+  height: 100%;
+  padding-bottom: 300px;
+  //谷歌适用
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 </style>

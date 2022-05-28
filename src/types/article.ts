@@ -14,6 +14,5 @@ export interface Article {
   id: string;
   tags: tagType[];
   content: string;
-  time: string;
-  link: string;
+  updateTime: string;
 }
