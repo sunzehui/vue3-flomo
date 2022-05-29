@@ -24,7 +24,7 @@ const { articleList: memoList } = storeToRefs(articleStore);
         <i><Search /></i>
       </div>
     </nav>
-    <Editer :tags="[]" />
+    <Editer :tags="tagList" />
     <ul class="card-container">
       <template v-for="(memo, index) of memoList" :key="memo.id">
         <MemoCard :article="memo" />

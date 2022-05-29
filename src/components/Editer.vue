@@ -5,6 +5,8 @@ import { ElSelect, ElOption } from "element-plus";
 import { isEmpty } from "lodash-es";
 import "element-plus/es/components/Select/style/css";
 import type { NewAticle, tagType } from "../types/article";
+import { useEditor } from "@/composable/useEditor";
+import { useSuggestion } from "@/composable/useSuggestion";
 const props = defineProps({
   tags: {
     type: Array as PropType<tagType[]>,
@@ -12,181 +14,19 @@ const props = defineProps({
   },
 });
 
-const computeSelectPos = (input: HTMLTextAreaElement) => {
-  // 初始位置
-  const {
-    offsetLeft: inputX,
-    offsetTop: inputY,
-    selectionEnd: selectionPoint,
-  } = input;
-  // 生成看不见的div+sapn
-
-  const _div = document.createElement("div");
-  const copyStyle = window.getComputedStyle(input);
-
-  for (const item of Array.from(copyStyle)) {
-    _div.style.setProperty(item, copyStyle.getPropertyValue(item));
-  }
-  _div.style.position = "fixed";
-  _div.style.visibility = "hidden";
-  _div.style.whiteSpace = "pre-wrap";
-
-  _div.innerHTML = input.value.slice(0, selectionPoint);
-  const _span = document.createElement("span");
-  _span.innerHTML = input.value.slice(selectionPoint);
-  _div.appendChild(_span);
-  document.body.appendChild(_div);
-
-  // 获取span位置
-  const spanX = _span.offsetLeft;
-  const spanY = _span.offsetTop;
-  document.body.removeChild(_div);
-  // 最终位置=初始位置+span位置
-  return {
-    x: inputX + spanX,
-    y: inputY + spanY,
-  };
-};
-
 const suggestionRef = ref(null);
-const isSuggestionShow = ref(false);
-// 控制联想框展示，不传hidden默认切换
-const toggleSuggestionHidden = (hidden = null) => {
-  if (hidden === null) {
-    suggestionRef.value.classList.toggle("hidden");
-    isSuggestionShow.value = !isSuggestionShow.value;
-  } else if (hidden === true) {
-    suggestionRef.value.classList.add("hidden");
-    isSuggestionShow.value = false;
-  } else {
-    suggestionRef.value.classList.remove("hidden");
-    isSuggestionShow.value = true;
-  }
-};
-const handleSuggestionHidden = (hidden = null) => {
-  const { x, y } = computeSelectPos(textareaRef.value);
-  // 防止挡字，加点偏移
-  const offsetLeft = x + 15;
-  const offsetTop = y + 22;
-  suggestionRef.value.style.top = offsetTop + "px";
-  suggestionRef.value.style.left = offsetLeft + "px";
 
-  toggleSuggestionHidden(hidden);
-  return false;
-};
-const handleIconClick = (event: Event) => {
-  event.preventDefault();
-  event.stopPropagation();
-
-  insertContent("#");
-  if (props.tags.length === 0) {
-    return false;
-  }
-  handleSuggestionHidden(false);
-};
-
-const suggestionList = ref<tagType[]>(props.tags);
-const textareaContent = ref("");
+// 监听onkeydown
 const textareaRef = ref(null);
 
-// 设置候选项active
-const setItemActive = (isNext: number = 1) => {
-  const list = suggestionList.value;
-  const reset = () => {
-    list.forEach((item) => {
-      item.active = false;
-    });
-  };
-  if (isNext === 1) {
-    // 向上
-    const currentIndex = list.findIndex((item) => item.active);
-    reset();
-    const target = currentIndex + 1 < list.length ? currentIndex + 1 : 0;
-    list[target].active = true;
-  } else {
-    // 向下
-    const currentIndex = list.findIndex((item) => item.active);
-    reset();
-    const target = currentIndex - 1 > 0 ? currentIndex - 1 : 0;
-    list[target].active = true;
-  }
-};
+const {
+  textareaContent,
+  shouldSuggestionShow,
+  handleIconClick,
+  itemClicked,
+  suggestionList,
+} = useSuggestion(suggestionRef, textareaRef);
 
-document.onclick = () => {
-  toggleSuggestionHidden(true);
-};
-watch(textareaContent, () => {
-  textareaRef.value.style.height = "auto";
-  textareaRef.value.style.height = textareaRef.value.scrollHeight + "px";
-  // textareaContent.value = textareaRef.value.value;
-});
-const onKeyDown = (event: KeyboardEvent) => {
-  const key = event.key;
-  console.log(key);
-
-  // 当输入#时开启联想菜单
-  if ((key === "#" || key === "#") && props.tags.length) {
-    handleSuggestionHidden(false);
-    return false;
-  }
-  if (event.key == "Enter" && event.ctrlKey) {
-    saveArticle();
-  }
-  // 仅当联想菜单展示时
-  if (isSuggestionShow.value) {
-    // 删除键
-    if (key === "Backspace") {
-      toggleSuggestionHidden(true);
-      return;
-    }
-    // 当输入“上，下“方向键时切换active标签
-    event.stopPropagation();
-    event.preventDefault();
-
-    if (key === "ArrowUp") {
-      setItemActive(-1);
-    } else if (key === "ArrowDown") {
-      setItemActive(1);
-    }
-    // 敲空格隐藏
-    if (key === " ") {
-      toggleSuggestionHidden(true);
-    }
-    // 敲回车选中
-    if (key === "Enter") {
-      const activeItem = suggestionList.value.find((item) => item.active);
-      insertContent(activeItem.name + " ");
-      toggleSuggestionHidden(true);
-    }
-  }
-};
-
-/**
- * 插入内容
- *  */
-
-const insertContent = (content: string) => {
-  const { selectionEnd: selectionEnd } = textareaRef.value;
-  const memoSelectionIndex = selectionEnd;
-  const currentContent = textareaContent.value;
-  const placement =
-    currentContent.slice(0, selectionEnd) +
-    content +
-    currentContent.slice(selectionEnd);
-  textareaContent.value = placement;
-  // 插入完成后，设置光标位置
-  textareaRef.value.blur();
-  nextTick(() => {
-    textareaRef.value.selectionEnd = memoSelectionIndex + content.length;
-    textareaRef.value.focus();
-  });
-};
-
-const itemClicked = ($event: Event) => {
-  const target = ($event.target as HTMLSpanElement).innerText;
-  // 将联想框中的内容添加到textarea中
-  insertContent(target + " ");
-};
 const saveArticle = () => {
   const tags = extractTags(textareaContent.value);
   const ArticleVO = {
@@ -214,6 +54,9 @@ const handleSave = ($event: Event) => {
   saveArticle();
 };
 
+watch(textareaContent, () => {
+  // console.log("textareaContent:", textareaContent.value);
+});
 /**
  *
  *  提交后，提取文章出现的现有标签
@@ -225,23 +68,26 @@ const extractTags = (content: string) => {
   return tags;
 };
 const loading = ref(false);
+watch(shouldSuggestionShow, (shouldSuggestionShow) => {
+  console.log("shouldSuggestionShow:", shouldSuggestionShow);
+});
 </script>
 
 <template>
   <div class="input-container">
     <textarea
+      v-model="textareaContent"
       name="text-input"
       ref="textareaRef"
-      v-model="textareaContent"
-      @keydown="onKeyDown"
     ></textarea>
     <div
-      class="suggestion hidden"
+      class="suggestion"
       ref="suggestionRef"
+      v-show="shouldSuggestionShow"
       @click="itemClicked($event)"
     >
       <template v-for="item of suggestionList">
-        <span :class="{ active: item.active }">{{ item.name }}</span>
+        <span :class="{ active: item.active }">{{ item.content }}</span>
       </template>
     </div>
     <div class="bar">
@@ -261,7 +107,6 @@ const loading = ref(false);
 
 <style lang="scss" scoped>
 .input-container {
-  overflow: hidden;
   border: 2px solid #e8e8e8;
   border-radius: 8px;
   padding-top: 20px;
@@ -278,7 +123,13 @@ const loading = ref(false);
     min-height: 42px;
     max-height: 50vh;
     width: 100%;
-    overflow-y: hidden;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: transparent !important;
+    }
     min-height: 1rem;
     &:focus {
       outline: 0;
@@ -288,6 +139,7 @@ const loading = ref(false);
   .suggestion {
     position: absolute;
     background-color: black;
+    max-width: 350px;
     padding: 5px;
     z-index: 99;
     border-radius: 5px;
@@ -300,6 +152,7 @@ const loading = ref(false);
       color: white;
       padding: 3px 20px;
       margin-bottom: 4px;
+      white-space: nowrap;
       border-radius: 6px;
       cursor: pointer;
       user-select: none;
