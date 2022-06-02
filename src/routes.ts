@@ -48,8 +48,14 @@ export const routes = [
   {
     path: "/login",
     name: "Login",
-    meta: { title: "登录" },
+    meta: { title: "登录", publicRoute: true },
     component: () => import("./views/Login.vue"),
+  },
+  {
+    path: "/logup",
+    name: "Logup",
+    meta: { title: "注册", publicRoute: true },
+    component: () => import("./views/Logup.vue"),
   },
 
   { path: "/:path(.*)", component: NotFound },

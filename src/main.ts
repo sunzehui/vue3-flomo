@@ -8,7 +8,7 @@ import { createPinia } from "pinia";
 import "element-plus/es/components/message/style/css";
 const app = createApp(App);
 const pinia = createPinia();
-console.warn = () => {};
+// console.warn = () => {};
 applyMiddleware(router);
 
 app.use(pinia);

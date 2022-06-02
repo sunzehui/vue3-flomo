@@ -184,6 +184,11 @@
   dependencies:
     vue "*"
 
+"@vee-validate/rules@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.npmjs.org/@vee-validate/rules/-/rules-4.5.11.tgz#0d300459c612938aa74ae522b7670a40317e8571"
+  integrity sha512-aGwxjr/5/w8LFVObPB6UrqYt0oRlHHFw8/nxZHowY4LP62GWlAi+mAp1fb15Paav/c9rgV4iiqsNYarS1zpNQw==
+
 "@vitejs/plugin-vue@^1.6.0":
   version "1.6.0"
   resolved "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-1.6.0.tgz"
@@ -384,15 +389,36 @@
     "@vueuse/shared" "8.4.2"
     vue-demi "*"
 
+"@vueuse/core@^8.6.0":
+  version "8.6.0"
+  resolved "https://registry.npmjs.org/@vueuse/core/-/core-8.6.0.tgz#a8f80363cc63d17382423f16beae57696f376e67"
+  integrity sha512-VirzExCm/N+QdrEWT7J4uSrvJ5hquKIAU9alQ37kUvIJk9XxCLxmfRnmekYc1kz2+6BnoyuKYXVmrMV351CB4w==
+  dependencies:
+    "@vueuse/metadata" "8.6.0"
+    "@vueuse/shared" "8.6.0"
+    vue-demi "*"
+
 "@vueuse/metadata@8.4.2":
   version "8.4.2"
   resolved "https://registry.npmjs.org/@vueuse/metadata/-/metadata-8.4.2.tgz"
   integrity sha512-2BIj++7P0/I5dfMsEe8q7Kw0HqVAjVcyNOd9+G22/ILUC9TVLTeYOuJ1kwa1Gpr+0LWKHc6GqHiLWNL33+exoQ==
 
+"@vueuse/metadata@8.6.0":
+  version "8.6.0"
+  resolved "https://registry.npmjs.org/@vueuse/metadata/-/metadata-8.6.0.tgz#34771443a72ee891ae001a70aa05dd9a1d799372"
+  integrity sha512-F+CKPvaExsm7QgRr8y+ZNJFwXasn89rs5wth/HeX9lJ1q8XEt+HJ16Q5Sxh4rfG5YSKXrStveVge8TKvPjMjFA==
+
 "@vueuse/shared@8.4.2":
   version "8.4.2"
   resolved "https://registry.npmjs.org/@vueuse/shared/-/shared-8.4.2.tgz"
   integrity sha512-hILXMEjL8YQhj1LHN/HZ49UThyfk8irTjhele2nW+L3N55ElFUBGB/f4w0rg8EW+/suhqv7kJJPTZzvHCqxlIw==
+  dependencies:
+    vue-demi "*"
+
+"@vueuse/shared@8.6.0":
+  version "8.6.0"
+  resolved "https://registry.npmjs.org/@vueuse/shared/-/shared-8.6.0.tgz#63dad9fc4b73a7fccbe5d6b97adeacf73d4fec41"
+  integrity sha512-Y/IVywZo7IfEoSSEtCYpkVEmPV7pU35mEIxV7PbD/D3ly18B3mEsBaPbtDkNM/QP3zAZ5mn4nEkOfddX4uwuIA==
   dependencies:
     vue-demi "*"
 

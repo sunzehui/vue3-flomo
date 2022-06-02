@@ -20,3 +20,13 @@ export function ApiUserInfo() {
     method: "get",
   });
 }
+export function ApiUserRegister(data) {
+  return axios<{
+    status: true;
+    message: "ok";
+  }>({
+    url: "/api/user/register",
+    method: "post",
+    data,
+  });
+}
