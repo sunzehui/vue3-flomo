@@ -1,6 +1,12 @@
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import { UserConfigExport, ConfigEnv, loadEnv } from "vite";
+
+import {
+  createStyleImportPlugin,
+  ElementPlusResolve,
+} from "vite-plugin-style-import";
+
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   const root = process.cwd();
 
@@ -9,7 +15,12 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     console.log(env, mode);
   }, 2000);
   return {
-    plugins: [vue()],
+    plugins: [
+      vue(),
+      createStyleImportPlugin({
+        resolves: [ElementPlusResolve()],
+      }),
+    ],
     resolve: {
       alias: {
         "@": resolve(__dirname, "src"),
