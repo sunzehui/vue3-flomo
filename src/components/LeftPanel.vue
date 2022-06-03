@@ -13,27 +13,22 @@ import {
 import Tag from "../components/Tag.vue";
 
 import DailyRecord from "../components/DailyRecord.vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { computed, reactive } from "@vue/reactivity";
-import { onMounted, provide } from "vue";
+import { onMounted, provide, watch } from "vue";
 import { useUserStore } from "@/store/user";
 import { useArticleStore } from "@/store/article";
 const userStore = useUserStore();
 const articleStore = useArticleStore();
 const router = useRouter();
-
+const updateQuery = (route) => {
+  router.push(route);
+};
 const page = computed(() => {
   const thisPage = router.currentRoute.value.query.source || "default";
   return router.currentRoute.value.path;
 });
 
-const filterArticle = (event) => {
-  console.log(event);
-};
-const updateQuery = (route) => {
-  router.push(route);
-};
-provide("updateQuery", updateQuery);
 onMounted(() => {
   userStore.getStatisticInfo();
   userStore.getUserInfo();
@@ -41,6 +36,14 @@ onMounted(() => {
 });
 const topicTag = computed(() =>
   articleStore.tagList.filter((item) => item.is_topic)
+);
+const tagList = computed(() => articleStore.tagList);
+const route = useRoute();
+watch(
+  () => route.query,
+  (newVal) => {
+    articleStore.getTagList();
+  }
 );
 </script>
 
@@ -91,7 +94,7 @@ const topicTag = computed(() =>
       <h4 class="tag-title">置顶标签</h4>
       <ul class="tag-list">
         <li>
-          <Tag v-for="tag in topicTag" :key="tag.id" :link="tag.id">{{
+          <Tag v-for="tag in topicTag" :key="tag.id" :link="tag.content">{{
             tag.content
           }}</Tag>
         </li>
@@ -101,7 +104,7 @@ const topicTag = computed(() =>
     <div class="normal-tag">
       <h4 class="tag-title">全部标签</h4>
       <ul class="tag-list">
-        <Tag v-for="tag in articleStore.tagList" :key="tag.id" :link="tag.id">{{
+        <Tag v-for="tag in tagList" :key="tag.id" :link="tag.content">{{
           tag.content
         }}</Tag>
       </ul>

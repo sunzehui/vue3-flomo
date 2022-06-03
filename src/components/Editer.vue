@@ -7,6 +7,7 @@ import "element-plus/es/components/Select/style/css";
 import type { NewAticle, tagType } from "../types/article";
 import { useEditor } from "@/composable/useEditor";
 import { useSuggestion } from "@/composable/useSuggestion";
+import { useArticleStore } from "@/store/article";
 const props = defineProps({
   tags: {
     type: Array as PropType<tagType[]>,
@@ -33,15 +34,12 @@ const saveArticle = () => {
     tags,
     content: textareaContent.value,
   };
-  const save = (v: typeof ArticleVO) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(v);
-      }, 1000);
-    });
-  };
+  console.log(ArticleVO);
+  const save = useArticleStore().save;
   save(ArticleVO).then((result) => {
     loading.value = false;
+    console.log(result);
+    textareaContent.value = "";
   });
 };
 
@@ -64,7 +62,10 @@ watch(textareaContent, () => {
  * ，做成标签列表,展示 日后过滤
  */
 const extractTags = (content: string) => {
-  const tags = Array.from(content.match(/#[^\s#]+/g) || []);
+  // 提取出并消掉开头#
+  const tags = Array.from(content.match(/#[^\s(?<!#)]+/g) || []).map((tag) =>
+    tag.slice(1)
+  );
   return tags;
 };
 const loading = ref(false);
@@ -94,7 +95,7 @@ watch(shouldSuggestionShow, (shouldSuggestionShow) => {
       <span class="tag-icon" @click="handleIconClick($event)"> # </span>
       <button
         class="save"
-        @click="handleSave($event)"
+        @click.prevent="handleSave($event)"
         :disabled="isEmpty(textareaContent)"
       >
         发送
@@ -179,6 +180,7 @@ watch(shouldSuggestionShow, (shouldSuggestionShow) => {
     position: absolute;
     top: 0;
     left: 0;
+    border-radius: 8px;
     align-items: center;
     justify-content: center;
   }

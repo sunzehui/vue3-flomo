@@ -8,15 +8,33 @@ export function ApiTagList() {
     method: "get",
   });
 }
-export function ApiArticleList() {
+export function ApiTagRename(oldTagName, name: string) {
+  return axios<IResponse>({
+    url: "/api/tag/" + oldTagName,
+    method: "patch",
+    data: {
+      content: name,
+    },
+  });
+}
+export function ApiList(data) {
   return axios<Article[]>({
     url: "/api/article",
     method: "get",
+    params: data,
   });
 }
-export function ApiDeleteArticle(id: number) {
+export function ApiDelete(id: number) {
   return axios<IResponse<any>>({
     url: "/api/article/" + id,
     method: "delete",
+  });
+}
+
+export function ApiSave(data: Partial<Article>) {
+  return axios<IResponse<any>>({
+    url: "/api/article",
+    method: "post",
+    data,
   });
 }

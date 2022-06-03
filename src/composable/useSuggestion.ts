@@ -30,7 +30,6 @@ export function useSuggestion(
     let offsetLeft: pxNum = x + offsetX + "px";
     let offsetTop: pxNum = y + offsetY + "px";
     // 右边如果放不下联想框则放到左边
-    console.log({ after: px2number(offsetTop) });
 
     if (containerWidth - px2number(offsetLeft) < 150) {
       offsetLeft = `calc( ${offsetLeft} + -50% )`;
@@ -38,7 +37,6 @@ export function useSuggestion(
     if (px2number(offsetTop) > containerHeight) {
       offsetTop = containerHeight + offsetY + "px";
     }
-    console.log(offsetLeft, offsetTop);
     suggestionRef.value.style.top = "" + offsetTop;
     suggestionRef.value.style.left = "" + offsetLeft;
     return false;
@@ -75,8 +73,12 @@ export function useSuggestion(
     // 当输入#时开启联想菜单
     // console.log("key:", event);
     // console.log("code:", key.charCodeAt(0));
-
-    if (key === "#" && unref(tagList).length) {
+    if (unref(tagList).length === 0) {
+      return;
+    }
+    // console.log(key);
+    // textareaContent.value += key;
+    if (key === "#") {
       shouldSuggestionShow.value = true;
       return false;
     }
@@ -91,10 +93,12 @@ export function useSuggestion(
         shouldSuggestionShow.value = false;
         return;
       }
-      // 当输入“上，下“方向键时切换active标签
-      event.stopPropagation();
-      event.preventDefault();
 
+      if (["ArrowUp", "Enter", " "].includes(key)) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      // 当输入“上，下“方向键时切换active标签
       if (key === "ArrowUp") {
         setItemActive(-1);
       } else if (key === "ArrowDown") {
@@ -111,10 +115,10 @@ export function useSuggestion(
     }
   };
   useEventListener(_textareaRef, "keydown", onKeyDownEvent);
-  useEventListener(_textareaRef, "input", () => {
+  useEventListener(_textareaRef, "input", (e) => {
     const lastIsSharp =
       textareaContent.value.charAt(textareaContent.value.length - 1) === "#";
-    if (lastIsSharp) {
+    if (lastIsSharp && unref(tagList).length) {
       shouldSuggestionShow.value = true;
     }
   });

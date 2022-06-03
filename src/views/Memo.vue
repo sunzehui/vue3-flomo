@@ -1,18 +1,31 @@
 <script lang="ts" setup>
 import { Refresh, Search } from "@element-plus/icons";
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, watch } from "vue";
 import Editer from "../components/Editer.vue";
 import MemoCard from "../components/MemoCard.vue";
 import MemoTitle from "@/components/MemoTitle.vue";
 import { useArticleStore } from "@/store/article";
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
+import { log } from "console";
 
 const articleStore = useArticleStore();
-onMounted(() => {
-  articleStore.getArticleList();
-});
 
-const { articleList: memoList } = storeToRefs(articleStore);
+const { articleList } = storeToRefs(articleStore);
+
+const route = useRoute();
+watch(
+  () => route.query,
+  (newVal) => {
+    const { tag } = newVal;
+    if (tag) {
+      articleStore.getArticleList({ tag } as { tag: string });
+    } else {
+      articleStore.getArticleList();
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -24,15 +37,10 @@ const { articleList: memoList } = storeToRefs(articleStore);
         <i><Search /></i>
       </div>
     </nav>
-    <Editer :tags="tagList" />
+    <Editer />
     <ul class="card-container">
-      <template v-for="(memo, index) of memoList" :key="memo.id">
-        <MemoCard :article="memo" />
-        <MemoCard
-          v-if="index === memoList.length - 1"
-          :article="memo"
-          :isLast="true"
-        />
+      <template v-for="(memo, index) of articleList" :key="memo.id">
+        <MemoCard :article="memo" :isLast="articleList.length - 1 === index" />
       </template>
     </ul>
   </div>

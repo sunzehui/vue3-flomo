@@ -10,6 +10,7 @@ import { useUserStore } from "@/store/user";
 import { useRouter } from "vue-router";
 import { ApiUserLogin, ApiUserRegister } from "@/api/user";
 import { ElMessage } from "element-plus";
+import { router } from "@/routes";
 
 const username = ref("sunzehui");
 const password = ref("sunzehui");
@@ -50,15 +51,11 @@ defineRule("confirmed", (value, [other]) => {
   return true;
 });
 
-const router = useRouter();
-const userStore = useUserStore();
-
 const onSubmit = async () => {
-  const user = ({
+  const user = {
     username: username.value,
     password: password.value,
-  });
-  console.log(user);
+  };
 
   if (user) {
     ApiUserRegister({
@@ -67,6 +64,7 @@ const onSubmit = async () => {
     }).then((res) => {
       if (res.code === 0) {
         ElMessage.success("注册成功！");
+        router.push("/login");
       }
     });
   }

@@ -116,8 +116,8 @@ onMounted(() => {
         v-for="(day, j) in week"
         :key="j"
       >
-        <el-button class="day" :class="{ [colorSwitch(day.memo_count)]: true }">
-        </el-button>
+        <span class="day" :class="{ [colorSwitch(day.memo_count)]: true }">
+        </span>
       </el-tooltip>
     </div>
   </div>

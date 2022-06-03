@@ -1,3 +1,39 @@
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import { ArrowRight } from "@element-plus/icons";
+import { useRoute, useRouter } from "vue-router";
+import { router } from "@/routes";
+const props = defineProps<{
+  link: string;
+}>();
+const isClickMe = ref(false);
+const route = useRoute();
+watch(
+  () => [route.query, props.link],
+  ([newRoute, newLink]) => {
+    // @ts-ignore
+    const { tag } = newRoute;
+
+    if (tag == props.link) {
+      isClickMe.value = true;
+    } else {
+      isClickMe.value = false;
+    }
+  },
+  { immediate: true }
+);
+const updateQuery = (route) => {
+  router.push(route);
+};
+const handleClick = () => {
+  updateQuery({
+    name: "memo",
+    query: {
+      tag: props.link,
+    },
+  });
+};
+</script>
 <template>
   <span @click.prevent="handleClick" :class="{ active: isClickMe, tag: true }">
     <svg
@@ -30,37 +66,7 @@
     <ArrowRight class="right-arrow-icon" style="height: 1em; width: 1em" />
   </span>
 </template>
-<script setup lang="ts">
-import { inject, ref, watch } from "vue";
-import { ArrowRight } from "@element-plus/icons";
-import { useRoute, useRouter } from "vue-router";
-const props = defineProps<{
-  link: string;
-}>();
-const updateQuery = inject("updateQuery", (...args) => {});
-const isClickMe = ref(false);
-const route = useRoute();
-watch(
-  () => route.query,
-  (newVal) => {
-    const { tag } = newVal;
-    if (tag == props.link) {
-      isClickMe.value = true;
-    } else {
-      isClickMe.value = false;
-    }
-  }
-);
 
-const handleClick = () => {
-  updateQuery({
-    name: "memo",
-    query: {
-      tag: props.link,
-    },
-  });
-};
-</script>
 <style lang="scss" scoped>
 span.tag {
   line-height: 40px;

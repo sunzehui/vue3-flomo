@@ -38,7 +38,6 @@ const onSubmit = async () => {
     username: username.value,
     password: password.value,
   });
-  console.log(user);
 
   if (user) {
     userStore.setToken(user.data.token);
@@ -139,8 +138,11 @@ const onSubmit = async () => {
             登录
           </button>
         </div>
-        <div class="w-full text-center">
-          <a href="/reset" class="mt-4 text-blue-400"> 忘记密码 </a>
+        <div class="w-full flex justify-center gap-x-5">
+          <router-link to="/logup" class="text-blue-400"> 注册 </router-link>
+          <router-link to="/reset" class="text-blue-400">
+            忘记密码
+          </router-link>
         </div>
       </VForm>
     </div>

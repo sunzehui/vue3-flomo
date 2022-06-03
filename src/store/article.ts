@@ -1,7 +1,12 @@
 import { ElMessage } from "element-plus";
 import { Article, tagType } from "./../types/article";
 import { defineStore } from "pinia";
-import { ApiArticleList, ApiDeleteArticle, ApiTagList } from "@/api/article";
+import {
+  ApiList as ApiArticleList,
+  ApiDelete as ApiDeleteArticle,
+  ApiTagList,
+  ApiSave,
+} from "@/api/article";
 
 export const useArticleStore = defineStore("article", {
   state: () => {
@@ -11,15 +16,16 @@ export const useArticleStore = defineStore("article", {
     };
   },
   actions: {
+    resetList() {
+      Promise.all([this.getArticleList(), this.getTagList()]);
+    },
     getTagList() {
       ApiTagList().then((res) => {
         this.tagList = res.data;
-        console.log("tag", this.tagList);
-        console.log(res.data);
       });
     },
-    getArticleList() {
-      ApiArticleList().then((res) => {
+    getArticleList({tag} ={tag:''}) {
+      ApiArticleList({tag}).then((res) => {
         this.articleList = res.data;
       });
     },
@@ -27,10 +33,22 @@ export const useArticleStore = defineStore("article", {
       ApiDeleteArticle(id).then((res) => {
         if (res.code === 0) {
           ElMessage.success("删除成功");
-          this.getArticleList();
         } else if (res.code === -1) {
           ElMessage.success("删除失败，请稍后再试");
         }
+        this.resetList();
+      });
+    },
+    save(data) {
+      return ApiSave(data).then((res) => {
+        if (res.code === 0) {
+          ElMessage.success("保存成功");
+          this.getArticleList();
+        } else if (res.code === -1) {
+          ElMessage.success("保存失败，请稍后再试");
+        }
+        this.resetList();
+        return Promise.resolve(res);
       });
     },
   },

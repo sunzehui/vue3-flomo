@@ -1,11 +1,21 @@
 <script lang="ts" setup>
-import { PropType, reactive } from "vue";
+import {
+  computed,
+  PropType,
+  reactive,
+  toRef,
+  toRefs,
+  watch,
+  watchEffect,
+} from "vue";
 import { Article } from "../types/article";
 import { ElPopover, ElButton } from "element-plus";
 import "element-plus/es/components/popover/style/css";
 
 import "element-plus/es/components/button/style/css";
 import { useArticleStore } from "@/store/article";
+import { useRouter } from "vue-router";
+import * as moment from "moment";
 
 const props = defineProps({
   article: {
@@ -29,14 +39,33 @@ const reducerActicon = (event: Event) => {
       break;
   }
 };
+const router = useRouter();
+const tagClick = (tag) => {
+  router.push({
+    name: "memo",
+    query: {
+      tag,
+    },
+  });
+};
+let { article } = toRefs(props);
+const updateTime = computed(() => {
+  moment.locale(navigator.language);
 
-const article = reactive(props.article);
+  const momentTime = moment.utc(article.value.updateTime).local();
+
+  if (momentTime.diff(moment(), "day") < 0) {
+    return momentTime.format("YYYY-MM-DD HH:mm:ss");
+  }
+
+  return momentTime.fromNow();
+});
 </script>
 
 <template>
   <li class="card">
     <div class="header">
-      <span class="time-text">{{ article.updateTime }}</span>
+      <span class="time-text">{{ updateTime }}</span>
       <div class="more">
         <el-popover
           :placement="props.isLast ? 'top' : 'bottom'"
@@ -73,7 +102,13 @@ const article = reactive(props.article);
     </div>
     <div class="footer">
       <ul class="tag-view">
-        <li v-for="item of article.tags" :key="item.id">{{ item.content }}</li>
+        <li
+          v-for="item of article.tags"
+          :key="item.content"
+          @click.prevent="tagClick(item.content)"
+        >
+          #{{ item.content }}
+        </li>
       </ul>
     </div>
   </li>
