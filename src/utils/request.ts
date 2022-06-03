@@ -4,7 +4,7 @@ import { Resp } from "@/types/api";
 import Axios, { AxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
 import { router } from "../routes";
-const baseURL = import.meta.env.VITE_APP_URL as string | undefined;
+const baseURL = import.meta.env.VITE_BASE_URL as string | undefined;
 
 const axios = Axios.create({
   baseURL,

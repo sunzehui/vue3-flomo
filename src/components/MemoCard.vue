@@ -9,10 +9,8 @@ import {
   watchEffect,
 } from "vue";
 import { Article } from "../types/article";
-import { ElPopover, ElButton } from "element-plus";
-import "element-plus/es/components/popover/style/css";
+import { ElPopover } from "element-plus";
 
-import "element-plus/es/components/button/style/css";
 import { useArticleStore } from "@/store/article";
 import { useRouter } from "vue-router";
 import * as moment from "moment";
