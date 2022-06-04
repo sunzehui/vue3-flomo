@@ -13,7 +13,7 @@ import { ElPopover } from "element-plus";
 
 import { useArticleStore } from "@/store/article";
 import { useRouter } from "vue-router";
-import * as moment from "moment";
+import moment from "moment";
 
 const props = defineProps({
   article: {
@@ -71,7 +71,6 @@ const updateTime = computed(() => {
         >
           <template #reference>
             <svg
-              data-v-38588c71=""
               width="16px"
               height="16px"
               viewBox="0 0 16 16"
@@ -79,7 +78,6 @@ const updateTime = computed(() => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                data-v-38588c71=""
                 fill-rule="evenodd"
                 d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
               ></path>
@@ -95,9 +93,10 @@ const updateTime = computed(() => {
         </el-popover>
       </div>
     </div>
-    <div class="content">
-      {{ article.content }}
-    </div>
+    <div
+      v-html="article.content.replace(/[\r\n]/g, '<br />')"
+      class="content"
+    ></div>
     <div class="footer">
       <ul class="tag-view">
         <li
@@ -114,7 +113,6 @@ const updateTime = computed(() => {
 
 <style scoped lang="scss">
 li.card {
-  position: relative;
   background: #ffffff;
   border-radius: 6px;
   padding: 15px;
@@ -154,7 +152,6 @@ li.card {
   .content {
     color: #323232;
     font-size: 14px;
-    position: relative;
     overflow: hidden;
   }
   .more ul {

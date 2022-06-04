@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ApiTagRename } from "@/api/article";
+import { ApiTagRename, ApiTagUpdate } from "@/api/article";
+import { useArticleStore } from "@/store/article";
 import { Refresh, Search, Check, Edit } from "@element-plus/icons";
 import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
@@ -22,9 +23,10 @@ const goRouter = (query = void 0) => {
 };
 const [isTagEdit, toggeEdit] = useToggle(false);
 const rename = () => {
-  ApiTagRename(tagName.value, bindTagName.value).then((res) => {
-    ElMessage.success("修改成功");
+  const articleStore = useArticleStore();
+  articleStore.tagRename(tagName.value, bindTagName.value).then((res) => {
     isTagEdit.value = false;
+    ElMessage.success("修改成功");
     goRouter({
       tag: bindTagName.value,
     });

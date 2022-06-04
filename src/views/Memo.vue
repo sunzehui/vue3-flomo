@@ -7,7 +7,6 @@ import MemoTitle from "@/components/MemoTitle.vue";
 import { useArticleStore } from "@/store/article";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
-import { log } from "console";
 
 const articleStore = useArticleStore();
 
@@ -37,7 +36,9 @@ watch(
         <i><Search /></i>
       </div>
     </nav>
-    <Editer />
+    <div class="input-container">
+      <Editer />
+    </div>
     <ul class="card-container">
       <template v-for="(memo, index) of articleList" :key="memo.id">
         <MemoCard :article="memo" :isLast="articleList.length - 1 === index" />
@@ -91,13 +92,20 @@ nav {
     }
   }
 }
+.input-container {
+  padding-left: 20px;
+}
 .memo-view {
   height: 100%;
+  nav {
+    padding-left: 20px;
+  }
 }
 .card-container {
   overflow-y: scroll;
   height: 100%;
   padding-bottom: 300px;
+  padding-left: 20px;
   //谷歌适用
   &::-webkit-scrollbar {
     display: none;

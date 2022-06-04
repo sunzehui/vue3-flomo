@@ -5,8 +5,8 @@ import { useUserStore } from "@/store/user";
 import { useRouter } from "vue-router";
 import { ApiUserLogin } from "@/api/user";
 
-const username = ref("sunzehui");
-const password = ref("sunzehui");
+const username = ref("");
+const password = ref("");
 
 const eyeShow = ref(false);
 const usernameRule = (username) => {

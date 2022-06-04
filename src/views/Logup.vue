@@ -12,8 +12,8 @@ import { ApiUserLogin, ApiUserRegister } from "@/api/user";
 import { ElMessage } from "element-plus";
 import { router } from "@/routes";
 
-const username = ref("sunzehui");
-const password = ref("sunzehui");
+const username = ref("");
+const password = ref("");
 
 defineRule("required", (value: string) => {
   const isEmpty = value?.length;

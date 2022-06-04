@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ElTooltip } from "element-plus";
 import "element-plus/es/components/Tooltip/style/css";
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, toRefs, unref, watch, watchEffect } from "vue";
 
 // moment 拿日期排列12 * 7次 从本周最后一天开始排
 // 排到最后 reverse
@@ -10,7 +10,7 @@ import { onMounted, reactive } from "vue";
 
 import * as _ from "lodash";
 
-import * as Moment from "moment";
+import Moment from "moment";
 import { extendMoment } from "moment-range";
 
 const moment = extendMoment(Moment);
@@ -89,24 +89,29 @@ const props = defineProps<{
 
 // 从服务端拉取记录，填充到表格
 const updateRocordCount = (dataGrid: WeekRecord[][]) => {
-  const memoCount = props?.grid;
+  const memoCountByDate = _.keys(unref(memoCount));
 
-  const memoCountByDate = _.keys(memoCount);
-  console.log(memoCount);
   dataGrid.forEach((week) => {
     week.forEach((record) => {
       const day = record.date;
       if (memoCountByDate.includes(day)) {
-        record.memo_count = memoCount[day];
+        record.memo_count = memoCount.value[day];
       }
     });
   });
 };
+const { grid: memoCount } = toRefs(props);
 
-onMounted(() => {
-  // 页面加载完毕钩子
-  updateRocordCount(stateGrid);
-});
+watch(
+  memoCount,
+  () => {
+    // 页面加载完毕钩子
+    // 页面加载完毕，获取服务端记录
+    // 当服务端记录更新，更新表格
+    updateRocordCount(stateGrid);
+  },
+  { immediate: true }
+);
 </script>
 <template>
   <div class="record-wrapper">

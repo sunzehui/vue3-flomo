@@ -19,7 +19,11 @@ export const useUserStore = defineStore("user", {
       }),
       userInfo: useLocalStorage("userInfo", {
         last_login: "",
-        memo_count: {} as IMemoCount,
+        memo_count: {
+          memoCount: 0,
+          tagCount: 0,
+          day: 0,
+        } as IMemoCount,
         daily_grid: {},
         username: "浮墨用户",
       }),

@@ -8,13 +8,11 @@ export function ApiTagList() {
     method: "get",
   });
 }
-export function ApiTagRename(oldTagName, name: string) {
+export function ApiTagUpdate(oldTagName, data: Partial<tagType>) {
   return axios<IResponse>({
     url: "/api/tag/" + oldTagName,
     method: "patch",
-    data: {
-      content: name,
-    },
+    data,
   });
 }
 export function ApiList(data) {

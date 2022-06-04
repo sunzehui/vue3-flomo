@@ -1,6 +1,7 @@
 import { nextTick, ref, Ref, watch } from "vue";
 import { useEventListener } from "@vueuse/core";
 import { px2number } from "@/utils/Tool";
+import { useRoute } from "vue-router";
 export function useEditor(_textareaRef: Ref<HTMLTextAreaElement>) {
   const textareaContent = ref("");
   const textareaRef = ref(_textareaRef);
@@ -79,7 +80,24 @@ export function useEditor(_textareaRef: Ref<HTMLTextAreaElement>) {
       containerHeight: px2number(containerHeight),
     };
   };
-
+  const route = useRoute();
+  watch(
+    () => route.query,
+    () => {
+      const { tag } = route.query as { tag: string };
+      if (tag) {
+        nextTick(() => {
+          textareaContent.value = "";
+          insertContent(`#${tag} `);
+        });
+      } else {
+        nextTick(() => {
+          textareaContent.value = "";
+        });
+      }
+    },
+    { immediate: true }
+  );
   return {
     textareaContent,
     insertContent,

@@ -6,6 +6,7 @@ import {
   ApiDelete as ApiDeleteArticle,
   ApiTagList,
   ApiSave,
+  ApiTagUpdate,
 } from "@/api/article";
 
 export const useArticleStore = defineStore("article", {
@@ -24,8 +25,8 @@ export const useArticleStore = defineStore("article", {
         this.tagList = res.data;
       });
     },
-    getArticleList({tag} ={tag:''}) {
-      ApiArticleList({tag}).then((res) => {
+    getArticleList({ tag } = { tag: "" }) {
+      ApiArticleList({ tag }).then((res) => {
         this.articleList = res.data;
       });
     },
@@ -43,13 +44,19 @@ export const useArticleStore = defineStore("article", {
       return ApiSave(data).then((res) => {
         if (res.code === 0) {
           ElMessage.success("保存成功");
-          this.getArticleList();
         } else if (res.code === -1) {
           ElMessage.success("保存失败，请稍后再试");
         }
-        this.resetList();
         return Promise.resolve(res);
       });
+    },
+    async tagRename(oldName: string, newName: string) {
+      return await ApiTagUpdate(oldName, { content: newName });
+    },
+    async setTagTop({ tag, topic: is_topics }) {
+      const res = await ApiTagUpdate(tag, { is_topics });
+      await this.getTagList();
+      return res;
     },
   },
 

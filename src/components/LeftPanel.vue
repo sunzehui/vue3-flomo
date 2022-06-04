@@ -11,6 +11,7 @@ import {
   Search,
 } from "@element-plus/icons";
 import Tag from "../components/Tag.vue";
+import { ElDialog, ElButton, ElMessage } from "element-plus";
 
 import DailyRecord from "../components/DailyRecord.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -18,6 +19,7 @@ import { computed, reactive } from "@vue/reactivity";
 import { onMounted, provide, watch } from "vue";
 import { useUserStore } from "@/store/user";
 import { useArticleStore } from "@/store/article";
+import { useToggle } from "@vueuse/core";
 const userStore = useUserStore();
 const articleStore = useArticleStore();
 const router = useRouter();
@@ -35,9 +37,11 @@ onMounted(() => {
   articleStore.getTagList();
 });
 const topicTag = computed(() =>
-  articleStore.tagList.filter((item) => item.is_topic)
+  articleStore.tagList.filter((item) => item.is_topics)
 );
-const tagList = computed(() => articleStore.tagList);
+const tagList = computed(() =>
+  articleStore.tagList.filter((item) => !item.is_topics)
+);
 const route = useRoute();
 watch(
   () => route.query,
@@ -93,8 +97,8 @@ watch(
     <div v-if="topicTag.length" class="topic-tag">
       <h4 class="tag-title">置顶标签</h4>
       <ul class="tag-list">
-        <li>
-          <Tag v-for="tag in topicTag" :key="tag.id" :link="tag.content">{{
+        <li class="relative" v-for="tag in topicTag" :key="tag.id">
+          <Tag :link="tag.content" :isTopic="tag.is_topics">{{
             tag.content
           }}</Tag>
         </li>
@@ -104,9 +108,11 @@ watch(
     <div class="normal-tag">
       <h4 class="tag-title">全部标签</h4>
       <ul class="tag-list">
-        <Tag v-for="tag in tagList" :key="tag.id" :link="tag.content">{{
-          tag.content
-        }}</Tag>
+        <li class="relative" v-for="tag in tagList" :key="tag.id">
+          <Tag :link="tag.content" :isTopic="tag.is_topics">{{
+            tag.content
+          }}</Tag>
+        </li>
       </ul>
     </div>
   </div>
@@ -187,4 +193,15 @@ i {
     display: none;
   }
 }
+</style>
+<style>
+/* .el-overlay-dialog {
+  z-index: 999;
+}
+.el-overlay {
+  position: fixed;
+}
+.dialog-container {
+  position: relative;
+} */
 </style>

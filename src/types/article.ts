@@ -7,7 +7,7 @@ export type tagType = {
   name: string;
   id: string;
   active?: boolean;
-  is_topic?: boolean;
+  is_topics?: boolean;
   content: string;
 };
 export interface Article {

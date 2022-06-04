@@ -8,7 +8,8 @@ type pxNum = number | string;
 
 export function useSuggestion(
   _suggestionRef: Ref<HTMLDivElement>,
-  _textareaRef: Ref<HTMLTextAreaElement>
+  _textareaRef: Ref<HTMLTextAreaElement>,
+  handleSave: (event?: any) => void
 ) {
   const suggestionRef = _suggestionRef;
   const articleStore = useArticleStore();
@@ -84,7 +85,8 @@ export function useSuggestion(
     }
 
     if (event.key == "Enter" && event.ctrlKey) {
-      shouldArticleSave.value = true;
+      handleSave();
+      // shouldArticleSave.value = true;
     }
     // 仅当联想菜单展示时
     if (shouldSuggestionShow.value) {

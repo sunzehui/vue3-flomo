@@ -17,7 +17,7 @@ import LeftPanel from "@/components/LeftPanel.vue";
 
 <style lang="scss" scoped>
 .wrapper {
-  @apply h-screen mx-auto flex justify-center space-x-8;
+  @apply h-screen mx-auto flex justify-center;
 
   i {
     font-style: normal;
@@ -26,7 +26,6 @@ import LeftPanel from "@/components/LeftPanel.vue";
     width: 640px;
   }
 }
-
 @media screen and (max-width: 650px) {
   .wrapper main {
     margin-left: 0 !important;

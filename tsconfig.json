@@ -9,7 +9,8 @@
     "target": "es6",
     "lib": ["esnext","dom","es5","ES2015.Promise","ES2015","es2017"],
     "jsx": "preserve",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
   },
   "exclude": ["node_modules", "dist"],
   // "include": ["./src/**/*","./src/*"],
