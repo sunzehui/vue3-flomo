@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ElTooltip } from "element-plus";
-import "element-plus/es/components/Tooltip/style/css";
 import { onMounted, reactive, toRefs, unref, watch, watchEffect } from "vue";
 
 // moment 拿日期排列12 * 7次 从本周最后一天开始排
