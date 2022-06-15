@@ -2,7 +2,7 @@
 <script lang="ts" setup>
 import { nextTick, PropType, ref, watch } from "vue";
 import { ElSelect, ElOption } from "element-plus";
-import { isEmpty } from "lodash-es";
+import { isEmpty } from "lodash";
 import type { NewAticle, tagType } from "../types/article";
 import { useEditor } from "@/composable/useEditor";
 import { useSuggestion } from "@/composable/useSuggestion";

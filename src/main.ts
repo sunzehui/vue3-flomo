@@ -5,7 +5,6 @@ import { routes, router } from "./routes";
 import { createRouter, createWebHistory } from "vue-router";
 import applyMiddleware from "./middleware";
 import { createPinia } from "pinia";
-import "element-plus/es/components/message/style/css";
 const app = createApp(App);
 const pinia = createPinia();
 // console.warn = () => {};
