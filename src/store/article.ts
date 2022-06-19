@@ -47,6 +47,7 @@ export const useArticleStore = defineStore("article", {
         } else if (res.code === -1) {
           ElMessage.success("保存失败，请稍后再试");
         }
+        this.resetList();
         return Promise.resolve(res);
       });
     },

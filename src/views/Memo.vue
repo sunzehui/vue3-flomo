@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Refresh, Search } from "@element-plus/icons";
+import { Refresh, Search } from "@element-plus/icons-vue";
 import { onMounted, reactive, watch } from "vue";
 import Editer from "../components/Editer.vue";
 import MemoCard from "../components/MemoCard.vue";

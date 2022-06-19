@@ -11,7 +11,6 @@ import {
   Search,
 } from "@element-plus/icons-vue";
 import Tag from "../components/Tag.vue";
-import { ElDialog, ElButton, ElMessage } from "element-plus";
 
 import DailyRecord from "../components/DailyRecord.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -192,15 +191,4 @@ i {
     display: none;
   }
 }
-</style>
-<style>
-/* .el-overlay-dialog {
-  z-index: 999;
-}
-.el-overlay {
-  position: fixed;
-}
-.dialog-container {
-  position: relative;
-} */
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ElTooltip } from "element-plus";
+import { ElTooltip, ElPopper } from "element-plus";
 import { onMounted, reactive, toRefs, unref, watch, watchEffect } from "vue";
 
 // moment 拿日期排列12 * 7次 从本周最后一天开始排
@@ -111,6 +111,10 @@ watch(
   },
   { immediate: true }
 );
+
+defineExpose({
+  ElPopper,
+});
 </script>
 <template>
   <div class="record-wrapper">
