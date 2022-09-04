@@ -15,11 +15,6 @@ export const routes = [
         redirect: "/memo",
       },
       {
-        path: "/about",
-        meta: { title: "About" },
-        component: () => import("./views/About.vue"),
-      },
-      {
         path: "/memo",
         meta: { title: "个人主页" },
         name: "memo",

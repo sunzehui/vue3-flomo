@@ -35,7 +35,7 @@ export default async function <T = any>(config: AxiosRequestConfig): Resp<T> {
     const msg = error.response.data.message;
     console.error(`[Axios Error]`, error);
     if (code === 401) {
-      ElMessage.error(`Code: ${code}, Message: 未登录或验证已过期请去登录！`);
+      ElMessage.error(msg);
 
       router.push({
         path: "/login",

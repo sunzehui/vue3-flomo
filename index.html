@@ -3,15 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title></title>
-    <!-- <script src="https://unpkg.com/spacingjs" defer></script> -->
-    <link
-      rel="preload"
-      href="/fonts/Inter-roman.var.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
-    />
+    <title>flomo</title>
     <style>
       @font-face {
         font-family: "DIN-Regular";
@@ -25,7 +17,9 @@
       * {
         font-family: "DIN-Regular", "PingFang SC", Helvetica, Arial, sans-serif;
       }
-      body {
+      html,
+      body,
+      #app {
         height: 100%;
         overflow: hidden;
         background: #fafafa;
@@ -33,12 +27,22 @@
       ::-webkit-scrollbar-track {
         background-color: transparent !important;
       }
+      #app {
+        position: relative;
+      }
+      #loading-tag {
+        display: block;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+      }
     </style>
-    <!-- <link rel="preload" href="/font/Inter-italic.var.woff2" as="font" type="font/woff2" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="/fonts/inter.css" />
   </head>
   <body class="h-full">
-    <div id="app" class="h-full"></div>
+    <div id="app" class="h-full">
+      <span id="loading-tag"> loading... </span>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
