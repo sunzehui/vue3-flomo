@@ -11,9 +11,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   const root = process.cwd();
 
   const env = loadEnv(mode, root) as unknown as ImportMetaEnv;
-  setTimeout(() => {
-    console.log(env, mode);
-  }, 2000);
+
   return {
     plugins: [
       vue(),
