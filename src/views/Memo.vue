@@ -1,30 +1,26 @@
 <script lang="ts" setup>
 import { Refresh, Search } from "@element-plus/icons-vue";
-import { onMounted, reactive, watch } from "vue";
-import Editer from "../components/Editer.vue";
+import { ref, unref, watchEffect } from "vue";
+import Editor from "../components/Editor.vue";
 import MemoCard from "../components/MemoCard.vue";
 import MemoTitle from "@/components/MemoTitle.vue";
 import { useArticleStore } from "@/store/article";
 import { storeToRefs } from "pinia";
-import { useRoute } from "vue-router";
-
+import DetailPanel from "@/components/DetailPanel.vue";
 const articleStore = useArticleStore();
-
 const { articleList } = storeToRefs(articleStore);
+const props = defineProps<{ tag?: string }>();
 
-const route = useRoute();
-watch(
-  () => route.query,
-  (newVal) => {
-    const { tag } = newVal;
-    if (tag) {
-      articleStore.getArticleList({ tag } as { tag: string });
-    } else {
-      articleStore.getArticleList();
-    }
-  },
-  { immediate: true }
-);
+watchEffect(() => {
+  const tag = props.tag;
+  articleStore.getArticleList({ tag });
+});
+const panelShow = ref(false);
+const panelContent = ref("");
+const handleOpenPanel = (val) => {
+  panelContent.value = val;
+  panelShow.value = true;
+};
 </script>
 
 <template>
@@ -37,13 +33,18 @@ watch(
       </div>
     </nav>
     <div class="input-container">
-      <Editer />
+      <Editor />
     </div>
     <ul class="card-container">
       <template v-for="(memo, index) of articleList" :key="memo.id">
-        <MemoCard :article="memo" :isLast="articleList.length - 1 === index" />
+        <MemoCard
+          :article="memo"
+          @openPanel="handleOpenPanel"
+          :isLast="articleList.length - 1 === index"
+        />
       </template>
     </ul>
+    <DetailPanel v-model:show="panelShow" :content="panelContent" />
   </div>
 </template>
 

@@ -3,14 +3,22 @@ import {
   computed,
   PropType,
   reactive,
+  ref,
   toRef,
   toRefs,
   watch,
   watchEffect,
 } from "vue";
 import { Article } from "../types/article";
-import { ElPopover } from "element-plus";
+import {
+  ElPopover,
+  ElDropdown,
+  ElDropdownMenu,
+  ElDropdownItem,
+  ElIcon,
+} from "element-plus";
 
+import DetailPanel from "@/components/DetailPanel.vue";
 import { useArticleStore } from "@/store/article";
 import { useRouter } from "vue-router";
 import moment from "moment";
@@ -25,13 +33,18 @@ const props = defineProps({
     default: false,
   },
 });
+const emit = defineEmits(["openPanel"]);
 type acType = "delete" | "edit" | "detail" | "set-top" | "get-link";
 const articleStore = useArticleStore();
-const reducerActicon = (event: Event) => {
+const reducerAction = (event: Event) => {
   const type = (event.target as HTMLLIElement).dataset.type as acType;
+
   switch (type) {
     case "delete":
       articleStore.deleteArticle(+props.article.id);
+      break;
+    case "detail":
+      emit("openPanel", props.article.content);
       break;
     default:
       break;
@@ -64,13 +77,11 @@ const updateTime = computed(() => {
   <li class="card">
     <div class="header">
       <span class="time-text">{{ updateTime }}</span>
-      <div class="more">
-        <el-popover
-          :placement="props.isLast ? 'top' : 'bottom'"
-          trigger="hover"
-        >
-          <template #reference>
+      <el-dropdown>
+        <span class="el-dropdown-link">
+          <el-icon class="el-icon--right">
             <svg
+              class="more-action-bar"
               width="16px"
               height="16px"
               viewBox="0 0 16 16"
@@ -82,16 +93,18 @@ const updateTime = computed(() => {
                 d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
               ></path>
             </svg>
-          </template>
-          <ul @click="reducerActicon($event)" class="popover-list">
-            <li data-type="get-link">复制链接</li>
-            <li data-type="set-top">置顶</li>
-            <li data-type="detail">查看详情</li>
-            <li data-type="edit">编辑</li>
-            <li data-type="delete">删除</li>
-          </ul>
-        </el-popover>
-      </div>
+          </el-icon>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu @click="reducerAction">
+            <el-dropdown-item data-type="get-link">复制链接</el-dropdown-item>
+            <el-dropdown-item data-type="set-top">置顶</el-dropdown-item>
+            <el-dropdown-item data-type="detail">查看详情</el-dropdown-item>
+            <el-dropdown-item data-type="edit">编辑</el-dropdown-item>
+            <el-dropdown-item data-type="delete">删除</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
     <div
       v-html="article.content.replace(/[\r\n]/g, '<br />')"
@@ -113,11 +126,7 @@ const updateTime = computed(() => {
 
 <style scoped lang="scss">
 li.card {
-  background: #ffffff;
-  border-radius: 6px;
-  padding: 15px;
-  margin-top: 8px;
-  @apply duration-300;
+  @apply bg-white px-5 py-2 duration-300 mt-2 rounded-md;
   &:hover {
     box-shadow: 0px 2px 16px #dddddd;
   }
@@ -127,7 +136,6 @@ li.card {
     justify-content: space-between;
     align-items: center;
     line-height: 1.8em;
-
     color: #8f9193;
     svg {
       cursor: pointer;
@@ -163,11 +171,8 @@ li.card {
       display: flex;
     }
     .tag-view > li {
-      @apply mx-1;
-      width: fit-content;
-      height: 100%;
+      @apply mx-1 inline-block h-full cursor-pointer;
       color: #5783f7;
-      cursor: pointer;
       background-color: #eef3fe;
       padding: 4px;
       font-size: 12px;
@@ -176,35 +181,6 @@ li.card {
         color: #eef3fe;
         background-color: #5783f7;
       }
-    }
-  }
-}
-ul.popover-list {
-  min-width: 150px;
-  border-radius: 4px;
-  padding: 0 12px;
-
-  z-index: 2000;
-  color: #606266;
-  line-height: 1.4;
-  text-align: justify;
-  font-size: 14px;
-  // box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
-  word-break: break-all;
-  // transition: all 0.3s ease-in-out;
-  width: 200px;
-
-  li {
-    color: #7d7d7d;
-    display: block;
-    margin-left: 0;
-    padding: 10px 0 10px 0px;
-    font-weight: normal;
-
-    cursor: pointer;
-    user-select: none;
-    &:hover {
-      color: #55bb8e;
     }
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElLoading } from "element-plus";
+import { ElLoading, ElConfigProvider } from "element-plus";
 const loadingInstance = ElLoading.service({
   background: "rgba(0, 0, 0, 0.1)",
 });
@@ -9,13 +9,15 @@ const resolve = () => {
 </script>
 <template>
   <main class="h-screen">
-    <suspense @resolve="resolve">
-      <template #default>
-        <router-view #default="{ Component }">
-          <component :is="Component" />
-        </router-view>
-      </template>
-      <template #fallback> loading... </template>
-    </suspense>
+    <ElConfigProvider>
+      <suspense @resolve="resolve">
+        <template #default>
+          <router-view #default="{ Component }">
+            <component :is="Component" />
+          </router-view>
+        </template>
+        <template #fallback> loading... </template>
+      </suspense>
+    </ElConfigProvider>
   </main>
 </template>

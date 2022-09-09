@@ -1,7 +1,7 @@
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import { UserConfigExport, ConfigEnv, loadEnv } from "vite";
-
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import {
   createStyleImportPlugin,
   ElementPlusResolve,
@@ -18,6 +18,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       createStyleImportPlugin({
         resolves: [ElementPlusResolve()],
       }),
+      vueJsx({}),
     ],
     resolve: {
       alias: {
@@ -27,6 +28,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     base: "./",
     server: {
       open: false,
+      port: 8080,
       proxy: env.VITE_PROXY_URL
         ? {
             "/api": {
