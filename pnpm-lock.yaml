@@ -4,6 +4,7 @@ specifiers:
   '@element-plus/icons-vue': ^2.0.4
   '@headlessui/vue': ^1.4.0
   '@heroicons/vue': ^1.0.4
+  '@icon-park/vue-next': ^1.4.2
   '@tailwindcss/aspect-ratio': ^0.2.1
   '@tailwindcss/forms': ^0.3.4
   '@tailwindcss/line-clamp': ^0.2.1
@@ -39,6 +40,7 @@ specifiers:
 
 dependencies:
   '@element-plus/icons-vue': registry.npmmirror.com/@element-plus/icons-vue/2.0.9_vue@3.2.39
+  '@icon-park/vue-next': registry.npmmirror.com/@icon-park/vue-next/1.4.2_vue@3.2.39
   '@types/lodash': registry.npmmirror.com/@types/lodash/4.14.184
   '@vee-validate/rules': registry.npmmirror.com/@vee-validate/rules/4.6.7
   '@vitejs/plugin-vue-jsx': registry.npmmirror.com/@vitejs/plugin-vue-jsx/2.0.1_vite@3.1.0+vue@3.2.39
@@ -507,6 +509,18 @@ packages:
     dependencies:
       vue: registry.npmmirror.com/vue/3.2.39
     dev: true
+
+  registry.npmmirror.com/@icon-park/vue-next/1.4.2_vue@3.2.39:
+    resolution: {integrity: sha512-+QklF255wkfBOabY+xw6FAI0Bwln/RhdwCunNy/9sKdKuChtaU67QZqU67KGAvZUTeeBgsL+yaHHxqfQeGZXEQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@icon-park/vue-next/-/vue-next-1.4.2.tgz}
+    id: registry.npmmirror.com/@icon-park/vue-next/1.4.2
+    name: '@icon-park/vue-next'
+    version: 1.4.2
+    engines: {node: '>= 8.0.0', npm: '>= 5.0.0'}
+    peerDependencies:
+      vue: 3.x
+    dependencies:
+      vue: registry.npmmirror.com/vue/3.2.39
+    dev: false
 
   registry.npmmirror.com/@jridgewell/gen-mapping/0.1.1:
     resolution: {integrity: sha512-sQXCasFk+U8lWYEe66WxRDOE9PjVz4vSM51fTu3Hw+ClTpUSQb718772vH3pyS5pShp6lvQM7SxgIDXXXmOX7w==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@jridgewell/gen-mapping/-/gen-mapping-0.1.1.tgz}

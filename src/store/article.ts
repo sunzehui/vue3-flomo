@@ -4,11 +4,10 @@ import { defineStore } from "pinia";
 import {
   ApiList as ApiArticleList,
   ApiDelete as ApiDeleteArticle,
-  ApiTagList,
+  ApiUpdate as ApiUpdateArticle,
   ApiSave,
-  ApiTagUpdate,
 } from "@/api/article";
-
+import { ApiList as ApiTagList, ApiUpdate as ApiUpdateTag } from "@/api/tag";
 export const useArticleStore = defineStore("article", {
   state: () => {
     return {
@@ -18,15 +17,15 @@ export const useArticleStore = defineStore("article", {
   },
   actions: {
     resetList() {
-      Promise.all([this.getArticleList(), this.getTagList()]);
+      return Promise.all([this.getArticleList(), this.getTagList()]);
     },
     getTagList() {
-      ApiTagList().then((res) => {
+      return ApiTagList().then((res) => {
         this.tagList = res.data;
       });
     },
     getArticleList({ tag } = { tag: "" }) {
-      ApiArticleList({ tag }).then((res) => {
+      return ApiArticleList({ tag }).then((res) => {
         this.articleList = res.data;
       });
     },
@@ -52,11 +51,24 @@ export const useArticleStore = defineStore("article", {
       });
     },
     async tagRename(oldName: string, newName: string) {
-      return await ApiTagUpdate(oldName, { content: newName });
+      return await ApiUpdateTag(oldName, { content: newName });
     },
     async setTagTop({ tag, topic: is_topics }) {
-      const res = await ApiTagUpdate(tag, { is_topics });
-      await this.getTagList();
+      const res = await ApiUpdateTag(tag, { is_topics });
+      ElMessage.success("标签置顶成功！");
+      await this.resetList();
+      return res;
+    },
+    async setArticleTop(articleId) {
+      const res = await ApiUpdateArticle(articleId, { is_topic: true });
+      ElMessage.success("memo置顶成功！");
+      await this.resetList();
+      return res;
+    },
+    async cancelArticleTop(articleId) {
+      const res = await ApiUpdateArticle(articleId, { is_topic: false });
+      ElMessage.success("memo取消置顶成功！");
+      await this.resetList();
       return res;
     },
   },

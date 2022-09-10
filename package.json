@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.4",
+    "@icon-park/vue-next": "^1.4.2",
     "@types/lodash": "^4.14.180",
     "@vee-validate/rules": "^4.5.11",
     "@vitejs/plugin-vue-jsx": "^2.0.1",

@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import { computed, PropType } from "vue";
-import { ElDialog, ElDivider } from "element-plus";
+import { onMounted, nextTick,  computed, PropType, ref, watch, unref } from "vue";
+import { ElDialog } from "element-plus";
 import { Memo } from "@/types/memo";
-import { onMounted } from "vue";
-
-import * as htmlToImage from "html-to-image";
-import { ref, watch, unref } from "vue";
-import { nextTick } from "vue";
+import { toCanvas as img2Canvas } from "html-to-image";
 const props = defineProps({
   content: {
     type: Object as PropType<Memo>,
@@ -31,11 +27,10 @@ onMounted(async () => {
   const node = unref(memoRef);
   if (!node) return;
 
-  htmlToImage
-    .toCanvas(node, {
-      pixelRatio: window.devicePixelRatio * 2,
-      backgroundColor: "#eaeaea",
-    })
+  img2Canvas(node, {
+    pixelRatio: window.devicePixelRatio * 2,
+    backgroundColor: "#eaeaea",
+  })
     .then((canvas) => canvas.toDataURL())
     .then((url) => {
       imgUrl.value = url;

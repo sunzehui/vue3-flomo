@@ -2,19 +2,23 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
 import { Resp } from "@/types/api";
 import Axios, { AxiosRequestConfig } from "axios";
-import { ElMessage } from "element-plus";
+import { ElLoading, ElMessage } from "element-plus";
 import { router } from "../routes";
+import { showLoading, hideLoading } from "./loading";
 const baseURL = import.meta.env.VITE_BASE_URL as string | undefined;
 
-const axios = Axios.create({
+const axiosInstance = Axios.create({
   baseURL,
   timeout: 20000, // 请求超时 20s
 });
 // 前置拦截器（发起请求之前的拦截）
-axios.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
+    showLoading({
+      fullscreen: false,
+      background: "transparent",
+    });
     const UserStore = useUserStore();
-
     config.headers["Content-Type"] = "application/json";
     config.headers["Accept"] = "application/json";
     config.headers["Authorization"] = `Bearer ${UserStore.token.token}`;
@@ -24,26 +28,27 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-export default async function <T = any>(config: AxiosRequestConfig): Resp<T> {
-  try {
-    const { data } = await axios.request<Resp<T>>(config);
-
-    return data;
-  } catch (error) {
+axiosInstance.interceptors.response.use(
+  (resp) => {
+    hideLoading();
+    return resp;
+  },
+  (error) => {
+    hideLoading();
     const code = error.response.status;
     const msg = error.response.data.message;
     console.error(`[Axios Error]`, error);
     if (code === 401) {
       ElMessage.error(msg);
-
       router.push({
         path: "/login",
       });
       return;
     }
     ElMessage.error(`Code: ${code}, Message: ${msg}`);
-
-    return null;
   }
+);
+export default async function <T = any>(config: AxiosRequestConfig): Resp<T> {
+  const { data } = await axiosInstance.request<Resp<T>>(config);
+  return data;
 }

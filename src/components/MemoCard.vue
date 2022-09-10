@@ -9,16 +9,14 @@ import {
   watch,
   watchEffect,
 } from "vue";
-import { Article } from "../types/article";
+import { Article } from "@/types/article";
 import {
-  ElPopover,
   ElDropdown,
   ElDropdownMenu,
   ElDropdownItem,
   ElIcon,
 } from "element-plus";
-
-import DetailPanel from "@/components/DetailPanel.vue";
+import {Pin} from '@icon-park/vue-next'
 import { useArticleStore } from "@/store/article";
 import { useRouter } from "vue-router";
 import moment from "moment";
@@ -34,7 +32,8 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["openPanel", "openShare"]);
-type acType = "delete" | "edit" | "detail" | "set-top" | "get-link";
+type acType = 'cancel-top'| "delete" | "edit" | "detail" | "set-top" | "get-link";
+
 const articleStore = useArticleStore();
 const reducerAction = (event: Event) => {
   const type = (event.target as HTMLLIElement).dataset.type as acType;
@@ -49,6 +48,11 @@ const reducerAction = (event: Event) => {
     case "get-link":
       emit("openShare", props.article);
       break;
+    case "cancel-top":
+      articleStore.cancelArticleTop(+props.article.id);
+      break;
+    case "set-top":
+      articleStore.setArticleTop(+props.article.id);
     default:
       break;
   }
@@ -65,9 +69,7 @@ const tagClick = (tag) => {
 let { article } = toRefs(props);
 const updateTime = computed(() => {
   moment.locale(navigator.language);
-
   const momentTime = moment.utc(article.value.updateTime).local();
-
   if (momentTime.diff(moment(), "day") < 0) {
     return momentTime.format("YYYY-MM-DD HH:mm:ss");
   }
@@ -78,7 +80,7 @@ const updateTime = computed(() => {
 
 <template>
   <li class="card">
-    <div class="header">
+    <div class="header relative">
       <span class="time-text">{{ updateTime }}</span>
       <el-dropdown>
         <span class="el-dropdown-link">
@@ -101,13 +103,15 @@ const updateTime = computed(() => {
         <template #dropdown>
           <el-dropdown-menu @click="reducerAction">
             <el-dropdown-item data-type="get-link">分享</el-dropdown-item>
-            <el-dropdown-item data-type="set-top">置顶</el-dropdown-item>
+            <el-dropdown-item data-type="cancel-top" v-if="article.is_topic">取消置顶</el-dropdown-item>
+            <el-dropdown-item data-type="set-top" v-if="!article.is_topic">置顶</el-dropdown-item>
             <el-dropdown-item data-type="detail">查看详情</el-dropdown-item>
             <el-dropdown-item data-type="edit">编辑</el-dropdown-item>
             <el-dropdown-item data-type="delete">删除</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
+      <Pin v-show="article.is_topic" class="absolute -right-6 -top-4" theme="outline" size="24" fill="#333"/>
     </div>
     <div
       v-html="article.content.replace(/[\r\n]/g, '<br />')"
@@ -131,7 +135,7 @@ const updateTime = computed(() => {
 li.card {
   @apply bg-white px-5 py-2 duration-300 mt-2 rounded-md;
   &:hover {
-    box-shadow: 0px 2px 16px #dddddd;
+    box-shadow: 0 2px 16px #dddddd;
   }
 
   .header {
