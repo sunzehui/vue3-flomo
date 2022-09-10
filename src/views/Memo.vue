@@ -7,6 +7,9 @@ import MemoTitle from "@/components/MemoTitle.vue";
 import { useArticleStore } from "@/store/article";
 import { storeToRefs } from "pinia";
 import DetailPanel from "@/components/DetailPanel.vue";
+import ShareCard from "@/components/ShareCard.vue";
+import { reactive } from "vue";
+
 const articleStore = useArticleStore();
 const { articleList } = storeToRefs(articleStore);
 const props = defineProps<{ tag?: string }>();
@@ -20,6 +23,15 @@ const panelContent = ref("");
 const handleOpenPanel = (val) => {
   panelContent.value = val;
   panelShow.value = true;
+};
+
+const shareState = reactive({
+  show: false,
+  memo: null,
+});
+const handleOpenShare = (val) => {
+  shareState.memo = val;
+  shareState.show = true;
 };
 </script>
 
@@ -40,11 +52,17 @@ const handleOpenPanel = (val) => {
         <MemoCard
           :article="memo"
           @openPanel="handleOpenPanel"
+          @openShare="handleOpenShare"
           :isLast="articleList.length - 1 === index"
         />
       </template>
     </ul>
     <DetailPanel v-model:show="panelShow" :content="panelContent" />
+    <ShareCard
+      v-if="shareState.show"
+      v-model:show="shareState.show"
+      :content="shareState.memo"
+    ></ShareCard>
   </div>
 </template>
 
@@ -94,19 +112,19 @@ nav {
   }
 }
 .input-container {
-  padding-left: 20px;
+  @apply px-5;
 }
 .memo-view {
   height: 100%;
   nav {
-    padding-left: 20px;
+    @apply px-5;
   }
 }
 .card-container {
   overflow-y: scroll;
   height: 100%;
   padding-bottom: 300px;
-  padding-left: 20px;
+  @apply px-5;
   //谷歌适用
   &::-webkit-scrollbar {
     display: none;

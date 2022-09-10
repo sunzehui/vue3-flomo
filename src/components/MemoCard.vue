@@ -33,7 +33,7 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(["openPanel"]);
+const emit = defineEmits(["openPanel", "openShare"]);
 type acType = "delete" | "edit" | "detail" | "set-top" | "get-link";
 const articleStore = useArticleStore();
 const reducerAction = (event: Event) => {
@@ -45,6 +45,9 @@ const reducerAction = (event: Event) => {
       break;
     case "detail":
       emit("openPanel", props.article.content);
+      break;
+    case "get-link":
+      emit("openShare", props.article);
       break;
     default:
       break;
@@ -97,7 +100,7 @@ const updateTime = computed(() => {
         </span>
         <template #dropdown>
           <el-dropdown-menu @click="reducerAction">
-            <el-dropdown-item data-type="get-link">复制链接</el-dropdown-item>
+            <el-dropdown-item data-type="get-link">分享</el-dropdown-item>
             <el-dropdown-item data-type="set-top">置顶</el-dropdown-item>
             <el-dropdown-item data-type="detail">查看详情</el-dropdown-item>
             <el-dropdown-item data-type="edit">编辑</el-dropdown-item>

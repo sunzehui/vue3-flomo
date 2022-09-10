@@ -11,7 +11,7 @@ const props = defineProps({
   },
   show: {
     type: Boolean,
-    required: true,
+    default: false,
   },
 });
 const emit = defineEmits(["update:show"]);
@@ -39,7 +39,7 @@ defineExpose({
 </script>
 
 <template>
-  <ElDrawer v-model="show">
+  <ElDrawer v-model="show" custom-class="detail-drawer">
     <template #header>
       <h4>MEMO</h4>
     </template>
@@ -51,3 +51,10 @@ defineExpose({
     <span>{{ props.content || "额，好像什么都没有！" }}</span>
   </ElDrawer>
 </template>
+<style>
+.detail-drawer {
+  @apply w-8/12 !important;
+  @apply md:w-6/12 !important;
+  @apply lg:w-4/12 !important;
+}
+</style>
