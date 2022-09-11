@@ -107,9 +107,9 @@ const onSubmit = async () => {
             登录
           </button>
         </div>
-        <div class="flex justify-center w-full gap-x-5">
+        <div class="flex justify-center w-full">
           <router-link to="/logup" class="text-blue-400"> 注册 </router-link>
-          <router-link to="/reset" class="text-blue-400">
+          <router-link to="/reset" class="text-blue-400 ml-5">
             忘记密码
           </router-link>
         </div>
