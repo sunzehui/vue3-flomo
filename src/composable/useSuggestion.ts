@@ -14,7 +14,6 @@ export function useSuggestion(
   const suggestionRef = _suggestionRef;
   const articleStore = useArticleStore();
   const { tagList } = storeToRefs(articleStore);
-  const shouldArticleSave = ref(false);
   const { textareaContent, insertContent, computeSelectPos } =
     useEditor(_textareaRef);
   const shouldSuggestionShow = ref(false);
@@ -68,18 +67,18 @@ export function useSuggestion(
       list[target].active = true;
     }
   };
-
+  let lastKeyEmit = false;
   const onKeyDownEvent = (event: KeyboardEvent) => {
     const key = event.key;
     // 当输入#时开启联想菜单
     // console.log("key:", event);
     // console.log("code:", key.charCodeAt(0));
-    if (unref(tagList).length === 0) {
-      return;
-    }
-    // console.log(key);
-    // textareaContent.value += key;
+
     if (key === "#") {
+      if (unref(tagList).length === 0) {
+        return false;
+      }
+      lastKeyEmit = true;
       shouldSuggestionShow.value = true;
       return false;
     }
@@ -91,20 +90,22 @@ export function useSuggestion(
     // 仅当联想菜单展示时
     if (shouldSuggestionShow.value) {
       // 删除键
-      if (key === "Backspace") {
-        shouldSuggestionShow.value = false;
-        return;
-      }
+      // if (key === "Backspace") {
+      //   shouldSuggestionShow.value = false;
+      //   return;
+      // }
 
-      if (["ArrowUp", "Enter", " "].includes(key)) {
+      if (["ArrowUp", "Enter", " ","ArrowDown"].includes(key)) {
         event.stopPropagation();
         event.preventDefault();
       }
       // 当输入“上，下“方向键时切换active标签
       if (key === "ArrowUp") {
         setItemActive(-1);
+        return false;
       } else if (key === "ArrowDown") {
         setItemActive(1);
+        return false
       }
 
       // 敲回车选中
@@ -113,6 +114,12 @@ export function useSuggestion(
         insertContent(activeItem.content + " ");
 
         shouldSuggestionShow.value = false;
+      }
+      // 如果上次按键成功唤起tag列表，并且键入普通字符则隐藏列表
+      if(lastKeyEmit){
+        shouldSuggestionShow.value = false
+        lastKeyEmit = false;
+        return false;
       }
     }
   };
