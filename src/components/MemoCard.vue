@@ -68,8 +68,8 @@ const tagClick = (tag) => {
 };
 let { article } = toRefs(props);
 const updateTime = computed(() => {
-  moment.locale(navigator.language);
-  const momentTime = moment.utc(article.value.updateTime).local();
+  const time = article.value.updateTime?? article.value.createTime;
+  const momentTime = moment.utc(time).local();
   if (momentTime.diff(moment(), "day") < 0) {
     return momentTime.format("YYYY-MM-DD HH:mm:ss");
   }
