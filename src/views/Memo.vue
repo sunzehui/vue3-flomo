@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { Refresh, Search } from "@element-plus/icons-vue";
-import {computed, ref, unref, watchEffect} from "vue";
+import {computed, ref, unref, watch, watchEffect} from "vue";
 import Editor from "../components/Editor.vue";
-import MemoCard from "../components/MemoCard.vue";
+import MemoCardOrEditor from '@/components/MemoCardOrEditor'
+// import MemoCard from "../components/MemoCard.vue";
 import MemoTitle from "@/components/MemoTitle.vue";
 import { useArticleStore } from "@/store/article";
 import { storeToRefs } from "pinia";
@@ -10,19 +11,15 @@ import DetailPanel from "@/components/DetailPanel.vue";
 import ShareCard from "@/components/ShareCard.vue";
 import { reactive } from "vue";
 import {sortBy} from "lodash-es";
+import {EditorType} from '@/types/card-type'
 
 const articleStore = useArticleStore();
-const { articleList } = storeToRefs(articleStore);
-const sortedList = computed(()=>{
-  return sortBy(unref(articleList),(obj)=>{
-    if(obj.is_topic) return Number.MIN_SAFE_INTEGER;
-    return obj.id;
-  })
-})
+const { articleListEnhance } = storeToRefs(articleStore);
 const props = defineProps<{ tag?: string }>();
 
 watchEffect(() => {
   const tag = props.tag;
+  articleStore.setActiveTag(tag);
   articleStore.getArticleList({ tag });
 });
 const panelShow = ref(false);
@@ -52,15 +49,15 @@ const handleOpenShare = (val) => {
       </div>
     </nav>
     <div class="input-container">
-      <Editor />
+      <Editor :type="EditorType.create" content="hahaha"/>
     </div>
-    <ul class="card-container">
-      <template v-for="(memo, index) of sortedList" :key="memo.id">
-        <MemoCard
-          :article="memo"
+    <ul class="card-container"
+    >
+      <template v-for="(memo, index) of articleListEnhance" :key="memo.id">
+        <MemoCardOrEditor
           @openPanel="handleOpenPanel"
           @openShare="handleOpenShare"
-          :isLast="articleList.length - 1 === index"
+          :memo="memo"
         />
       </template>
     </ul>

@@ -20,18 +20,13 @@ import {Pin} from '@icon-park/vue-next'
 import { useArticleStore } from "@/store/article";
 import { useRouter } from "vue-router";
 import moment from "moment";
+import {CardType} from "@/types/card-type";
 
-const props = defineProps({
-  article: {
-    type: Object as PropType<Article>,
-    default: {},
-  },
-  isLast: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
-});
-const emit = defineEmits(["openPanel", "openShare"]);
+const props = defineProps<{
+  article: Article,
+  isLast: Boolean
+}>();
+const emit = defineEmits(["openPanel", "openShare", 'edit']);
 type acType = 'cancel-top'| "delete" | "edit" | "detail" | "set-top" | "get-link";
 
 const articleStore = useArticleStore();
@@ -53,6 +48,10 @@ const reducerAction = (event: Event) => {
       break;
     case "set-top":
       articleStore.setArticleTop(+props.article.id);
+      break;
+    case 'edit':
+      articleStore.setArticleType(+props.article.id, CardType.editor)
+      break;
     default:
       break;
   }

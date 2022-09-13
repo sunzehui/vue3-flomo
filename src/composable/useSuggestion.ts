@@ -1,21 +1,23 @@
 import { px2number } from "@/utils/Tool";
-import { useArticleStore } from "./../store/article";
+import { useArticleStore } from "@/store/article";
 import { storeToRefs } from "pinia";
-import { ref, Ref, unref, watch } from "vue";
+import {onMounted, ref, Ref, unref, watch} from "vue";
 import { useEditor } from "./useEditor";
 import { useEventListener } from "@vueuse/core";
 type pxNum = number | string;
 
 export function useSuggestion(
   _suggestionRef: Ref<HTMLDivElement>,
-  _textareaRef: Ref<HTMLTextAreaElement>,
-  handleSave: (event?: any) => void
+ editor,
 ) {
   const suggestionRef = _suggestionRef;
   const articleStore = useArticleStore();
   const { tagList } = storeToRefs(articleStore);
-  const { textareaContent, insertContent, computeSelectPos } =
-    useEditor(_textareaRef);
+  const {
+    insertContent,textareaContent,computeSelectPos,textareaRef
+  } = editor;
+
+
   const shouldSuggestionShow = ref(false);
 
   // 隐藏/显示联想框
@@ -83,10 +85,7 @@ export function useSuggestion(
       return false;
     }
 
-    if (event.key == "Enter" && event.ctrlKey) {
-      handleSave();
-      // shouldArticleSave.value = true;
-    }
+
     // 仅当联想菜单展示时
     if (shouldSuggestionShow.value) {
       // 删除键
@@ -123,8 +122,15 @@ export function useSuggestion(
       }
     }
   };
-  useEventListener(_textareaRef, "keydown", onKeyDownEvent);
-  useEventListener(_textareaRef, "input", (e) => {
+  useEventListener(textareaRef, "keydown", onKeyDownEvent);
+  useEventListener(document, "click", (evt)=>{
+    if (evt.target !== textareaRef.value) {
+      shouldSuggestionShow.value = false;
+    }
+  });
+
+
+  useEventListener(textareaRef, "input", (e) => {
     const lastIsSharp =
       textareaContent.value.charAt(textareaContent.value.length - 1) === "#";
     if (lastIsSharp && unref(tagList).length) {
@@ -132,10 +138,14 @@ export function useSuggestion(
     }
   });
 
-  const itemClicked = ($event: Event) => {
-    const target = ($event.target as HTMLSpanElement).innerText;
-    // 将联想框中的内容添加到textarea中
-    insertContent(target + " ");
+  const handleItemClick = ($event: Event) => {
+    const target = ($event.target as HTMLSpanElement);
+    if(target instanceof HTMLSpanElement){
+      const targetValue = target.innerText;
+      // 将联想框中的内容添加到textarea中
+      insertContent(targetValue + " ");
+      shouldSuggestionShow.value = false
+    }
   };
 
   const handleIconClick = (event: Event) => {
@@ -148,13 +158,12 @@ export function useSuggestion(
     }
     shouldSuggestionShow.value = true;
   };
-  document.onclick = () => {
-    shouldSuggestionShow.value = false;
-  };
+
+
   return {
     textareaContent,
     shouldSuggestionShow,
-    itemClicked,
+    handleItemClick,
     suggestionList,
     handleIconClick,
   };

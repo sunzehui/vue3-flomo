@@ -1,10 +1,11 @@
-<!-- sc -->
 <script lang="ts" setup>
-import { nextTick, PropType, ref, watch } from "vue";
+import {nextTick, onMounted, PropType, ref, watch} from "vue";
 import { isEmpty } from "lodash";
 import { useSuggestion } from "@/composable/useSuggestion";
 import { useArticleStore } from "@/store/article";
 import { useRoute } from "vue-router";
+import {useEditor} from "@/composable/useEditor";
+import {extractTags} from '@/utils/editor'
 
 const handleSave = ($event?: Event) => {
   if ($event) {
@@ -20,15 +21,24 @@ const suggestionRef = ref(null);
 
 // 监听onkeydown
 const textareaRef = ref(null);
+const props = defineProps<{
+  content: string,
+}>()
 
+const editor  = useEditor(textareaRef,{
+  onSave: handleSave
+});
 const {
   textareaContent,
   shouldSuggestionShow,
   handleIconClick,
-  itemClicked,
+  handleItemClick,
   suggestionList,
-} = useSuggestion(suggestionRef, textareaRef, handleSave);
+} = useSuggestion(suggestionRef, editor);
 
+onMounted(()=>{
+  editor.insertContent(props.content||'')
+})
 const route = useRoute();
 
 const saveArticle = () => {
@@ -50,26 +60,8 @@ const saveArticle = () => {
   });
 };
 
-watch(textareaContent, () => {
-  // console.log("textareaContent:", textareaContent.value);
-});
-/**
- *
- *  提交后，提取文章出现的现有标签
- * 大概是 # 开头 结束条件：空格 换行 或 下一个#之前
- * ，做成标签列表,展示 日后过滤
- */
-const extractTags = (content: string) => {
-  // 提取出并消掉开头#
-  const tags = Array.from(content.match(/#[^\s(?<!#)]+/g) || []).map((tag) =>
-    tag.slice(1)
-  );
-  return tags;
-};
+
 const loading = ref(false);
-watch(shouldSuggestionShow, (shouldSuggestionShow) => {
-  console.log("shouldSuggestionShow:", shouldSuggestionShow);
-});
 </script>
 
 <template>
@@ -83,7 +75,7 @@ watch(shouldSuggestionShow, (shouldSuggestionShow) => {
       class="suggestion"
       ref="suggestionRef"
       v-show="shouldSuggestionShow"
-      @click="itemClicked($event)"
+      @click="handleItemClick($event)"
     >
       <template v-for="item of suggestionList">
         <span :class="{ active: item.active }">{{ item.content }}</span>

@@ -8,11 +8,15 @@ import {
   ApiSave,
 } from "@/api/article";
 import { ApiList as ApiTagList, ApiUpdate as ApiUpdateTag } from "@/api/tag";
+import {cloneDeep, findIndex, map, sortBy} from "lodash-es";
+import {unref} from "vue";
+import {CardType} from "@/types/card-type";
 export const useArticleStore = defineStore("article", {
   state: () => {
     return {
       articleList: [] as Article[],
       tagList: [] as tagType[],
+      activeTag: ''
     };
   },
   actions: {
@@ -71,7 +75,29 @@ export const useArticleStore = defineStore("article", {
       await this.resetList();
       return res;
     },
+    setArticleType(articleId,type){
+      const list = cloneDeep(this.articleList)
+      const idx = findIndex(list, (o:Article)=>  o.id == articleId);
+      list[idx].type = type;
+      this.articleList = list;
+      console.log(list[idx])
+    },
+    setActiveTag(tag:string){
+      this.activeTag = tag;
+    }
   },
 
-  getters: {},
+  getters: {
+    articleListEnhance(state){
+      const list = state.articleList;
+      return map(sortBy(list,(obj)=>{
+        if(obj.is_topic) return Number.MIN_SAFE_INTEGER;
+        return obj.id;
+      }),(obj:Article&{type:CardType},idx,arr)=>{
+        const type = obj.type?? CardType.article
+        const isLast =  arr.length - 1 === idx
+        return {...obj,type,isLast}
+      })
+    },
+  },
 });
