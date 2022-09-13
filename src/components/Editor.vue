@@ -1,32 +1,27 @@
 <script lang="ts" setup>
-import {nextTick, onMounted, PropType, ref, watch} from "vue";
-import { isEmpty } from "lodash";
-import { useSuggestion } from "@/composable/useSuggestion";
-import { useArticleStore } from "@/store/article";
-import { useRoute } from "vue-router";
+import {onMounted, ref} from "vue";
+import {isEmpty} from "lodash";
+import {useSuggestion} from "@/composable/useSuggestion";
+import {useArticleStore} from "@/store/article";
 import {useEditor} from "@/composable/useEditor";
 import {extractTags} from '@/utils/editor'
+import {Memo} from "@/types/memo";
+import {EditorType} from "@/types/card-type";
+import {ElMessage} from "element-plus";
 
-const handleSave = ($event?: Event) => {
-  if ($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
-  }
-  loading.value = true;
-
-  saveArticle();
-};
 
 const suggestionRef = ref(null);
 
 // 监听onkeydown
 const textareaRef = ref(null);
 const props = defineProps<{
-  content: string,
+  memo?: Memo,
+  type: EditorType
 }>()
 
-const editor  = useEditor(textareaRef,{
-  onSave: handleSave
+const editor = useEditor(textareaRef, {
+  onSave: () => handleSave(),
+  type: props.type
 });
 const {
   textareaContent,
@@ -36,30 +31,47 @@ const {
   suggestionList,
 } = useSuggestion(suggestionRef, editor);
 
-onMounted(()=>{
-  editor.insertContent(props.content||'')
+onMounted(() => {
+  if (props.memo && props.type === EditorType.edit)
+    editor.insertContent(props.memo?.content || '')
 })
-const route = useRoute();
 
-const saveArticle = () => {
+const articleStore = useArticleStore();
+const buildArticle = () => {
   const tags = extractTags(textareaContent.value);
-  const ArticleVO = {
+  const article: Partial<Memo> = {
     tags,
     content: textareaContent.value,
   };
-  const articleStore = useArticleStore();
-  articleStore.save(ArticleVO).then((result) => {
+  return article
+}
+const updateArticle = () => {
+  const article = buildArticle()
+  const {memo: {id}} = props;
+  if (!id) {
+    ElMessage.error("数据异常，请刷新")
+    throw new Error('can \'t find article id!')
+  }
+  loading.value = true;
+  articleStore.update(id, article).then(result => {
     loading.value = false;
-    console.log(result);
+  })
+}
+const saveArticle = () => {
+  const article = buildArticle()
+  loading.value = true;
+  articleStore.save(article).then((result) => {
+    loading.value = false;
     textareaContent.value = "";
-    const tag = route.query.tag as string;
-    // 如果当前是标签页，则获取当前标签文章
-    if (tag) {
-      articleStore.getArticleList({ tag });
-    }
   });
 };
-
+const handleSave = () => {
+  if (props.type === EditorType.create) {
+    saveArticle()
+  } else if (props.type === EditorType.edit) {
+    updateArticle()
+  }
+}
 
 const loading = ref(false);
 </script>
@@ -67,15 +79,15 @@ const loading = ref(false);
 <template>
   <div class="editor">
     <textarea
-      v-model="textareaContent"
-      name="text-input"
-      ref="textareaRef"
+        v-model="textareaContent"
+        name="text-input"
+        ref="textareaRef"
     ></textarea>
     <div
-      class="suggestion"
-      ref="suggestionRef"
-      v-show="shouldSuggestionShow"
-      @click="handleItemClick($event)"
+        class="suggestion"
+        ref="suggestionRef"
+        v-show="shouldSuggestionShow"
+        @click="handleItemClick($event)"
     >
       <template v-for="item of suggestionList">
         <span :class="{ active: item.active }">{{ item.content }}</span>
@@ -84,11 +96,11 @@ const loading = ref(false);
     <div class="bar">
       <span class="tag-icon" @click="handleIconClick($event)"> # </span>
       <button
-        class="save"
-        @click.prevent="handleSave($event)"
-        :disabled="isEmpty(textareaContent)"
+          class="save"
+          @click.prevent="handleSave"
+          :disabled="isEmpty(textareaContent)"
       >
-        发送
+        {{ type === EditorType.edit ? '保存' : '发送' }}
       </button>
     </div>
     <!-- 展示loading将其他隐藏 -->
@@ -106,6 +118,7 @@ const loading = ref(false);
   background: #fff;
   margin: 10px 0;
 }
+
 textarea {
   border: none;
   outline: 0;
@@ -117,18 +130,23 @@ textarea {
   max-height: 50vh;
   width: 100%;
   overflow-y: scroll;
+
   &::-webkit-scrollbar {
     display: none;
   }
+
   &::-webkit-scrollbar-track {
     background-color: transparent !important;
   }
+
   min-height: 1rem;
+
   &:focus {
     outline: 0;
     box-shadow: none;
   }
 }
+
 .suggestion {
   position: absolute;
   background-color: black;
@@ -138,9 +156,11 @@ textarea {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
+
   &.hidden {
     display: none;
   }
+
   span {
     color: white;
     padding: 3px 20px;
@@ -153,17 +173,21 @@ textarea {
     &:last-child {
       margin-bottom: 0;
     }
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.2);
     }
+
     &.active {
       background-color: rgba(255, 255, 255, 0.2);
     }
   }
+
   &.show {
     display: block;
   }
 }
+
 .loading-box {
   display: flex;
   height: 100%;
@@ -176,6 +200,7 @@ textarea {
   align-items: center;
   justify-content: center;
 }
+
 .bar {
   display: flex;
   width: 100%;
@@ -184,15 +209,18 @@ textarea {
   align-items: center;
   box-sizing: border-box;
   position: relative;
+
   span {
     cursor: pointer;
     user-select: none;
   }
+
   .tag-icon {
     display: inline-block;
     // margin-left: 20px;
     font-size: 0.9em;
   }
+
   button {
     position: absolute;
     right: 6px;
@@ -219,6 +247,7 @@ textarea {
     user-select: none;
     padding: 9px 15px;
     border-radius: 4px;
+
     &:disabled {
       cursor: not-allowed;
       background-color: #aaddc6;
@@ -229,6 +258,7 @@ textarea {
 
 .loading {
   position: relative;
+
   .loading-box {
     visibility: visible;
   }

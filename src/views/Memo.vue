@@ -1,26 +1,26 @@
 <script lang="ts" setup>
-import { Refresh, Search } from "@element-plus/icons-vue";
+import {Refresh, Search} from "@element-plus/icons-vue";
 import {computed, ref, unref, watch, watchEffect} from "vue";
 import Editor from "../components/Editor.vue";
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 // import MemoCard from "../components/MemoCard.vue";
 import MemoTitle from "@/components/MemoTitle.vue";
-import { useArticleStore } from "@/store/article";
-import { storeToRefs } from "pinia";
+import {useArticleStore} from "@/store/article";
+import {storeToRefs} from "pinia";
 import DetailPanel from "@/components/DetailPanel.vue";
 import ShareCard from "@/components/ShareCard.vue";
-import { reactive } from "vue";
-import {sortBy} from "lodash-es";
+import {reactive, provide} from "vue";
 import {EditorType} from '@/types/card-type'
 
 const articleStore = useArticleStore();
-const { articleListEnhance } = storeToRefs(articleStore);
+const {articleListEnhance} = storeToRefs(articleStore);
 const props = defineProps<{ tag?: string }>();
+provide('tag', props.tag)
 
 watchEffect(() => {
   const tag = props.tag;
   articleStore.setActiveTag(tag);
-  articleStore.getArticleList({ tag });
+  articleStore.getArticleList({tag});
 });
 const panelShow = ref(false);
 const panelContent = ref("");
@@ -42,30 +42,32 @@ const handleOpenShare = (val) => {
 <template>
   <div class="memo-view">
     <nav>
-      <MemoTitle />
+      <MemoTitle/>
       <div class="input-wrapper">
-        <input type="text" />
-        <i><Search /></i>
+        <input type="text"/>
+        <i>
+          <Search/>
+        </i>
       </div>
     </nav>
     <div class="input-container">
-      <Editor :type="EditorType.create" content="hahaha"/>
+      <Editor :type="EditorType.create"/>
     </div>
     <ul class="card-container"
     >
-      <template v-for="(memo, index) of articleListEnhance" :key="memo.id">
+      <template v-for="memo of articleListEnhance" :key="memo.id">
         <MemoCardOrEditor
-          @openPanel="handleOpenPanel"
-          @openShare="handleOpenShare"
-          :memo="memo"
+            @openPanel="handleOpenPanel"
+            @openShare="handleOpenShare"
+            :memo="memo"
         />
       </template>
     </ul>
-    <DetailPanel v-model:show="panelShow" :content="panelContent" />
+    <DetailPanel v-model:show="panelShow" :content="panelContent"/>
     <ShareCard
-      v-if="shareState.show"
-      v-model:show="shareState.show"
-      :content="shareState.memo"
+        v-if="shareState.show"
+        v-model:show="shareState.show"
+        :content="shareState.memo"
     ></ShareCard>
   </div>
 </template>
@@ -74,6 +76,7 @@ const handleOpenShare = (val) => {
 i {
   font-style: normal;
 }
+
 svg {
   display: inline;
 }
@@ -83,10 +86,12 @@ nav {
   padding: 10px 0 10px 0;
   line-height: 40px;
   justify-content: space-between;
+
   .input-wrapper {
     position: relative;
     font-size: 14px;
     box-sizing: border-box;
+
     i {
       @apply absolute top-0 left-[5px];
 
@@ -95,12 +100,14 @@ nav {
       text-align: center;
       transition: all 0.3s;
       line-height: 40px;
+
       svg {
         height: 14px;
         width: 14px;
       }
     }
   }
+
   input {
     height: 40px;
     outline: 0;
@@ -108,6 +115,7 @@ nav {
     background: #efefef;
     border-radius: 8px;
     padding: 0 30px;
+
     &:focus,
     &:active {
       outline: 0;
@@ -115,15 +123,19 @@ nav {
     }
   }
 }
+
 .input-container {
   @apply px-5;
 }
+
 .memo-view {
   height: 100%;
+
   nav {
     @apply px-5;
   }
 }
+
 .card-container {
   overflow-y: scroll;
   height: 100%;
