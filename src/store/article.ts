@@ -8,9 +8,10 @@ import {
     ApiSave, ApiUpdate,
 } from "@/api/article";
 import {ApiList as ApiTagList, ApiUpdate as ApiUpdateTag} from "@/api/tag";
-import {cloneDeep, findIndex, map, sortBy} from "lodash-es";
-import {unref} from "vue";
+import {cloneDeep, findIndex, map, orderBy, reverse, sortBy} from "lodash-es";
 import {CardType} from "@/types/card-type";
+import moment from "moment";
+import {safeNaN} from "@/utils/Tool";
 
 export const useArticleStore = defineStore("article", {
     state: () => {
@@ -102,14 +103,19 @@ export const useArticleStore = defineStore("article", {
     getters: {
         articleListEnhance(state) {
             const list = state.articleList;
-            return map(sortBy(list, (obj) => {
-                if (obj.is_topic) return Number.MIN_SAFE_INTEGER;
-                return obj.id;
-            }), (obj: Article & { type: CardType }, idx, arr) => {
-                const type = obj.type ?? CardType.article
-                const isLast = arr.length - 1 === idx
-                return {...obj, type, isLast}
-            })
+            return map(
+                reverse(
+                    orderBy(list, (obj) => {
+                        if (obj.is_topic) return Number.MAX_SAFE_INTEGER;
+                        const createTime = safeNaN(moment(obj.createTime).unix())
+                        return createTime ?? Number(obj.id);
+                    })
+                ), (obj: Article & { type: CardType }, idx, arr) => {
+                    const type = obj.type ?? CardType.article
+                    const isLast = arr.length - 1 === idx
+                    return {...obj, type, isLast}
+                })
+
         },
     },
 });

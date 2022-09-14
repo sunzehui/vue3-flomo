@@ -5,11 +5,11 @@ import {
   reactive,
   ref,
   toRef,
-  toRefs,
+  toRefs, unref,
   watch,
   watchEffect,
 } from "vue";
-import { Article } from "@/types/article";
+import {Article} from "@/types/article";
 import {
   ElDropdown,
   ElDropdownMenu,
@@ -17,8 +17,8 @@ import {
   ElIcon,
 } from "element-plus";
 import {Pin} from '@icon-park/vue-next'
-import { useArticleStore } from "@/store/article";
-import { useRouter } from "vue-router";
+import {useArticleStore} from "@/store/article";
+import {useRouter} from "vue-router";
 import moment from "moment";
 import {CardType} from "@/types/card-type";
 
@@ -27,7 +27,7 @@ const props = defineProps<{
   isLast: Boolean
 }>();
 const emit = defineEmits(["openPanel", "openShare", 'edit']);
-type acType = 'cancel-top'| "delete" | "edit" | "detail" | "set-top" | "get-link";
+type acType = 'cancel-top' | "delete" | "edit" | "detail" | "set-top" | "get-link";
 
 const articleStore = useArticleStore();
 const reducerAction = (event: Event) => {
@@ -65,9 +65,11 @@ const tagClick = (tag) => {
     },
   });
 };
-let { article } = toRefs(props);
+let {article} = toRefs(props);
 const updateTime = computed(() => {
-  const time = article.value.updateTime?? article.value.createTime;
+  const memo = unref(article)
+  if (memo.is_topic) return '置顶';
+  const time = memo.createTime;
   const momentTime = moment.utc(time).local();
   if (momentTime.diff(moment(), "day") < 0) {
     return momentTime.format("YYYY-MM-DD HH:mm:ss");
@@ -85,16 +87,16 @@ const updateTime = computed(() => {
         <span class="el-dropdown-link">
           <el-icon class="el-icon--right">
             <svg
-              class="more-action-bar"
-              width="16px"
-              height="16px"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
+                class="more-action-bar"
+                width="16px"
+                height="16px"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill-rule="evenodd"
-                d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
+                  fill-rule="evenodd"
+                  d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
               ></path>
             </svg>
           </el-icon>
@@ -113,15 +115,15 @@ const updateTime = computed(() => {
       <Pin v-show="article.is_topic" class="absolute -right-6 -top-4" theme="outline" size="24" fill="#333"/>
     </div>
     <div
-      v-html="article.content.replace(/[\r\n]/g, '<br />')"
-      class="content"
+        v-html="article.content.replace(/[\r\n]/g, '<br />')"
+        class="content"
     ></div>
     <div class="footer">
       <ul class="tag-view">
         <li
-          v-for="item of article.tags"
-          :key="item.content"
-          @click.prevent="tagClick(item.content)"
+            v-for="item of article.tags"
+            :key="item.content"
+            @click.prevent="tagClick(item.content)"
         >
           #{{ item.content }}
         </li>
@@ -143,19 +145,23 @@ li.card {
     align-items: center;
     line-height: 1.8em;
     color: #8f9193;
+
     svg {
       cursor: pointer;
     }
+
     .time-text {
       display: inline-block;
 
       font-size: 0.8em;
       text-decoration: none;
     }
+
     > .more {
       position: relative;
       height: 1.8em;
       padding: 0 20px;
+
       &:hover ul {
         visibility: visible;
         opacity: 1;
@@ -168,14 +174,18 @@ li.card {
     font-size: 14px;
     overflow: hidden;
   }
+
   .more ul {
     visibility: hidden;
   }
+
   .footer {
     margin-top: 10px;
+
     .tag-view {
       display: flex;
     }
+
     .tag-view > li {
       @apply mx-1 inline-block h-full cursor-pointer;
       color: #5783f7;
@@ -183,6 +193,7 @@ li.card {
       padding: 4px;
       font-size: 12px;
       border-radius: 3px;
+
       &:hover {
         color: #eef3fe;
         background-color: #5783f7;
