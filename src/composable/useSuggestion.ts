@@ -122,7 +122,6 @@ export function useSuggestion(
                 const char = inputValue[i]
                 if (char === '#') {
                     partialPatternRef.value = inputValue.slice(i + 1, selectionEnd)
-                    console.log(unref(partialPatternRef), isEmpty(unref(filteredList)))
                     if (isEmpty(unref(filteredList))) return;
                     shouldSuggestionShow.value = true
                     return
@@ -146,7 +145,9 @@ export function useSuggestion(
         if (target instanceof HTMLSpanElement) {
             const targetValue = target.innerText;
             // 将联想框中的内容添加到textarea中
-            insertContent(targetValue + " ");
+            const {value: partial} = partialPatternRef
+            const leftContent = `${targetValue.slice(partial.length)} `
+            insertContent(leftContent);
             shouldSuggestionShow.value = false
         }
     };
