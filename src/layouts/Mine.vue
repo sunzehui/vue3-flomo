@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import LeftPanel from "@/components/LeftPanel.vue";
+import LeftPanel from "@/components/left-panel/index.vue";
 </script>
 
 <template>
   <div class="wrapper">
-    <LeftPanel />
+    <LeftPanel/>
     <main>
       <router-view v-slot="{ Component }">
         <keep-alive>
-          <component :is="Component" :key="$route.name" />
+          <component :is="Component" :key="$route.name"/>
         </keep-alive>
       </router-view>
     </main>
@@ -22,10 +22,12 @@ import LeftPanel from "@/components/LeftPanel.vue";
   i {
     font-style: normal;
   }
+
   main {
     width: 640px;
   }
 }
+
 @media screen and (max-width: 650px) {
   .wrapper main {
     margin-left: 0 !important;
