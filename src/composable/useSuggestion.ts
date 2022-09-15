@@ -2,7 +2,7 @@ import {px2number} from "@/utils/Tool";
 import {useArticleStore} from "@/store/article";
 import {storeToRefs} from "pinia";
 import {computed, nextTick, ref, Ref, unref, watch, watchEffect} from "vue";
-import {useEventListener} from "@vueuse/core";
+import {onClickOutside, useEventListener} from "@vueuse/core";
 import {isEmpty} from "lodash-es";
 import {whenWatch} from "@/utils/when";
 
@@ -133,12 +133,9 @@ export function useSuggestion(
 
     useEventListener(textareaRef, "keydown", onKeyDownEvent);
     useEventListener(textareaRef, "focus", () => syncPartialPattern());
-    useEventListener(document, "click", (evt) => {
-        if (evt.target !== textareaRef.value) {
-            shouldSuggestionShow.value = false;
-        }
-    });
     useEventListener(textareaRef, "input", syncPartialPattern);
+
+    onClickOutside(textareaRef, () => shouldSuggestionShow.value = false)
 
     const handleItemClick = ($event: Event) => {
         const target = ($event.target as HTMLSpanElement);

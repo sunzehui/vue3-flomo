@@ -13,7 +13,7 @@ specifiers:
   '@types/node': ^17.0.35
   '@types/tailwindcss': ^2.2.1
   '@vee-validate/rules': ^4.5.11
-  '@vitejs/plugin-vue': ^1.10.2
+  '@vitejs/plugin-vue': ^3.1.0
   '@vitejs/plugin-vue-jsx': ^2.0.1
   '@vue/compiler-sfc': ^3.2.6
   '@vueuse/core': ^8.6.0
@@ -37,6 +37,7 @@ specifiers:
   vite-plugin-style-import: ~2.0.0
   vue: ^3.2.6
   vue-router: ^4.0.11
+  vue-tsc: ^0.38.2
   vue-use: ^0.2.0
 
 dependencies:
@@ -44,6 +45,7 @@ dependencies:
   '@icon-park/vue-next': registry.npmmirror.com/@icon-park/vue-next/1.4.2_vue@3.2.39
   '@types/lodash': registry.npmmirror.com/@types/lodash/4.14.184
   '@vee-validate/rules': registry.npmmirror.com/@vee-validate/rules/4.6.7
+  '@vitejs/plugin-vue': registry.npmmirror.com/@vitejs/plugin-vue/3.1.0_vite@3.1.0+vue@3.2.39
   '@vitejs/plugin-vue-jsx': registry.npmmirror.com/@vitejs/plugin-vue-jsx/2.0.1_vite@3.1.0+vue@3.2.39
   '@vueuse/core': registry.npmmirror.com/@vueuse/core/8.9.4_vue@3.2.39
   axios: registry.npmmirror.com/axios/0.27.2
@@ -70,7 +72,6 @@ devDependencies:
   '@tailwindcss/typography': registry.npmmirror.com/@tailwindcss/typography/0.4.1_tailwindcss@2.2.19
   '@types/node': registry.npmmirror.com/@types/node/17.0.45
   '@types/tailwindcss': registry.npmmirror.com/@types/tailwindcss/2.2.4
-  '@vitejs/plugin-vue': registry.npmmirror.com/@vitejs/plugin-vue/1.10.2_vite@3.1.0
   '@vue/compiler-sfc': registry.npmmirror.com/@vue/compiler-sfc/3.2.39
   autoprefixer: registry.npmmirror.com/autoprefixer/10.4.5_postcss@8.4.16
   consola: registry.npmmirror.com/consola/2.15.3
@@ -79,6 +80,7 @@ devDependencies:
   tailwindcss: registry.npmmirror.com/tailwindcss/2.2.19_jdv2kcevlc6fhwoifviruepb3e
   vite: registry.npmmirror.com/vite/3.1.0_sass@1.54.9
   vite-plugin-style-import: registry.npmmirror.com/vite-plugin-style-import/2.0.0_vite@3.1.0
+  vue-tsc: registry.npmmirror.com/vue-tsc/0.38.9
 
 packages:
 
@@ -736,16 +738,56 @@ packages:
       - supports-color
     dev: false
 
-  registry.npmmirror.com/@vitejs/plugin-vue/1.10.2_vite@3.1.0:
-    resolution: {integrity: sha512-/QJ0Z9qfhAFtKRY+r57ziY4BSbGUTGsPRMpB/Ron3QPwBZM4OZAZHdTa4a8PafCwU5DTatXG8TMDoP8z+oDqJw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vitejs/plugin-vue/-/plugin-vue-1.10.2.tgz}
-    id: registry.npmmirror.com/@vitejs/plugin-vue/1.10.2
+  registry.npmmirror.com/@vitejs/plugin-vue/3.1.0_vite@3.1.0+vue@3.2.39:
+    resolution: {integrity: sha512-fmxtHPjSOEIRg6vHYDaem+97iwCUg/uSIaTzp98lhELt2ISOQuDo2hbkBdXod0g15IhfPMQmAxh4heUks2zvDA==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vitejs/plugin-vue/-/plugin-vue-3.1.0.tgz}
+    id: registry.npmmirror.com/@vitejs/plugin-vue/3.1.0
     name: '@vitejs/plugin-vue'
-    version: 1.10.2
-    engines: {node: '>=12.0.0'}
+    version: 3.1.0
+    engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: ^2.5.10
+      vite: ^3.0.0
+      vue: ^3.2.25
     dependencies:
       vite: registry.npmmirror.com/vite/3.1.0_sass@1.54.9
+      vue: registry.npmmirror.com/vue/3.2.39
+    dev: false
+
+  registry.npmmirror.com/@volar/code-gen/0.38.9:
+    resolution: {integrity: sha512-n6LClucfA+37rQeskvh9vDoZV1VvCVNy++MAPKj2dT4FT+Fbmty/SDQqnsEBtdEe6E3OQctFvA/IcKsx3Mns0A==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@volar/code-gen/-/code-gen-0.38.9.tgz}
+    name: '@volar/code-gen'
+    version: 0.38.9
+    dependencies:
+      '@volar/source-map': registry.npmmirror.com/@volar/source-map/0.38.9
+    dev: true
+
+  registry.npmmirror.com/@volar/source-map/0.38.9:
+    resolution: {integrity: sha512-ba0UFoHDYry+vwKdgkWJ6xlQT+8TFtZg1zj9tSjj4PykW1JZDuM0xplMotLun4h3YOoYfY9K1huY5gvxmrNLIw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@volar/source-map/-/source-map-0.38.9.tgz}
+    name: '@volar/source-map'
+    version: 0.38.9
+    dev: true
+
+  registry.npmmirror.com/@volar/vue-code-gen/0.38.9:
+    resolution: {integrity: sha512-tzj7AoarFBKl7e41MR006ncrEmNPHALuk8aG4WdDIaG387X5//5KhWC5Ff3ZfB2InGSeNT+CVUd74M0gS20rjA==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@volar/vue-code-gen/-/vue-code-gen-0.38.9.tgz}
+    name: '@volar/vue-code-gen'
+    version: 0.38.9
+    dependencies:
+      '@volar/code-gen': registry.npmmirror.com/@volar/code-gen/0.38.9
+      '@volar/source-map': registry.npmmirror.com/@volar/source-map/0.38.9
+      '@vue/compiler-core': registry.npmmirror.com/@vue/compiler-core/3.2.39
+      '@vue/compiler-dom': registry.npmmirror.com/@vue/compiler-dom/3.2.39
+      '@vue/shared': registry.npmmirror.com/@vue/shared/3.2.39
+    dev: true
+
+  registry.npmmirror.com/@volar/vue-typescript/0.38.9:
+    resolution: {integrity: sha512-iJMQGU91ADi98u8V1vXd2UBmELDAaeSP0ZJaFjwosClQdKlJQYc6MlxxKfXBZisHqfbhdtrGRyaryulnYtliZw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@volar/vue-typescript/-/vue-typescript-0.38.9.tgz}
+    name: '@volar/vue-typescript'
+    version: 0.38.9
+    dependencies:
+      '@volar/code-gen': registry.npmmirror.com/@volar/code-gen/0.38.9
+      '@volar/source-map': registry.npmmirror.com/@volar/source-map/0.38.9
+      '@volar/vue-code-gen': registry.npmmirror.com/@volar/vue-code-gen/0.38.9
+      '@vue/compiler-sfc': registry.npmmirror.com/@vue/compiler-sfc/3.2.39
+      '@vue/reactivity': registry.npmmirror.com/@vue/reactivity/3.2.39
     dev: true
 
   registry.npmmirror.com/@vue/babel-helper-vue-transform-on/1.0.2:
@@ -2976,6 +3018,17 @@ packages:
       '@vue/devtools-api': registry.npmmirror.com/@vue/devtools-api/6.2.1
       vue: registry.npmmirror.com/vue/3.2.39
     dev: false
+
+  registry.npmmirror.com/vue-tsc/0.38.9:
+    resolution: {integrity: sha512-Yoy5phgvGqyF98Fb4mYqboR4Q149jrdcGv5kSmufXJUq++RZJ2iMVG0g6zl+v3t4ORVWkQmRpsV4x2szufZ0LQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-tsc/-/vue-tsc-0.38.9.tgz}
+    name: vue-tsc
+    version: 0.38.9
+    hasBin: true
+    peerDependencies:
+      typescript: '*'
+    dependencies:
+      '@volar/vue-typescript': registry.npmmirror.com/@volar/vue-typescript/0.38.9
+    dev: true
 
   registry.npmmirror.com/vue-use/0.2.0:
     resolution: {integrity: sha512-5AXDyzSQOSTL5MpiDEDZ9OiBCboM1KhbXFA+zgmrYgdSbZn9ntfBtAKQt4ous8xZOKiGehaNIB6w4qHEQ3kdmg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-use/-/vue-use-0.2.0.tgz}
