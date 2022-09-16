@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { defineComponent, reactive, ref, unref } from "vue";
-import { reactify, useClipboard } from "@vueuse/core";
-import { ElButton, ElDrawer, ElMessage } from "element-plus";
-import { computed } from "vue";
+import {defineComponent, reactive, ref, unref} from "vue";
+import {reactify, useClipboard} from "@vueuse/core";
+import {ElButton, ElDrawer, ElMessage} from "element-plus";
+import {computed} from "vue";
 
 const props = defineProps({
   content: {
@@ -20,11 +20,12 @@ const show = computed({
   set: (val) => emit("update:show", val),
 });
 
-const { copy, text } = useClipboard();
+const {copy, text} = useClipboard();
 
 const open = () => {
   show.value = true;
 };
+
 async function copyMemo() {
   try {
     await copy(props.content || "");
@@ -33,13 +34,14 @@ async function copyMemo() {
     ElMessage.error("sorry, 你的浏览器不支持复制，请手动复制！");
   }
 }
+
 defineExpose({
   open,
 });
 </script>
 
 <template>
-  <ElDrawer v-model="show" custom-class="detail-drawer">
+  <ElDrawer v-model="show" custom-class="detail-drawer" :lock-scroll="false">
     <template #header>
       <h4>MEMO</h4>
     </template>
