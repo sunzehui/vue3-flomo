@@ -83,16 +83,19 @@ const loading = ref(false);
         name="text-input"
         ref="textareaRef"
     ></textarea>
-    <div
-        class="suggestion"
-        ref="suggestionRef"
-        v-show="shouldSuggestionShow"
-        @click="handleItemClick($event)"
-    >
-      <template v-for="item of suggestionList">
-        <span :class="{ active: item.active }">{{ item.content }}</span>
-      </template>
-    </div>
+    <transition name="fade">
+      <div
+          class="suggestion"
+          ref="suggestionRef"
+          v-show="shouldSuggestionShow"
+          @click="handleItemClick($event)"
+      >
+        <template v-for="item of suggestionList">
+          <span :class="{ active: item.active }">{{ item.content }}</span>
+        </template>
+      </div>
+    </transition>
+
     <div class="bar">
       <span class="tag-icon" @click="handleIconClick($event)"> # </span>
       <button
@@ -186,6 +189,15 @@ textarea {
   &.show {
     display: block;
   }
+}
+
+.fade-enter-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .loading-box {
