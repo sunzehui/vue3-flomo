@@ -28,8 +28,6 @@ export function useSuggestion(
     const {
         insertContent, textareaContent, computeSelectPos, textareaRef
     } = editor;
-    // 记录上次是否触发列表的状态
-    let lastKeyEmit = false;
 
     // 隐藏/显示联想框
     const setSuggestionShow = (toShow = true) => {
@@ -52,7 +50,6 @@ export function useSuggestion(
         }
         suggestionRef.value.style.top = "" + offsetTop;
         suggestionRef.value.style.left = "" + offsetLeft;
-        lastKeyEmit = true;
         return false;
     };
     watch(shouldSuggestionShow, setSuggestionShow);
