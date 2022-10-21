@@ -39,18 +39,17 @@ export const useUserStore = defineStore("user", {
         expires,
       };
     },
-    getUserInfo() {
-      ApiUserInfo().then((res) => {
-        const { username } = res.data;
-        this.userInfo.username = username;
-      });
+    async getUserInfo() {
+      const res = await ApiUserInfo();
+      const { username } = res.data;
+      this.userInfo.username = username;
+      return res;
     },
-    getStatisticInfo() {
-      ApiUserStatistic().then((res) => {
-        const { memo_count, daily_grid } = res.data;
-        this.userInfo.memo_count = memo_count;
-        this.userInfo.daily_grid = daily_grid;
-      });
+    async getStatisticInfo() {
+      const res = await ApiUserStatistic();
+      const { memo_count, daily_grid } = res.data;
+      this.userInfo.memo_count = memo_count;
+      this.userInfo.daily_grid = daily_grid;
     },
   },
   getters: {

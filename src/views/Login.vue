@@ -49,13 +49,13 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="min-h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-    <div class="max-w-xs w-full space-y-6 -translate-y-1/3">
+  <div class="flex items-center justify-center min-h-full px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-xs space-y-6 -translate-y-1/3">
       <div>
-        <h3 class="text-3xl text-center font-bold">flomo</h3>
+        <h3 class="text-3xl font-bold text-center">flomo</h3>
       </div>
       <VForm class="mt-8 space-y-2" @submit="onSubmit">
-        <div class="rounded-md shadow-sm space-y-3">
+        <div class="space-y-3 rounded-md shadow-sm">
           <div>
             <label for="email-address" class="sr-only">手机号码/邮箱</label>
             <VField
@@ -70,7 +70,7 @@ const onSubmit = async () => {
             />
             <ErrorMessage
               name="email"
-              class="text-red-500 text-xs italic"
+              class="text-xs italic text-red-500"
             ></ErrorMessage>
           </div>
           <div class="relative">
@@ -88,7 +88,7 @@ const onSubmit = async () => {
 
             <ErrorMessage
               name="password"
-              class="text-red-500 text-xs italic"
+              class="text-xs italic text-red-500"
             ></ErrorMessage>
             <div class="eye_open" @click="eyeShow = false" v-show="eyeShow">
               <svg
@@ -114,7 +114,7 @@ const onSubmit = async () => {
             <div class="eye_close" @click="eyeShow = true" v-show="!eyeShow">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
+                class="w-6 h-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="gray"
@@ -138,7 +138,7 @@ const onSubmit = async () => {
             登录
           </button>
         </div>
-        <div class="w-full flex justify-center gap-x-5">
+        <div class="flex justify-center w-full gap-x-5">
           <router-link to="/logup" class="text-blue-400"> 注册 </router-link>
           <router-link to="/reset" class="text-blue-400">
             忘记密码

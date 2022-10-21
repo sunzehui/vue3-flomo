@@ -1,32 +1,30 @@
 <script lang="ts" setup>
-import UserTitle from "../components/UserTitle.vue";
-import UserStatistical from "../components/UserStatistical.vue";
+import UserTitle from "@/components/UserTitle.vue";
+import UserStatistical from "@/components/UserStatistical.vue";
 import {
   Menu,
   Comment,
   TrendCharts,
-  ArrowRight,
   DeleteFilled,
-  Refresh,
-  Search,
 } from "@element-plus/icons-vue";
-import Tag from "../components/Tag.vue";
-
-import DailyRecord from "../components/DailyRecord.vue";
+import Tag from "@/components/Tag.vue";
+import DailyRecord from "@/components/DailyRecord.vue";
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, watch, computed } from "vue";
 import { useUserStore } from "@/store/user";
 import { useArticleStore } from "@/store/article";
-import { useToggle } from "@vueuse/core";
+import { useArrayFilter } from "@vueuse/core";
 const userStore = useUserStore();
 const articleStore = useArticleStore();
 const router = useRouter();
+const route = useRoute();
+
 const updateQuery = (route) => {
   router.push(route);
 };
+watch(() => route.query, articleStore.getTagList);
 const page = computed(() => {
-  const thisPage = router.currentRoute.value.query.source || "default";
-  return router.currentRoute.value.path;
+  return route.path;
 });
 
 onMounted(() => {
@@ -34,19 +32,8 @@ onMounted(() => {
   userStore.getUserInfo();
   articleStore.getTagList();
 });
-const topicTag = computed(() =>
-  articleStore.tagList.filter((item) => item.is_topics)
-);
-const tagList = computed(() =>
-  articleStore.tagList.filter((item) => !item.is_topics)
-);
-const route = useRoute();
-watch(
-  () => route.query,
-  (newVal) => {
-    articleStore.getTagList();
-  }
-);
+const topicTag = useArrayFilter(articleStore.tagList, (item) => item.is_topics);
+const tagList = useArrayFilter(articleStore.tagList, (item) => !item.is_topics);
 </script>
 
 <template>

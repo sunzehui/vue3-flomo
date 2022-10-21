@@ -15,7 +15,7 @@ export function ApiTagUpdate(oldTagName, data: Partial<tagType>) {
     data,
   });
 }
-export function ApiList(data) {
+export function ApiList(data?) {
   return axios<Article[]>({
     url: "/api/article",
     method: "get",

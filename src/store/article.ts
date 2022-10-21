@@ -17,39 +17,39 @@ export const useArticleStore = defineStore("article", {
     };
   },
   actions: {
-    resetList() {
-      Promise.all([this.getArticleList(), this.getTagList()]);
+    async resetList() {
+      return await Promise.all([this.getArticleList(), this.getTagList()]);
     },
-    getTagList() {
-      ApiTagList().then((res) => {
-        this.tagList = res.data;
-      });
+    async getTagList() {
+      const res = await ApiTagList();
+      this.tagList = res.data;
+      return res.data;
     },
-    getArticleList({ tag } = { tag: "" }) {
-      ApiArticleList({ tag }).then((res) => {
-        this.articleList = res.data;
-      });
+    async getArticleList(query?) {
+      const res = await ApiArticleList(query);
+      this.articleList = res.data;
+      return res.data;
     },
-    deleteArticle(id: number) {
-      ApiDeleteArticle(id).then((res) => {
-        if (res.code === 0) {
-          ElMessage.success("删除成功");
-        } else if (res.code === -1) {
-          ElMessage.success("删除失败，请稍后再试");
-        }
-        this.resetList();
-      });
+    async deleteArticle(id: number) {
+      const res = await ApiDeleteArticle(id);
+      if (res.code === 0) {
+        ElMessage.success("删除成功");
+      } else if (res.code === -1) {
+        ElMessage.success("删除失败，请稍后再试");
+        return false;
+      }
+      await this.resetList();
+      return true;
     },
-    save(data) {
-      return ApiSave(data).then((res) => {
-        if (res.code === 0) {
-          ElMessage.success("保存成功");
-        } else if (res.code === -1) {
-          ElMessage.success("保存失败，请稍后再试");
-        }
-        this.resetList();
-        return Promise.resolve(res);
-      });
+    async save(data) {
+      const res = await ApiSave(data);
+      if (res.code === 0) {
+        ElMessage.success("保存成功");
+      } else if (res.code === -1) {
+        ElMessage.success("保存失败，请稍后再试");
+      }
+      await this.resetList();
+      return res;
     },
     async tagRename(oldName: string, newName: string) {
       return await ApiTagUpdate(oldName, { content: newName });
