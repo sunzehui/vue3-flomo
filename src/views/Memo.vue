@@ -1,27 +1,41 @@
 <script lang="ts" setup>
 import { Refresh, Search } from "@element-plus/icons-vue";
-import { onMounted, reactive, watch } from "vue";
-import Editer from "@/components/Editer.vue";
-import MemoCard from "@/components/MemoCard.vue";
+import { computed, ref, unref, watch, watchEffect } from "vue";
+import Editor from "../components/Editor.vue";
+import MemoCardOrEditor from "@/components/MemoCardOrEditor";
 import MemoTitle from "@/components/MemoTitle.vue";
 import { useArticleStore } from "@/store/article";
 import { storeToRefs } from "pinia";
-import { useRoute } from "vue-router";
+import DetailPanel from "@/components/DetailPanel.vue";
+import ShareCard from "@/components/ShareCard.vue";
+import { reactive, provide } from "vue";
+import { EditorType } from "@/types/card-type";
 
 const articleStore = useArticleStore();
+const { articleListEnhance } = storeToRefs(articleStore);
+const props = defineProps<{ tag?: string }>();
+provide("tag", props.tag);
 
-const { articleList } = storeToRefs(articleStore);
+watchEffect(() => {
+  const tag = props.tag;
+  articleStore.setActiveTag(tag);
+  articleStore.getArticleList({ tag });
+});
+const panelShow = ref(false);
+const panelContent = ref("");
+const handleOpenPanel = (val) => {
+  panelContent.value = val;
+  panelShow.value = true;
+};
 
-const route = useRoute();
-
-watch(
-  () => route.query,
-  (newVal) => {
-    const { tag } = newVal;
-    articleStore.getArticleList({ tag } as { tag: string });
-  },
-  { immediate: true }
-);
+const shareState = reactive({
+  show: false,
+  memo: null,
+});
+const handleOpenShare = (val) => {
+  shareState.memo = val;
+  shareState.show = true;
+};
 </script>
 
 <template>
@@ -36,13 +50,23 @@ watch(
       </div>
     </nav>
     <div class="input-container">
-      <Editer />
+      <Editor :type="EditorType.create" />
     </div>
     <ul class="card-container">
-      <template v-for="(memo, index) of articleList" :key="memo.id">
-        <MemoCard :article="memo" :isLast="articleList.length - 1 === index" />
+      <template v-for="memo of articleListEnhance" :key="memo.id">
+        <MemoCardOrEditor
+          @openPanel="handleOpenPanel"
+          @openShare="handleOpenShare"
+          :memo="memo"
+        />
       </template>
     </ul>
+    <DetailPanel v-model:show="panelShow" :content="panelContent" />
+    <ShareCard
+      v-if="shareState.show"
+      v-model:show="shareState.show"
+      :content="shareState.memo"
+    ></ShareCard>
   </div>
 </template>
 
@@ -99,14 +123,14 @@ nav {
 }
 
 .input-container {
-  padding-left: 20px;
+  @apply px-5;
 }
 
 .memo-view {
   height: 100%;
 
   nav {
-    padding-left: 20px;
+    @apply px-5;
   }
 }
 
@@ -114,8 +138,7 @@ nav {
   overflow-y: scroll;
   height: 100%;
   padding-bottom: 300px;
-  padding-left: 20px;
-
+  @apply px-5;
   //谷歌适用
   &::-webkit-scrollbar {
     display: none;

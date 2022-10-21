@@ -1,9 +1,7 @@
-import { createRouter, createWebHistory } from "vue-router";
-import About from "./views/About.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import NotFound from "./views/NotFound.vue";
-export const routes = [
-  // { path: "/", component: Home, meta: { title: "Home" } },
 
+export const routes = [
   {
     path: "/",
     component: () => import("./layouts/Mine.vue"),
@@ -17,6 +15,7 @@ export const routes = [
         path: "/memo",
         meta: { title: "个人主页" },
         name: "memo",
+        props: (route) => ({ tag: route.query.tag }),
         component: () => import("./views/Memo.vue"),
       },
       {
@@ -53,7 +52,7 @@ export const routes = [
   },
 
   { path: "/:path(.*)", component: NotFound },
-];
+] as RouteRecordRaw[];
 export const router = createRouter({
   history: createWebHistory(),
   routes,

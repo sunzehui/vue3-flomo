@@ -1,8 +1,8 @@
 import { createApp } from "vue";
 import "./tailwind.css";
+import "element-plus/theme-chalk/el-overlay.css"; // 遮罩层样式
 import App from "./App.vue";
 import { routes, router } from "./routes";
-import { createRouter, createWebHistory } from "vue-router";
 import applyMiddleware from "./middleware";
 import { createPinia } from "pinia";
 const app = createApp(App);
