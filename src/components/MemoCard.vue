@@ -5,29 +5,36 @@ import {
   reactive,
   ref,
   toRef,
-  toRefs, unref,
+  toRefs,
+  unref,
   watch,
   watchEffect,
 } from "vue";
-import {Article} from "@/types/article";
+import { Article } from "@/types/article";
 import {
   ElDropdown,
   ElDropdownMenu,
   ElDropdownItem,
   ElIcon,
 } from "element-plus";
-import {Pin} from '@icon-park/vue-next'
-import {useArticleStore} from "@/store/article";
-import {useRouter} from "vue-router";
-import moment from "moment";
-import {CardType} from "@/types/card-type";
+import { Pin } from "@icon-park/vue-next";
+import { useArticleStore } from "@/store/article";
+import { useRouter } from "vue-router";
+import dayjs from "dayjs";
+import { CardType } from "@/types/card-type";
 
 const props = defineProps<{
-  article: Article,
-  isLast: Boolean
+  article: Article;
+  isLast: Boolean;
 }>();
-const emit = defineEmits(["openPanel", "openShare", 'edit']);
-type acType = 'cancel-top' | "delete" | "edit" | "detail" | "set-top" | "get-link";
+const emit = defineEmits(["openPanel", "openShare", "edit"]);
+type acType =
+  | "cancel-top"
+  | "delete"
+  | "edit"
+  | "detail"
+  | "set-top"
+  | "get-link";
 
 const articleStore = useArticleStore();
 const reducerAction = (event: Event) => {
@@ -49,8 +56,8 @@ const reducerAction = (event: Event) => {
     case "set-top":
       articleStore.setArticleTop(+props.article.id);
       break;
-    case 'edit':
-      articleStore.setArticleType(+props.article.id, CardType.editor)
+    case "edit":
+      articleStore.setArticleType(+props.article.id, CardType.editor);
       break;
     default:
       break;
@@ -65,13 +72,13 @@ const tagClick = (tag) => {
     },
   });
 };
-let {article} = toRefs(props);
+let { article } = toRefs(props);
 const updateTime = computed(() => {
-  const memo = unref(article)
-  if (memo.is_topic) return '置顶';
+  const memo = unref(article);
+  if (memo.is_topic) return "置顶";
   const time = memo.createTime;
-  const momentTime = moment.utc(time).local();
-  if (momentTime.diff(moment(), "day") < 0) {
+  const momentTime = dayjs().utc(time).local();
+  if (momentTime.diff(dayjs(), "day") < 0) {
     return momentTime.format("YYYY-MM-DD HH:mm:ss");
   }
 
@@ -87,16 +94,16 @@ const updateTime = computed(() => {
         <span class="el-dropdown-link">
           <el-icon class="el-icon--right">
             <svg
-                class="more-action-bar"
-                width="16px"
-                height="16px"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
+              class="more-action-bar"
+              width="16px"
+              height="16px"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                  fill-rule="evenodd"
-                  d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
+                fill-rule="evenodd"
+                d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
               ></path>
             </svg>
           </el-icon>
@@ -104,26 +111,36 @@ const updateTime = computed(() => {
         <template #dropdown>
           <el-dropdown-menu @click="reducerAction">
             <el-dropdown-item data-type="get-link">分享</el-dropdown-item>
-            <el-dropdown-item data-type="cancel-top" v-if="article.is_topic">取消置顶</el-dropdown-item>
-            <el-dropdown-item data-type="set-top" v-if="!article.is_topic">置顶</el-dropdown-item>
+            <el-dropdown-item data-type="cancel-top" v-if="article.is_topic"
+              >取消置顶</el-dropdown-item
+            >
+            <el-dropdown-item data-type="set-top" v-if="!article.is_topic"
+              >置顶</el-dropdown-item
+            >
             <el-dropdown-item data-type="detail">查看详情</el-dropdown-item>
             <el-dropdown-item data-type="edit">编辑</el-dropdown-item>
             <el-dropdown-item data-type="delete">删除</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <Pin v-show="article.is_topic" class="absolute -right-6 -top-4" theme="outline" size="24" fill="#333"/>
+      <Pin
+        v-show="article.is_topic"
+        class="absolute -right-6 -top-4"
+        theme="outline"
+        size="24"
+        fill="#333"
+      />
     </div>
     <div
-        v-html="article.content.replace(/[\r\n]/g, '<br />')"
-        class="content"
+      v-html="article.content.replace(/[\r\n]/g, '<br />')"
+      class="content"
     ></div>
     <div class="footer">
       <ul class="tag-view">
         <li
-            v-for="item of article.tags"
-            :key="item.content"
-            @click.prevent="tagClick(item.content)"
+          v-for="item of article.tags"
+          :key="item.content"
+          @click.prevent="tagClick(item.content)"
         >
           #{{ item.content }}
         </li>
