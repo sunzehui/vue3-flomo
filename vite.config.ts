@@ -1,19 +1,18 @@
-import vue from "@vitejs/plugin-vue";
-import { resolve } from "path";
-import { UserConfigExport, ConfigEnv, loadEnv } from "vite";
+import { resolve } from 'path'
+import vue from '@vitejs/plugin-vue'
+import type { ConfigEnv } from 'vite'
+import { loadEnv } from 'vite'
 
 import {
-  createStyleImportPlugin,
   ElementPlusResolve,
-} from "vite-plugin-style-import";
+  createStyleImportPlugin,
+} from 'vite-plugin-style-import'
 
-export default ({ command, mode }: ConfigEnv): UserConfigExport => {
-  const root = process.cwd();
+export default ({ mode }: ConfigEnv): any => {
+  const root = process.cwd()
 
-  const env = loadEnv(mode, root) as unknown as ImportMetaEnv;
-  setTimeout(() => {
-    console.log(env, mode);
-  }, 2000);
+  const env = loadEnv(mode, root) as unknown as ImportMetaEnv
+
   return {
     plugins: [
       vue(),
@@ -23,21 +22,20 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     ],
     resolve: {
       alias: {
-        "@": resolve(__dirname, "src"),
+        '@': resolve(__dirname, 'src'),
       },
     },
-    base: "./",
+    base: './',
     server: {
       open: false,
-      proxy: env.VITE_PROXY_URL
-        ? {
-            "/api": {
-              target: env.VITE_PROXY_URL,
-              changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/api/, ""),
-            },
-          }
-        : void 0,
+      port: 8080,
+      proxy: env.VITE_PROXY_URL || {
+        '/api': {
+          target: env.VITE_PROXY_URL,
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/api/, ''),
+        },
+      },
     },
-  };
-};
+  }
+}
