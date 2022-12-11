@@ -7,16 +7,30 @@
     },
     "module": "esnext",
     "target": "es6",
-    "lib": ["esnext","dom","es5","ES2015.Promise","ES2015","es2017"],
+    "lib": ["esnext", "dom", "es5", "ES2015.Promise", "ES2015", "es2017"],
     "jsx": "preserve",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
+    "types": [
+      "vite/client"
+    ]
   },
   "exclude": ["node_modules", "dist"],
-  // "include": ["./src/**/*","./src/*"],
   "typeAcquisition": {
-        "include": [
-            "lodash"
-        ]
-    }
+    "include": [
+      "lodash"
+    ]
+  },
+  "vueCompilerOptions": {
+    "target": 3
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/types/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/components/**/src/*.ts",
+    "src/components/**/*.ts"
+  ]
 }

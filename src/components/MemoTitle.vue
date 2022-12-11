@@ -1,62 +1,60 @@
 <script lang="ts" setup>
-import { ApiTagRename, ApiTagUpdate } from "@/api/article";
-import { useArticleStore } from "@/store/article";
-import { Refresh, Search, Check, Edit } from "@element-plus/icons";
-import { useToggle } from "@vueuse/core";
-import { ElMessage } from "element-plus";
-import { computed, ref, watchEffect } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { Check, Edit, Refresh, Search } from '@element-plus/icons-vue'
+import { useToggle } from '@vueuse/core'
+import { ElMessage } from 'element-plus'
+import { computed, ref, watchEffect } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useArticleStore } from '@/store/article'
+import { ApiTagUpdate } from '@/api/article'
 
-const route = useRoute();
+const route = useRoute()
 
-const tagName = computed(() => route.query.tag as string) || ref("");
-const bindTagName = ref("");
+const tagName = computed(() => route.query.tag as string) || ref('')
+const bindTagName = ref('')
 watchEffect(() => {
-  bindTagName.value = route.query.tag as string;
-});
-const router = useRouter();
+  bindTagName.value = route.query.tag as string
+})
+const router = useRouter()
 const goRouter = (query = void 0) => {
   router.push({
-    name: "memo",
+    name: 'memo',
     query,
-  });
-};
-const [isTagEdit, toggeEdit] = useToggle(false);
+  })
+}
+const [isTagEdit, toggeEdit] = useToggle(false)
 const rename = () => {
-  const articleStore = useArticleStore();
+  const articleStore = useArticleStore()
   articleStore.tagRename(tagName.value, bindTagName.value).then((res) => {
-    isTagEdit.value = false;
-    ElMessage.success("修改成功");
+    isTagEdit.value = false
+    ElMessage.success('修改成功')
     goRouter({
       tag: bindTagName.value,
-    });
-  });
-};
+    })
+  })
+}
 </script>
 
 <template>
   <div class="title-wrp">
-    <span @click.prevent="goRouter()" class="title"> MEMO </span>
-    <div style="display: inline" v-if="tagName">
+    <span class="title" @click.prevent="goRouter()"> MEMO </span>
+    <div v-if="tagName" style="display: inline">
       <span class="line">/</span>
       <input
+        v-show="isTagEdit"
+        v-model="bindTagName"
         type="text"
         class="tagEdit"
-        v-model="bindTagName"
-        v-show="isTagEdit"
-      />
+      >
 
-      <b class="lastTag" v-show="!isTagEdit">
-        <span
-          ><label>{{ tagName }}</label></span
-        >
+      <b v-show="!isTagEdit" class="lastTag">
+        <span><label>{{ tagName }}</label></span>
       </b>
       <Edit
-        class="icon"
         v-show="!isTagEdit"
+        class="icon"
         @click.prevent="isTagEdit = true"
       />
-      <Check class="icon" v-show="isTagEdit" @click.prevent="rename" />
+      <Check v-show="isTagEdit" class="icon" @click.prevent="rename" />
     </div>
     <Refresh class="icon" @click.prevent="goRouter()" />
   </div>

@@ -1,59 +1,58 @@
 <script lang="ts" setup>
-import UserTitle from "../components/UserTitle.vue";
-import UserStatistical from "../components/UserStatistical.vue";
 import {
-  Menu,
-  Comment,
-  TrendCharts,
   ArrowRight,
+  Comment,
   DeleteFilled,
+  Menu,
   Refresh,
   Search,
-} from "@element-plus/icons";
-import Tag from "../components/Tag.vue";
-import { ElDialog, ElButton, ElMessage } from "element-plus";
+  TrendCharts,
+} from '@element-plus/icons-vue'
+import { ElButton, ElDialog, ElMessage } from 'element-plus'
+import { useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, provide, reactive, watch } from 'vue'
+import { useToggle } from '@vueuse/core'
+import UserTitle from '../components/UserTitle.vue'
+import UserStatistical from '../components/UserStatistical.vue'
+import Tag from '../components/Tag.vue'
+import DailyRecord from '../components/DailyRecord.vue'
+import { useUserStore } from '@/store/user'
+import { useArticleStore } from '@/store/article'
 
-import DailyRecord from "../components/DailyRecord.vue";
-import { useRoute, useRouter } from "vue-router";
-import { computed, reactive } from "@vue/reactivity";
-import { onMounted, provide, watch } from "vue";
-import { useUserStore } from "@/store/user";
-import { useArticleStore } from "@/store/article";
-import { useToggle } from "@vueuse/core";
-const userStore = useUserStore();
-const articleStore = useArticleStore();
-const router = useRouter();
+const userStore = useUserStore()
+const articleStore = useArticleStore()
+const router = useRouter()
 const updateQuery = (route) => {
-  router.push(route);
-};
+  router.push(route)
+}
 const page = computed(() => {
-  const thisPage = router.currentRoute.value.query.source || "default";
-  return router.currentRoute.value.path;
-});
+  const thisPage = router.currentRoute.value.query.source || 'default'
+  return router.currentRoute.value.path
+})
 
 onMounted(() => {
-  userStore.getStatisticInfo();
-  userStore.getUserInfo();
-  articleStore.getTagList();
-});
+  userStore.getStatisticInfo()
+  userStore.getUserInfo()
+  articleStore.getTagList()
+})
 const topicTag = computed(() =>
-  articleStore.tagList.filter((item) => item.is_topics)
-);
+  articleStore.tagList.filter(item => item.is_topics),
+)
 const tagList = computed(() =>
-  articleStore.tagList.filter((item) => !item.is_topics)
-);
-const route = useRoute();
+  articleStore.tagList.filter(item => !item.is_topics),
+)
+const route = useRoute()
 watch(
   () => route.query,
   (newVal) => {
-    articleStore.getTagList();
-  }
-);
+    articleStore.getTagList()
+  },
+)
 </script>
 
 <template>
   <div class="left">
-    <UserTitle :username="userStore.username" :isPro="true" />
+    <UserTitle :username="userStore.username" :is-pro="true" />
     <UserStatistical
       :memo="userStore.memo_count.memoCount"
       :tag="userStore.memo_count.tagCount"
@@ -95,23 +94,31 @@ watch(
       置顶常用标签于此，以便访问。
     </div>
     <div v-if="topicTag.length" class="topic-tag">
-      <h4 class="tag-title">置顶标签</h4>
+      <h4 class="tag-title">
+        置顶标签
+      </h4>
       <ul class="tag-list">
-        <li class="relative" v-for="tag in topicTag" :key="tag.id">
-          <Tag :link="tag.content" :isTopic="tag.is_topics">{{
-            tag.content
-          }}</Tag>
+        <li v-for="tag in topicTag" :key="tag.id" class="relative">
+          <Tag :link="tag.content" :is-topic="tag.is_topics">
+            {{
+              tag.content
+            }}
+          </Tag>
         </li>
       </ul>
     </div>
 
     <div class="normal-tag">
-      <h4 class="tag-title">全部标签</h4>
+      <h4 class="tag-title">
+        全部标签
+      </h4>
       <ul class="tag-list">
-        <li class="relative" v-for="tag in tagList" :key="tag.id">
-          <Tag :link="tag.content" :isTopic="tag.is_topics">{{
-            tag.content
-          }}</Tag>
+        <li v-for="tag in tagList" :key="tag.id" class="relative">
+          <Tag :link="tag.content" :is-topic="tag.is_topics">
+            {{
+              tag.content
+            }}
+          </Tag>
         </li>
       </ul>
     </div>
@@ -194,6 +201,7 @@ i {
   }
 }
 </style>
+
 <style>
 /* .el-overlay-dialog {
   z-index: 999;

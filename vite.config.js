@@ -1,6 +1,5 @@
 import { resolve } from 'path'
 import vue from '@vitejs/plugin-vue'
-import type { ConfigEnv } from 'vite'
 import { loadEnv } from 'vite'
 
 import {
@@ -8,10 +7,10 @@ import {
   createStyleImportPlugin,
 } from 'vite-plugin-style-import'
 
-export default ({ mode }: ConfigEnv): any => {
+export default ({ mode }) => {
   const root = process.cwd()
 
-  const env = loadEnv(mode, root) as unknown as ImportMetaEnv
+  const env = loadEnv(mode, root)
 
   return {
     plugins: [
@@ -29,7 +28,7 @@ export default ({ mode }: ConfigEnv): any => {
     server: {
       open: false,
       port: 8080,
-      proxy: env.VITE_PROXY_URL || {
+      proxy: {
         '/api': {
           target: env.VITE_PROXY_URL,
           changeOrigin: true,

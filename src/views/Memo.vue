@@ -1,30 +1,30 @@
 <script lang="ts" setup>
-import { Refresh, Search } from "@element-plus/icons";
-import { onMounted, reactive, watch } from "vue";
-import Editer from "../components/Editer.vue";
-import MemoCard from "../components/MemoCard.vue";
-import MemoTitle from "@/components/MemoTitle.vue";
-import { useArticleStore } from "@/store/article";
-import { storeToRefs } from "pinia";
-import { useRoute } from "vue-router";
+// import { Refresh, Search } from '@element-plus/icons-vue'
+import { onMounted, reactive, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useRoute } from 'vue-router'
+import Editor from '../components/Editer.vue'
+import MemoCard from '../components/MemoCard.vue'
+import MemoTitle from '@/components/MemoTitle.vue'
+import { useArticleStore } from '@/store/article'
 
-const articleStore = useArticleStore();
+const articleStore = useArticleStore()
 
-const { articleList } = storeToRefs(articleStore);
+const { articleList } = storeToRefs(articleStore)
 
-const route = useRoute();
+const route = useRoute()
 watch(
   () => route.query,
   (newVal) => {
-    const { tag } = newVal;
-    if (tag) {
-      articleStore.getArticleList({ tag } as { tag: string });
-    } else {
-      articleStore.getArticleList();
-    }
+    const { tag } = newVal
+    if (tag)
+      articleStore.getArticleList({ tag } as { tag: string })
+
+    else
+      articleStore.getArticleList()
   },
-  { immediate: true }
-);
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -32,16 +32,16 @@ watch(
     <nav>
       <MemoTitle />
       <div class="input-wrapper">
-        <input type="text" />
+        <input type="text">
         <i><Search /></i>
       </div>
     </nav>
     <div class="input-container">
-      <Editer />
+      <Editor />
     </div>
     <ul class="card-container">
       <template v-for="(memo, index) of articleList" :key="memo.id">
-        <MemoCard :article="memo" :isLast="articleList.length - 1 === index" />
+        <MemoCard :article="memo" :is-last="articleList.length - 1 === index" />
       </template>
     </ul>
   </div>
