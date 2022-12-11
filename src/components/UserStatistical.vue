@@ -1,24 +1,33 @@
 <script lang="ts" setup>
-import { toRefs } from "vue";
-const Props = defineProps<{
-  memo: number;
-  tag: number;
-  day: number;
-}>();
-const { memo, tag, day } = toRefs(Props);
+import { toRefs } from 'vue'
+import { useUserStore } from '@/store/user'
+const { memo_count } = toRefs(useUserStore())
+console.log(memo_count)
+
+// memo: number;
+// tag: number;
+// day: number;
+const { memo, tag, day } = memo_count
 </script>
+
 <template>
   <div class="statistical">
     <div class="memo-num num-jar">
-      <div class="num">{{ memo }}</div>
+      <div class="num">
+        {{ memo }}
+      </div>
       <span>MEMO</span>
     </div>
     <div class="tag-num num-jar">
-      <div class="num">{{ tag }}</div>
+      <div class="num">
+        {{ tag }}
+      </div>
       <span>TAG</span>
     </div>
     <div class="day-num num-jar">
-      <div class="num">{{ day }}</div>
+      <div class="num">
+        {{ day }}
+      </div>
       <span>DAY</span>
     </div>
   </div>

@@ -1,58 +1,53 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { Form as VForm, Field as VField, ErrorMessage } from "vee-validate";
-import { useUserStore } from "@/store/user";
-import { useRouter } from "vue-router";
-import { ApiUserLogin } from "@/api/user";
+import { ref } from 'vue'
+import { ErrorMessage, Field as VField, Form as VForm } from 'vee-validate'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/store/user'
+import { ApiUserLogin } from '@/api/user'
 
-const username = ref("");
-const password = ref("");
+const username = ref('')
+const password = ref('')
 
-const eyeShow = ref(false);
+const eyeShow = ref(false)
 const usernameRule = (username) => {
-  const isEmpty = username.length === 0;
-  if (isEmpty) {
-    return "用户名不能为空！";
-  }
-  const isEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(username);
-  if (isEmail) {
-    return true;
-  }
-  const isValidName = /^[a-zA-Z0-9]{6,18}$/.test(username);
-  if (isValidName) {
-    return true;
-  }
-  return "用户名不符合规范，请检查！";
-};
+  const isEmpty = username.length === 0
+  if (isEmpty)
+    return '用户名不能为空！'
+
+  const isEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(username)
+  if (isEmail)
+    return true
+
+  const isValidName = /^[a-zA-Z0-9]{6,18}$/.test(username)
+  if (isValidName)
+    return true
+
+  return '用户名不符合规范，请检查！'
+}
 
 const passwordRule = (password) => {
-  const notEmpty = password.length > 0;
-  const isValid = /(?=^.{6,}$).*$/.test(password);
-  return notEmpty && isValid;
-};
-const router = useRouter();
-const userStore = useUserStore();
+  const notEmpty = password.length > 0
+  const isValid = /(?=^.{6,}$).*$/.test(password)
+  return notEmpty && isValid
+}
+const { login } = useUserStore()
+const router = useRouter()
 
 const onSubmit = async () => {
-  const user = await ApiUserLogin({
-    username: username.value,
-    password: password.value,
-  });
+  const isLogin = await login(username, password)
 
-  if (user) {
-    userStore.setToken(user.data.token);
-    router.push({
-      path: "/memo",
-    });
-  }
-};
+  if (isLogin)
+    router.push({ path: '/' })
+}
 </script>
 
 <template>
   <div class="min-h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
     <div class="max-w-xs w-full space-y-6 -translate-y-1/3">
       <div>
-        <h3 class="text-3xl text-center font-bold">flomo</h3>
+        <h3 class="text-3xl text-center font-bold">
+          flomo
+        </h3>
       </div>
       <VForm class="mt-8 space-y-2" @submit="onSubmit">
         <div class="rounded-md shadow-sm space-y-3">
@@ -60,28 +55,28 @@ const onSubmit = async () => {
             <label for="email-address" class="sr-only">手机号码/邮箱</label>
             <VField
               id="email-address"
+              v-model="username"
               name="email"
               type="email"
               autocomplete="email"
               :rules="usernameRule"
-              v-model="username"
               class="flomo-input on-active"
               placeholder="手机号码/邮箱"
             />
             <ErrorMessage
               name="email"
               class="text-red-500 text-xs italic"
-            ></ErrorMessage>
+            />
           </div>
           <div class="relative">
             <label for="password" class="sr-only">密码</label>
             <VField
               id="password"
+              v-model="password"
               name="password"
               :type="eyeShow ? 'text' : 'password'"
               autocomplete="current-password"
               :rules="passwordRule"
-              v-model="password"
               class="flomo-input on-active"
               placeholder="密码"
             />
@@ -89,8 +84,8 @@ const onSubmit = async () => {
             <ErrorMessage
               name="password"
               class="text-red-500 text-xs italic"
-            ></ErrorMessage>
-            <div class="eye_open" @click="eyeShow = false" v-show="eyeShow">
+            />
+            <div v-show="eyeShow" class="eye_open" @click="eyeShow = false">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -111,7 +106,7 @@ const onSubmit = async () => {
               </svg>
             </div>
 
-            <div class="eye_close" @click="eyeShow = true" v-show="!eyeShow">
+            <div v-show="!eyeShow" class="eye_close" @click="eyeShow = true">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-6 w-6"
@@ -139,7 +134,9 @@ const onSubmit = async () => {
           </button>
         </div>
         <div class="w-full flex justify-center gap-x-5">
-          <router-link to="/logup" class="text-blue-400"> 注册 </router-link>
+          <router-link to="/logup" class="text-blue-400">
+            注册
+          </router-link>
           <router-link to="/reset" class="text-blue-400">
             忘记密码
           </router-link>

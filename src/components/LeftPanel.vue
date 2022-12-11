@@ -31,8 +31,6 @@ const page = computed(() => {
 })
 
 onMounted(() => {
-  userStore.getStatisticInfo()
-  userStore.getUserInfo()
   articleStore.getTagList()
 })
 const topicTag = computed(() =>
@@ -53,11 +51,7 @@ watch(
 <template>
   <div class="left">
     <UserTitle :username="userStore.username" :is-pro="true" />
-    <UserStatistical
-      :memo="userStore.memo_count.memoCount"
-      :tag="userStore.memo_count.tagCount"
-      :day="userStore.memo_count.day"
-    />
+    <UserStatistical />
     <div class="checking">
       <DailyRecord :grid="userStore.daily_grid" />
     </div>
