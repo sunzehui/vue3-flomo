@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { Refresh, Search } from '@element-plus/icons-vue'
-import { computed, provide, reactive, ref, unref, watch, watchEffect } from 'vue'
+import { computed, provide, reactive, ref, toRefs, unref, watch, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import Editor from '../components/Editor.vue'
+import MemoCard from '@/components/MemoCard.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import MemoTitle from '@/components/MemoTitle.vue'
 import { useArticleStore } from '@/store/article'
@@ -12,14 +13,14 @@ import ShareCard from '@/components/ShareCard.vue'
 import { EditorType } from '@/types/card-type'
 
 const props = defineProps<{ tag?: string }>()
-const articleStore = useArticleStore()
-const { articleListEnhance } = storeToRefs(articleStore)
+const { articleList, articleListEnhance } = storeToRefs(useArticleStore())
+const { setActiveTag, getArticleList } = (useArticleStore())
 provide('tag', props.tag)
 
 watchEffect(() => {
   const tag = props.tag
-  articleStore.setActiveTag(tag)
-  articleStore.getArticleList({ tag })
+  setActiveTag(tag)
+  getArticleList({ tag })
 })
 const panelShow = ref(false)
 const panelContent = ref('')
@@ -48,7 +49,7 @@ const handleOpenShare = (val) => {
       </div>
     </nav>
     <div class="input-container">
-      <Editor />
+      <Editor :type="EditorType.create" />
     </div>
     <ul class="card-container">
       <template v-for="(memo, index) of articleList" :key="memo.id">

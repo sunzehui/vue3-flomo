@@ -1,94 +1,93 @@
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
-import {isEmpty} from "lodash";
-import {useSuggestion} from "@/composable/useSuggestion";
-import {useArticleStore} from "@/store/article";
-import {useEditor} from "@/composable/useEditor";
-import {extractTags} from '@/utils/editor'
-import {Memo} from "@/types/memo";
-import {EditorType} from "@/types/card-type";
-import {ElMessage} from "element-plus";
+import { onMounted, ref } from 'vue'
+import { isEmpty } from 'lodash'
+import { ElMessage } from 'element-plus'
+import { useSuggestion } from '@/composable/useSuggestion'
+import { useArticleStore } from '@/store/article'
+import { useEditor } from '@/composable/useEditor'
+import { extractTags } from '@/utils/editor'
+import type { Memo } from '@/types/memo'
+import { EditorType } from '@/types/card-type'
 
-
-const suggestionRef = ref(null);
-
-// 监听onkeydown
-const textareaRef = ref(null);
 const props = defineProps<{
-  memo?: Memo,
+  memo?: Memo
   type: EditorType
 }>()
 
+const suggestionRef = ref(null)
+
+// 监听onkeydown
+const textareaRef = ref(null)
 const editor = useEditor(textareaRef, {
   onSave: () => handleSave(),
-  type: props.type
-});
+  type: props.type,
+})
 const {
   textareaContent,
   shouldSuggestionShow,
   handleIconClick,
   handleItemClick,
   suggestionList,
-} = useSuggestion(suggestionRef, editor);
+} = useSuggestion(suggestionRef, editor)
 
 onMounted(() => {
   if (props.memo && props.type === EditorType.edit)
     editor.insertContent(props.memo?.content || '')
 })
 
-const articleStore = useArticleStore();
+const articleStore = useArticleStore()
 const buildArticle = () => {
-  const tags = extractTags(textareaContent.value);
+  const tags = extractTags(textareaContent.value)
   const article: Partial<Memo> = {
     tags,
     content: textareaContent.value,
-  };
+  }
   return article
 }
 const updateArticle = () => {
   const article = buildArticle()
-  const {memo: {id}} = props;
+  const { memo: { id } } = props
   if (!id) {
-    ElMessage.error("数据异常，请刷新")
+    ElMessage.error('数据异常，请刷新')
     throw new Error('can \'t find article id!')
   }
-  loading.value = true;
-  articleStore.update(id, article).then(result => {
-    loading.value = false;
+  loading.value = true
+  articleStore.update(id, article).then((result) => {
+    loading.value = false
   })
 }
 const saveArticle = () => {
   const article = buildArticle()
-  loading.value = true;
+  loading.value = true
   articleStore.save(article).then((result) => {
-    loading.value = false;
-    textareaContent.value = "";
-  });
-};
+    loading.value = false
+    textareaContent.value = ''
+  })
+}
 const handleSave = () => {
-  if (props.type === EditorType.create) {
+  if (props.type === EditorType.create)
     saveArticle()
-  } else if (props.type === EditorType.edit) {
+
+  else if (props.type === EditorType.edit)
     updateArticle()
-  }
 }
 
-const loading = ref(false);
+const loading = ref(false)
 </script>
 
 <template>
   <div class="editor">
     <textarea
-        v-model="textareaContent"
-        name="text-input"
-        ref="textareaRef"
-    ></textarea>
+      ref="textareaRef"
+      v-model="textareaContent"
+      name="text-input"
+    />
     <transition name="fade">
       <div
-          class="suggestion"
-          ref="suggestionRef"
-          v-show="shouldSuggestionShow"
-          @click="handleItemClick($event)"
+        v-show="shouldSuggestionShow"
+        ref="suggestionRef"
+        class="suggestion"
+        @click="handleItemClick($event)"
       >
         <template v-for="item of suggestionList">
           <span :class="{ active: item.active }">{{ item.content }}</span>
@@ -99,15 +98,17 @@ const loading = ref(false);
     <div class="bar">
       <span class="tag-icon" @click="handleIconClick($event)"> # </span>
       <button
-          class="save"
-          @click.prevent="handleSave"
-          :disabled="isEmpty(textareaContent)"
+        class="save"
+        :disabled="isEmpty(textareaContent)"
+        @click.prevent="handleSave"
       >
         {{ type === EditorType.edit ? '保存' : '发送' }}
       </button>
     </div>
     <!-- 展示loading将其他隐藏 -->
-    <div class="loading-box" v-show="loading">loading...</div>
+    <div v-show="loading" class="loading-box">
+      loading...
+    </div>
   </div>
 </template>
 

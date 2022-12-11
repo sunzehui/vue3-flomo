@@ -1,13 +1,9 @@
 <script lang="ts" setup>
-import { toRefs } from 'vue'
+import { toRefs, unref } from 'vue'
 import { useUserStore } from '@/store/user'
-const { memo_count } = toRefs(useUserStore())
-console.log(memo_count)
+const { userRecord} = toRefs(useUserStore())
 
-// memo: number;
-// tag: number;
-// day: number;
-const { memo, tag, day } = memo_count
+const { memoCount:memo=0, tagCount:tag=0, day =0} = unref(userRecord)
 </script>
 
 <template>

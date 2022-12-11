@@ -1,37 +1,33 @@
 <script lang="ts" setup>
-import { ElTooltip, ElPopper } from "element-plus";
-import { computed } from "vue";
-import { useGraph } from "@/composable/useGraph";
+import { ElPopper, ElTooltip } from 'element-plus'
+import { computed, toRefs } from 'vue'
+import { useGraph } from '@/composable/useGraph'
+import { useUserStore } from '@/store/user'
 
-const props = defineProps<{
-  grid: {
-    [key: string]: number;
-  };
-}>();
-const girdRef = computed(() => props.grid);
-const { colorSwitch, monthArray, stateGrid } = useGraph(girdRef);
+const { dailyGrid } = toRefs(useUserStore())
+const { colorSwitch, monthArray, stateGrid } = useGraph(dailyGrid)
 defineExpose({
   ElPopper,
-});
+})
 </script>
+
 <template>
   <div class="record-wrapper">
-    <div class="grid week" v-for="(week, i) of stateGrid" :key="i">
-      <el-tooltip
-        :content="`${day.memo_count} memo on ${day.date}`"
+    <div v-for="(week, i) of stateGrid" :key="i" class="grid week">
+      <ElTooltip
         v-for="(day, j) in week"
         :key="j"
+        :content="`${day.memo_count} memo on ${day.date}`"
       >
-        <span class="day" :class="{ [colorSwitch(day.memo_count)]: true }">
-        </span>
-      </el-tooltip>
+        <span class="day" :class="{ [colorSwitch(day.memo_count)]: true }" />
+      </ElTooltip>
     </div>
   </div>
   <div class="grid month-title">
     <template v-for="tag in monthArray" :key="tag">
-      <span class="tag">{{ tag ? tag + "月" : "" }}</span>
+      <span class="tag">{{ tag ? `${tag}月` : "" }}</span>
     </template>
-    <span class="tag"></span>
+    <span class="tag" />
   </div>
 </template>
 

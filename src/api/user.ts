@@ -2,12 +2,13 @@ import type { ILoginInfo, ILoginResp } from '@/types/api'
 import { Resp } from '@/types/api'
 import axios from '@/utils/request'
 
-export function ApiUserLogin(data: ILoginInfo) {
-  return axios<ILoginResp>({
+export async function ApiUserLogin(data: ILoginInfo) {
+  const res = await axios<ILoginResp>({
     url: '/api/auth/login',
     method: 'post',
     data,
   })
+  return res.data;
 }
 export function ApiUserStatistic() {
   return axios<any>({
@@ -15,11 +16,12 @@ export function ApiUserStatistic() {
     method: 'get',
   })
 }
-export function ApiUserInfo() {
-  return axios<any>({
-    url: '/api/auth/profile',
+export async function ApiUserInfo() {
+  const res = await axios<any>({
+    url: '/api/user/profile',
     method: 'get',
   })
+  return res.data;
 }
 export function ApiUserRegister(data) {
   return axios<{

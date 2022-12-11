@@ -12,49 +12,65 @@ interface IMemoCount {
   day: number
 }
 
+export interface UserInfo {
+  id: number
+  username: string
+  password: string
+  memo_count: number
+  day_count: number
+  tag_count: number
+  month_sign_id: number
+  last_login: string
+}
+export interface DailyGrid {
+  [key: string]: number
+}
+export interface UserRecord {
+  tagCount: number
+  memoCount: number
+  day: number
+  dailyGrid: DailyGrid
+}
+
+export interface ApiUserProfile {
+  userInfo: UserInfo
+  userRecord: UserRecord
+}
 export const useUserStore = defineStore('user', () => {
   const token = useLocalStorage('token', {
     token: '',
     expires: 0,
   })
-  const userInfo = useLocalStorage('userInfo', {
-    last_login: '',
-    memo_count: {
-      memoCount: 0,
-      tagCount: 0,
-      day: 0,
-    } as IMemoCount,
-    daily_grid: {},
-    username: '浮墨用户',
-  })
-  const setToken = (_token: ILoginResp['token']) => {
-    const expires = jwtDecode<{ exp: number }>(_token.token).exp * 1000
+  const userInfo = useLocalStorage('userInfo', {} as UserInfo)
+  const userRecord = useLocalStorage('userRecord', {} as UserRecord)
+  const setToken = (loginResp: ILoginResp) => {
     token.value = {
-      token: _token.token,
-      expires,
+      token: loginResp.token,
+      expires: 36000,
     }
-  }
-  async function getStatisticInfo() {
-    const res = await ApiUserStatistic()
-    const { memo_count, daily_grid } = res.data
-    this.userInfo.memo_count = memo_count
-    this.userInfo.daily_grid = daily_grid
+    try {
+      const expires = jwtDecode<{ exp: number }>(loginResp.token).exp * 1000
+      token.value.expires = expires
+    }
+    catch (e) {
+      console.log(e)
+    }
   }
 
   async function refreshUserInfo() {
     const res = await ApiUserInfo()
-    userInfo.value = res.data
-    await getStatisticInfo()
+    userInfo.value = res.userInfo
+    userRecord.value = res.userRecord
   }
   const login = async (username: MaybeRef<string>, password: MaybeRef<string>) => {
-    const user = await ApiUserLogin({
+    const loginRes = await ApiUserLogin({
       username: unref(username),
       password: unref(password),
     })
 
-    if (user) {
+    if (loginRes) {
       userInfo.value = null
-      setToken(user.data.token)
+      setToken(loginRes)
       await refreshUserInfo()
       return true
     }
@@ -67,8 +83,8 @@ export const useUserStore = defineStore('user', () => {
   const memo_count = computed(() => {
     return unref(userInfo).memo_count
   })
-  const daily_grid = computed(() => {
-    return unref(userInfo).daily_grid
+  const dailyGrid = computed(() => {
+    return unref(userRecord).dailyGrid
   })
   const isAuthenticated = computed(() => {
     return unref(token).token !== '' && unref(token).expires > Date.now()
@@ -77,11 +93,13 @@ export const useUserStore = defineStore('user', () => {
     token,
     userInfo,
     setToken,
-    getStatisticInfo,
+    // getStatisticInfo,
     isAuthenticated,
     username,
     memo_count,
-    daily_grid,
+    dailyGrid,
     login,
+    userRecord,
+
   }
 })
