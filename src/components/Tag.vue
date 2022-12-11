@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject, ref, watch } from "vue";
-import { Download } from "@element-plus/icons";
+import { Download } from "@element-plus/icons-vue";
 import { useRoute, useRouter } from "vue-router";
 import { router } from "@/routes";
 import { ElMessage, ElButton, ElMessageBox } from "element-plus";
@@ -38,7 +38,6 @@ const handleClick = () => {
 };
 
 const articleStore = useArticleStore();
-// const setTop = inject<(prop) => {}>("setTop");
 const setTop = () => {
   const title = props.isTopic ? "取消置顶" : "置顶";
   ElMessageBox.confirm(`确定${title}该标签吗?`, "Info", {

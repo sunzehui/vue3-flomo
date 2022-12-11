@@ -1,22 +1,24 @@
-import { useRouter } from 'vue-router'
 import type { AxiosRequestConfig } from 'axios'
 import Axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { router } from '../routes'
+import { hideLoading, showLoading } from './loading'
 import type { Resp } from '@/types/api'
 import { useUserStore } from '@/store/user'
 const baseURL = import.meta.env.VITE_BASE_URL as string | undefined
 
-console.log(baseURL, import.meta.env)
-const axios = Axios.create({
+const axiosInstance = Axios.create({
   baseURL,
   timeout: 20000, // 请求超时 20s
 })
 // 前置拦截器（发起请求之前的拦截）
-axios.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
+    showLoading({
+      fullscreen: false,
+      background: 'transparent',
+    })
     const UserStore = useUserStore()
-
     config.headers['Content-Type'] = 'application/json'
     config.headers.Accept = 'application/json'
     config.headers.Authorization = `Bearer ${UserStore.token.token}`
@@ -26,19 +28,18 @@ axios.interceptors.request.use(
     return Promise.reject(error)
   },
 )
-
-export default async function<T = any>(config: AxiosRequestConfig): Resp<T> {
-  try {
-    const { data } = await axios.request<Resp<T>>(config)
-
-    return data
-  }
-  catch (error) {
+axiosInstance.interceptors.response.use(
+  (resp) => {
+    hideLoading()
+    return resp
+  },
+  (error) => {
+    hideLoading()
     const code = error.response.status
     const msg = error.response.data.message
     console.error('[Axios Error]', error)
     if (code === 401) {
-      ElMessage.error(`Code: ${code}, Message: 未登录或验证已过期请去登录！`)
+      ElMessage.error(`Code: ${code}, Message: ${msg}`)
 
       router.push({
         path: '/login',
@@ -48,5 +49,9 @@ export default async function<T = any>(config: AxiosRequestConfig): Resp<T> {
     ElMessage.error(`Code: ${code}, Message: ${msg}`)
 
     return null
-  }
+  },
+)
+export default async function<T = any>(config: AxiosRequestConfig): Resp<T> {
+  const { data } = await axiosInstance.request<Resp<T>>(config)
+  return data
 }

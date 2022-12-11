@@ -3,35 +3,61 @@ import {
   computed,
   PropType,
   reactive,
+  ref,
   toRef,
   toRefs,
+  unref,
   watch,
   watchEffect,
 } from "vue";
-import { Article } from "../types/article";
-import { ElPopover } from "element-plus";
-
+import { Article } from "@/types/article";
+import {
+  ElDropdown,
+  ElDropdownMenu,
+  ElDropdownItem,
+  ElIcon,
+} from "element-plus";
+import { Pin } from "@icon-park/vue-next";
 import { useArticleStore } from "@/store/article";
 import { useRouter } from "vue-router";
-import moment from "moment";
+import dayjs from "dayjs";
+import { CardType } from "@/types/card-type";
 
-const props = defineProps({
-  article: {
-    type: Object as PropType<Article>,
-    default: {},
-  },
-  isLast: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
-});
-type acType = "delete" | "edit" | "detail" | "set-top" | "get-link";
+const props = defineProps<{
+  article: Article;
+  isLast: Boolean;
+}>();
+const emit = defineEmits(["openPanel", "openShare", "edit"]);
+type acType =
+  | "cancel-top"
+  | "delete"
+  | "edit"
+  | "detail"
+  | "set-top"
+  | "get-link";
+
 const articleStore = useArticleStore();
-const reducerActicon = (event: Event) => {
+const reducerAction = (event: Event) => {
   const type = (event.target as HTMLLIElement).dataset.type as acType;
+
   switch (type) {
     case "delete":
       articleStore.deleteArticle(+props.article.id);
+      break;
+    case "detail":
+      emit("openPanel", props.article.content);
+      break;
+    case "get-link":
+      emit("openShare", props.article);
+      break;
+    case "cancel-top":
+      articleStore.cancelArticleTop(+props.article.id);
+      break;
+    case "set-top":
+      articleStore.setArticleTop(+props.article.id);
+      break;
+    case "edit":
+      articleStore.setArticleType(+props.article.id, CardType.editor);
       break;
     default:
       break;
@@ -48,11 +74,11 @@ const tagClick = (tag) => {
 };
 let { article } = toRefs(props);
 const updateTime = computed(() => {
-  moment.locale(navigator.language);
-
-  const momentTime = moment.utc(article.value.updateTime).local();
-
-  if (momentTime.diff(moment(), "day") < 0) {
+  const memo = unref(article);
+  if (memo.is_topic) return "置顶";
+  const time = memo.createTime;
+  const momentTime = dayjs().utc(time).local();
+  if (momentTime.diff(dayjs(), "day") < 0) {
     return momentTime.format("YYYY-MM-DD HH:mm:ss");
   }
 
@@ -62,15 +88,13 @@ const updateTime = computed(() => {
 
 <template>
   <li class="card">
-    <div class="header">
+    <div class="header relative">
       <span class="time-text">{{ updateTime }}</span>
-      <div class="more">
-        <el-popover
-          :placement="props.isLast ? 'top' : 'bottom'"
-          trigger="hover"
-        >
-          <template #reference>
+      <el-dropdown>
+        <span class="el-dropdown-link">
+          <el-icon class="el-icon--right">
             <svg
+              class="more-action-bar"
               width="16px"
               height="16px"
               viewBox="0 0 16 16"
@@ -82,16 +106,30 @@ const updateTime = computed(() => {
                 d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
               ></path>
             </svg>
-          </template>
-          <ul @click="reducerActicon($event)" class="popover-list">
-            <li data-type="get-link">复制链接</li>
-            <li data-type="set-top">置顶</li>
-            <li data-type="detail">查看详情</li>
-            <li data-type="edit">编辑</li>
-            <li data-type="delete">删除</li>
-          </ul>
-        </el-popover>
-      </div>
+          </el-icon>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu @click="reducerAction">
+            <el-dropdown-item data-type="get-link">分享</el-dropdown-item>
+            <el-dropdown-item data-type="cancel-top" v-if="article.is_topic"
+              >取消置顶</el-dropdown-item
+            >
+            <el-dropdown-item data-type="set-top" v-if="!article.is_topic"
+              >置顶</el-dropdown-item
+            >
+            <el-dropdown-item data-type="detail">查看详情</el-dropdown-item>
+            <el-dropdown-item data-type="edit">编辑</el-dropdown-item>
+            <el-dropdown-item data-type="delete">删除</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+      <Pin
+        v-show="article.is_topic"
+        class="absolute -right-6 -top-4"
+        theme="outline"
+        size="24"
+        fill="#333"
+      />
     </div>
     <div
       v-html="article.content.replace(/[\r\n]/g, '<br />')"
@@ -113,13 +151,9 @@ const updateTime = computed(() => {
 
 <style scoped lang="scss">
 li.card {
-  background: #ffffff;
-  border-radius: 6px;
-  padding: 15px;
-  margin-top: 8px;
-  @apply duration-300;
+  @apply bg-white px-5 py-2 duration-300 mt-2 rounded-md;
   &:hover {
-    box-shadow: 0px 2px 16px #dddddd;
+    box-shadow: 0 2px 16px #dddddd;
   }
 
   .header {
@@ -127,21 +161,24 @@ li.card {
     justify-content: space-between;
     align-items: center;
     line-height: 1.8em;
-
     color: #8f9193;
+
     svg {
       cursor: pointer;
     }
+
     .time-text {
       display: inline-block;
 
       font-size: 0.8em;
       text-decoration: none;
     }
+
     > .more {
       position: relative;
       height: 1.8em;
       padding: 0 20px;
+
       &:hover ul {
         visibility: visible;
         opacity: 1;
@@ -154,57 +191,30 @@ li.card {
     font-size: 14px;
     overflow: hidden;
   }
+
   .more ul {
     visibility: hidden;
   }
+
   .footer {
     margin-top: 10px;
+
     .tag-view {
       display: flex;
     }
+
     .tag-view > li {
-      @apply mx-1;
-      width: fit-content;
-      height: 100%;
+      @apply mx-1 inline-block h-full cursor-pointer;
       color: #5783f7;
-      cursor: pointer;
       background-color: #eef3fe;
       padding: 4px;
       font-size: 12px;
       border-radius: 3px;
+
       &:hover {
         color: #eef3fe;
         background-color: #5783f7;
       }
-    }
-  }
-}
-ul.popover-list {
-  min-width: 150px;
-  border-radius: 4px;
-  padding: 0 12px;
-
-  z-index: 2000;
-  color: #606266;
-  line-height: 1.4;
-  text-align: justify;
-  font-size: 14px;
-  // box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
-  word-break: break-all;
-  // transition: all 0.3s ease-in-out;
-  width: 200px;
-
-  li {
-    color: #7d7d7d;
-    display: block;
-    margin-left: 0;
-    padding: 10px 0 10px 0px;
-    font-weight: normal;
-
-    cursor: pointer;
-    user-select: none;
-    &:hover {
-      color: #55bb8e;
     }
   }
 }

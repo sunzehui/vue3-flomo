@@ -25,13 +25,19 @@ const usernameRule = (username) => {
   return '用户名不符合规范，请检查！'
 }
 
-const passwordRule = (password) => {
-  const notEmpty = password.length > 0
-  const isValid = /(?=^.{6,}$).*$/.test(password)
-  return notEmpty && isValid
-}
-const { login } = useUserStore()
-const router = useRouter()
+const passwordRule = (password: string) => {
+  const isEmpty = password.length <= 0;
+  const isInvalid = !/(?=^.{6,}$).*$/.test(password);
+  if (isEmpty) {
+    return "密码不可为空！";
+  }
+  if (isInvalid) {
+    return "密码不符合规范！";
+  }
+  return true;
+};
+const router = useRouter();
+const {login} = useUserStore();
 
 const onSubmit = async () => {
   const isLogin = await login(username, password)
@@ -42,15 +48,15 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="min-h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-    <div class="max-w-xs w-full space-y-6 -translate-y-1/3">
+  <div class="flex items-center justify-center min-h-full px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-xs space-y-6 -translate-y-1/3">
       <div>
         <h3 class="text-3xl text-center font-bold">
           flomo
         </h3>
       </div>
       <VForm class="mt-8 space-y-2" @submit="onSubmit">
-        <div class="rounded-md shadow-sm space-y-3">
+        <div class="space-y-3 rounded-md shadow-sm">
           <div>
             <label for="email-address" class="sr-only">手机号码/邮箱</label>
             <VField
@@ -74,7 +80,7 @@ const onSubmit = async () => {
               id="password"
               v-model="password"
               name="password"
-              :type="eyeShow ? 'text' : 'password'"
+              type="password"
               autocomplete="current-password"
               :rules="passwordRule"
               class="flomo-input on-active"

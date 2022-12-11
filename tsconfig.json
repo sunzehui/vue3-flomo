@@ -3,7 +3,9 @@
     "allowJs": true,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
     "module": "esnext",
     "target": "es6",
