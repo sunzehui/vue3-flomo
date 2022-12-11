@@ -52,10 +52,14 @@ const handleOpenShare = (val) => {
       <Editor :type="EditorType.create" />
     </div>
     <ul class="card-container">
-      <template v-for="(memo, index) of articleList" :key="memo.id">
-        <MemoCard :article="memo" :is-last="articleList.length - 1 === index" />
+      <template v-for="memo of articleListEnhance" :key="memo.id">
+        <MemoCardOrEditor
+          @openPanel="handleOpenPanel"
+          @openShare="handleOpenShare"
+          :memo="memo"
+        />
       </template>
-    </ul>
+   </ul>
     <DetailPanel v-model:show="panelShow" :content="panelContent" />
     <ShareCard
       v-if="shareState.show"

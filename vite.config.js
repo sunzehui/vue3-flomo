@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import vue from '@vitejs/plugin-vue'
 import { loadEnv } from 'vite'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import {
   ElementPlusResolve,
@@ -18,6 +19,8 @@ export default ({ mode }) => {
       createStyleImportPlugin({
         resolves: [ElementPlusResolve()],
       }),
+      vueJsx({}),
+
     ],
     resolve: {
       alias: {

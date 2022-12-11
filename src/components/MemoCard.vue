@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
-  computed,
   PropType,
+  computed,
   reactive,
   ref,
   toRef,
@@ -9,90 +9,90 @@ import {
   unref,
   watch,
   watchEffect,
-} from "vue";
-import { Article } from "@/types/article";
+} from 'vue'
 import {
   ElDropdown,
-  ElDropdownMenu,
   ElDropdownItem,
+  ElDropdownMenu,
   ElIcon,
-} from "element-plus";
-import { Pin } from "@icon-park/vue-next";
-import { useArticleStore } from "@/store/article";
-import { useRouter } from "vue-router";
-import dayjs from "dayjs";
-import { CardType } from "@/types/card-type";
+} from 'element-plus'
+import { Pin } from '@icon-park/vue-next'
+import { useRouter } from 'vue-router'
+import dayjs from 'dayjs'
+import { useArticleStore } from '@/store/article'
+import type { Article } from '@/types/article'
+import { CardType } from '@/types/card-type'
 
 const props = defineProps<{
-  article: Article;
-  isLast: Boolean;
-}>();
-const emit = defineEmits(["openPanel", "openShare", "edit"]);
+  article: Article
+  isLast: Boolean
+}>()
+const emit = defineEmits(['openPanel', 'openShare', 'edit'])
 type acType =
-  | "cancel-top"
-  | "delete"
-  | "edit"
-  | "detail"
-  | "set-top"
-  | "get-link";
+  | 'cancel-top'
+  | 'delete'
+  | 'edit'
+  | 'detail'
+  | 'set-top'
+  | 'get-link'
 
-const articleStore = useArticleStore();
+const articleStore = useArticleStore()
 const reducerAction = (event: Event) => {
-  const type = (event.target as HTMLLIElement).dataset.type as acType;
+  const type = (event.target as HTMLLIElement).dataset.type as acType
 
   switch (type) {
-    case "delete":
-      articleStore.deleteArticle(+props.article.id);
-      break;
-    case "detail":
-      emit("openPanel", props.article.content);
-      break;
-    case "get-link":
-      emit("openShare", props.article);
-      break;
-    case "cancel-top":
-      articleStore.cancelArticleTop(+props.article.id);
-      break;
-    case "set-top":
-      articleStore.setArticleTop(+props.article.id);
-      break;
-    case "edit":
-      articleStore.setArticleType(+props.article.id, CardType.editor);
-      break;
+    case 'delete':
+      articleStore.deleteArticle(+props.article.id)
+      break
+    case 'detail':
+      emit('openPanel', props.article.content)
+      break
+    case 'get-link':
+      emit('openShare', props.article)
+      break
+    case 'cancel-top':
+      articleStore.cancelArticleTop(+props.article.id)
+      break
+    case 'set-top':
+      articleStore.setArticleTop(+props.article.id)
+      break
+    case 'edit':
+      articleStore.setArticleType(+props.article.id, CardType.editor)
+      break
     default:
-      break;
+      break
   }
-};
-const router = useRouter();
+}
+const router = useRouter()
 const tagClick = (tag) => {
   router.push({
-    name: "memo",
+    name: 'memo',
     query: {
       tag,
     },
-  });
-};
-let { article } = toRefs(props);
+  })
+}
+const { article } = toRefs(props)
 const updateTime = computed(() => {
-  const memo = unref(article);
-  if (memo.is_topic) return "置顶";
-  const time = memo.createTime;
-  const momentTime = dayjs().utc(time).local();
-  if (momentTime.diff(dayjs(), "day") < 0) {
-    return momentTime.format("YYYY-MM-DD HH:mm:ss");
-  }
+  const memo = unref(article)
+  if (memo.is_topic)
+    return '置顶'
+  const time = memo.createTime
+  const momentTime = dayjs().utc(time).local()
+  if (momentTime.diff(dayjs(), 'day') < 0)
+    return momentTime.format('YYYY-MM-DD HH:mm:ss')
 
-  return momentTime.fromNow();
-});
+  return momentTime.fromNow()
+})
 </script>
 
 <template>
   <li class="card">
     <div class="header relative">
       <span class="time-text">{{ updateTime }}</span>
-      <el-dropdown>
+      <ElDropdown>
         <span class="el-dropdown-link">
-          <el-icon class="el-icon--right">
+          <ElIcon class="el-icon--right">
             <svg
               class="more-action-bar"
               width="16px"
@@ -104,25 +104,33 @@ const updateTime = computed(() => {
               <path
                 fill-rule="evenodd"
                 d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
-              ></path>
+              />
             </svg>
-          </el-icon>
+          </ElIcon>
         </span>
         <template #dropdown>
-          <el-dropdown-menu @click="reducerAction">
-            <el-dropdown-item data-type="get-link">分享</el-dropdown-item>
-            <el-dropdown-item data-type="cancel-top" v-if="article.is_topic"
-              >取消置顶</el-dropdown-item
-            >
-            <el-dropdown-item data-type="set-top" v-if="!article.is_topic"
-              >置顶</el-dropdown-item
-            >
-            <el-dropdown-item data-type="detail">查看详情</el-dropdown-item>
-            <el-dropdown-item data-type="edit">编辑</el-dropdown-item>
-            <el-dropdown-item data-type="delete">删除</el-dropdown-item>
-          </el-dropdown-menu>
+          <ElDropdownMenu @click="reducerAction">
+            <ElDropdownItem data-type="get-link">
+              分享
+            </ElDropdownItem>
+            <ElDropdownItem v-if="article.is_topic" data-type="cancel-top">
+              取消置顶
+            </ElDropdownItem>
+            <ElDropdownItem v-if="!article.is_topic" data-type="set-top">
+              置顶
+            </ElDropdownItem>
+            <ElDropdownItem data-type="detail">
+              查看详情
+            </ElDropdownItem>
+            <ElDropdownItem data-type="edit">
+              编辑
+            </ElDropdownItem>
+            <ElDropdownItem data-type="delete">
+              删除
+            </ElDropdownItem>
+          </ElDropdownMenu>
         </template>
-      </el-dropdown>
+      </ElDropdown>
       <Pin
         v-show="article.is_topic"
         class="absolute -right-6 -top-4"
@@ -132,9 +140,9 @@ const updateTime = computed(() => {
       />
     </div>
     <div
-      v-html="article.content.replace(/[\r\n]/g, '<br />')"
       class="content"
-    ></div>
+      v-html="article.content.replace(/[\r\n]/g, '<br />')"
+    />
     <div class="footer">
       <ul class="tag-view">
         <li
