@@ -116,8 +116,9 @@ const loading = ref(false)
 .editor {
   border: 2px solid #e8e8e8;
   border-radius: 8px;
-
-  padding-top: 20px;
+  padding: 10px;
+  padding-bottom: 0;
+  // padding-top: 20px;
   position: relative;
   background: #fff;
   margin: 10px 0;
@@ -127,7 +128,8 @@ textarea {
   border: none;
   outline: 0;
   height: 42px;
-  padding: 0 10px;
+  // padding: 0 10px;
+  padding: 0;
   box-sizing: border-box;
   resize: none;
   min-height: 42px;

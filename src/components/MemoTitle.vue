@@ -66,8 +66,6 @@ const rename = () => {
   height: 14px;
   width: 14px;
   display: inline-block;
-  margin-top: -5px;
-  margin-right: 5px;
   opacity: 0.8;
   cursor: pointer;
   &:hover {
@@ -82,6 +80,10 @@ span > label {
   opacity: 0.5;
   @apply mx-1;
 }
+.title-wrp{
+  flex-shrink: 0;
+  @apply flex items-center;
+}
 .title-wrp > span.title {
   flex: 1;
   font-size: 18px;
@@ -89,6 +91,7 @@ span > label {
   color: #5f5f5f;
   cursor: pointer;
   border-radius: 3px;
+  flex-shrink: 0;
   @apply relative;
   svg {
     height: 14px;

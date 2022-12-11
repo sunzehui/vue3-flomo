@@ -45,7 +45,7 @@ const handleOpenShare = (val) => {
       <MemoTitle />
       <div class="input-wrapper">
         <input type="text">
-        <i><Search /></i>
+        <Search class="input-icon" />
       </div>
     </nav>
     <div class="input-container">
@@ -54,12 +54,12 @@ const handleOpenShare = (val) => {
     <ul class="card-container">
       <template v-for="memo of articleListEnhance" :key="memo.id">
         <MemoCardOrEditor
+          :memo="memo"
           @openPanel="handleOpenPanel"
           @openShare="handleOpenShare"
-          :memo="memo"
         />
       </template>
-   </ul>
+    </ul>
     <DetailPanel v-model:show="panelShow" :content="panelContent" />
     <ShareCard
       v-if="shareState.show"
@@ -80,33 +80,41 @@ svg {
 
 nav {
   display: flex;
-  padding: 10px 0 10px 0;
-  line-height: 40px;
+  padding: 0 10px;
+  @apply py-3;
+    // line-height: 40px;
   justify-content: space-between;
 
+  height: 60px;
   .input-wrapper {
+    width: 73%  ;
     position: relative;
-    font-size: 14px;
     box-sizing: border-box;
+    // margin: 10px;
+    input{
+      width: 100%;
+    font-size: 14px;
+    }
+    .input-icon {
 
-    i {
-      @apply absolute top-0 left-[5px];
+      @apply absolute top-1/2 -translate-y-1/2 left-[10px];
 
       height: 40px;
       width: 25px;
       text-align: center;
       transition: all 0.3s;
       line-height: 40px;
+      height: 14px;
+      width: 14px;
 
       svg {
-        height: 14px;
-        width: 14px;
       }
     }
   }
 
   input {
-    height: 40px;
+    // height: 40px;
+    height: 100%;
     outline: 0;
     border: none;
     background: #efefef;
