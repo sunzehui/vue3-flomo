@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, nextTick,  computed, PropType, ref, watch, unref } from "vue";
-import { ElDialog } from "element-plus";
-import { Memo } from "@/types/memo";
-import { toCanvas as img2Canvas } from "html-to-image";
+import type { PropType } from 'vue'
+import { computed, nextTick, onMounted, ref, unref, watch } from 'vue'
+import { ElDialog } from 'element-plus'
+import { toCanvas as img2Canvas } from 'html-to-image'
+import dayjs from 'dayjs'
+import type { Memo } from '@/types/memo'
 const props = defineProps({
   content: {
     type: Object as PropType<Memo>,
@@ -11,44 +13,47 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-});
-const emit = defineEmits(["update:show"]);
+})
+const emit = defineEmits(['update:show'])
 const show = computed({
   get: () => props.show,
-  set: (val) => emit("update:show", val),
-});
-const memoRef = ref(null);
-const imgUrl = ref(null);
-console.log(props.content);
-const memo = computed(() => props.content);
+  set: val => emit('update:show', val),
+})
+const memoRef = ref(null)
+const imgUrl = ref(null)
+const memo = computed(() => props.content)
+const createTime = computed(() => dayjs(unref(memo).createTime).format('YYYY-MM-DD HH:mm:ss'))
 onMounted(async () => {
-  if (!show) return;
-  await nextTick();
-  const node = unref(memoRef);
-  if (!node) return;
+  if (!show.value)
+    return
+  await nextTick()
+  const node = unref(memoRef)
+  if (!node)
+    return
 
   img2Canvas(node, {
     pixelRatio: window.devicePixelRatio * 2,
-    backgroundColor: "#eaeaea",
+    backgroundColor: '#eaeaea',
   })
-    .then((canvas) => canvas.toDataURL())
+    .then(canvas => canvas.toDataURL())
     .then((url) => {
-      imgUrl.value = url;
+      imgUrl.value = url
     })
-    .catch(function (error) {
-      console.error("oops, something wents wrong!", error);
-    });
-});
+    .catch((error) => {
+      console.error('oops, something wents wrong!', error)
+    })
+})
 </script>
+
 <template>
   <ElDialog v-model="show" title="🙌 分享" width="380px">
     <header>
       <span class="sub-title">👇 长按保存图片</span>
     </header>
-    <div class="memo" ref="memoRef">
-      <img :src="imgUrl" alt="img" v-if="imgUrl" class="absolute" />
+    <div ref="memoRef" class="memo">
+      <img v-if="imgUrl" :src="imgUrl" alt="img" class="absolute">
       <div class="content">
-        <span class="time">{{ memo.createTime }}</span>
+        <span class="time">{{ createTime }}</span>
         <span> {{ memo.content }} </span>
       </div>
       <footer>
@@ -57,6 +62,7 @@ onMounted(async () => {
     </div>
   </ElDialog>
 </template>
+
 <style>
 .memo-view .el-dialog {
   border-radius: 10px;
@@ -67,6 +73,7 @@ onMounted(async () => {
   border-radius: 10px;
 }
 </style>
+
 <style lang="scss" scoped>
 header {
   @apply pb-2 pl-5;

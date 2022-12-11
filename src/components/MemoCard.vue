@@ -18,16 +18,23 @@ import {
 } from 'element-plus'
 import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import duration from 'dayjs/plugin/duration'
 import { useArticleStore } from '@/store/article'
 import type { Article } from '@/types/article'
 import { CardType } from '@/types/card-type'
-
+import 'dayjs/locale/zh-cn'
 const props = defineProps<{
   article: Article
   isLast: Boolean
 }>()
 const emit = defineEmits(['openPanel', 'openShare', 'edit'])
+dayjs.locale('zh-cn')
+
+dayjs.extend(duration)
+dayjs.extend(relativeTime)
+
 type acType =
   | 'cancel-top'
   | 'delete'
@@ -77,12 +84,14 @@ const updateTime = computed(() => {
   const memo = unref(article)
   if (memo.is_topic)
     return '置顶'
-  const time = memo.createTime
-  const momentTime = dayjs().utc(time).local()
-  if (momentTime.diff(dayjs(), 'day') < 0)
-    return momentTime.format('YYYY-MM-DD HH:mm:ss')
+  const memoTime = dayjs(memo.createTime)
+  const diffSec = memoTime.diff(dayjs(), 'second')
+  const diffDays = memoTime.diff(dayjs(), 'day')
 
-  return momentTime.fromNow()
+  if (diffDays < 0)
+    return memoTime.format('YYYY-MM-DD HH:mm:ss')
+
+  return dayjs.duration(diffSec, 'second').humanize(true)
 })
 </script>
 
