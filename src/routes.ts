@@ -18,6 +18,11 @@ export const routes = [
         name: 'memo',
         props: route => ({ tag: route.query.tag }),
         component: () => import('./views/Memo.vue'),
+      }, {
+        path: '/me',
+        meta: { title: '个人资料' },
+        name: 'profile',
+        component: () => import('./views/Profile.vue'),
       },
       {
         path: '/wechat',

@@ -26,8 +26,7 @@ const route = useRoute()
 //       articleStore.getTagList();
 //     }
 // );
-console.log(userStore.dailyGrid);
-
+console.log(userStore.dailyGrid)
 </script>
 
 <template>
@@ -35,7 +34,7 @@ console.log(userStore.dailyGrid);
     <UserTitle :username="userStore.username" :is-pro="true" />
     <UserStatistical />
     <div class="checking">
-    <DailyRecord />
+      <DailyRecord />
     </div>
     <SideBar />
     <div v-if="!topicTag.length" class="empty-topic-tag">
