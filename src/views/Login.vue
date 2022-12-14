@@ -26,18 +26,18 @@ const usernameRule = (username) => {
 }
 
 const passwordRule = (password: string) => {
-  const isEmpty = password.length <= 0;
-  const isInvalid = !/(?=^.{6,}$).*$/.test(password);
-  if (isEmpty) {
-    return "密码不可为空！";
-  }
-  if (isInvalid) {
-    return "密码不符合规范！";
-  }
-  return true;
-};
-const router = useRouter();
-const {login} = useUserStore();
+  const isEmpty = password.length <= 0
+  const isInvalid = !/(?=^.{6,}$).*$/.test(password)
+  if (isEmpty)
+    return '密码不可为空！'
+
+  if (isInvalid)
+    return '密码不符合规范！'
+
+  return true
+}
+const router = useRouter()
+const { login } = useUserStore()
 
 const onSubmit = async () => {
   const isLogin = await login(username, password)
@@ -134,7 +134,7 @@ const onSubmit = async () => {
         <div>
           <button
             type="submit"
-            class="group relative w-full flex justify-center px-4 border border-transparent text-sm py-2.5 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="group select-none relative w-full flex justify-center px-4 border border-transparent text-sm py-2.5 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             登录
           </button>

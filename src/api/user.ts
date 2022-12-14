@@ -8,7 +8,7 @@ export async function ApiUserLogin(data: ILoginInfo) {
     method: 'post',
     data,
   })
-  return res.data;
+  return res.data
 }
 export function ApiUserStatistic() {
   return axios<any>({
@@ -21,7 +21,16 @@ export async function ApiUserInfo() {
     url: '/api/user/profile',
     method: 'get',
   })
-  return res.data;
+  return res.data
+}
+export async function ApiUpdateUserInfo({ nickname }) {
+  return await axios<any>({
+    url: '/api/user/profile',
+    method: 'patch',
+    data: {
+      nickname,
+    },
+  })
 }
 export function ApiUserRegister(data) {
   return axios<{

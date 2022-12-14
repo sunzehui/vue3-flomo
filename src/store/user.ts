@@ -15,6 +15,7 @@ interface IMemoCount {
 export interface UserInfo {
   id: number
   username: string
+  nickname: string
   password: string
   memo_count: number
   day_count: number
@@ -44,8 +45,10 @@ export const useUserStore = defineStore('user', () => {
   const userInfo = useLocalStorage('userInfo', {} as UserInfo)
   const userRecord = useLocalStorage('userRecord', {} as UserRecord)
   const setToken = (loginResp: ILoginResp) => {
+    if (!loginResp)
+      return token.value = null
     token.value = {
-      token: loginResp.token,
+      token: loginResp?.token,
       expires: 36000,
     }
     try {
@@ -54,6 +57,7 @@ export const useUserStore = defineStore('user', () => {
     }
     catch (e) {
       console.log(e)
+      return token
     }
   }
 
@@ -62,6 +66,7 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value = res.userInfo
     userRecord.value = res.userRecord
   }
+
   const login = async (username: MaybeRef<string>, password: MaybeRef<string>) => {
     const loginRes = await ApiUserLogin({
       username: unref(username),
@@ -77,17 +82,23 @@ export const useUserStore = defineStore('user', () => {
     return false
   }
 
+  const logout = async () => {
+    userInfo.value = null
+    setToken(null)
+    return true
+  }
+
   const username = computed(() => {
-    return unref(userInfo).username
+    return unref(userInfo)?.username || '浮墨用户'
   })
   const memo_count = computed(() => {
-    return unref(userInfo).memo_count
+    return unref(userInfo)?.memo_count || 0
   })
   const dailyGrid = computed(() => {
-    return unref(userRecord).dailyGrid
+    return unref(userRecord)?.dailyGrid || 0
   })
   const isAuthenticated = computed(() => {
-    return unref(token).token !== '' && unref(token).expires > Date.now()
+    return unref(token)?.token !== '' && unref(token)?.expires > Date.now()
   })
   return {
     token,
@@ -99,6 +110,7 @@ export const useUserStore = defineStore('user', () => {
     memo_count,
     dailyGrid,
     login,
+    logout,
     userRecord,
 
   }

@@ -21,7 +21,9 @@ axiosInstance.interceptors.request.use(
     const UserStore = useUserStore()
     config.headers['Content-Type'] = 'application/json'
     config.headers.Accept = 'application/json'
-    config.headers.Authorization = `Bearer ${UserStore.token.token}`
+    console.log('UserStore.token', UserStore?.token?.token)
+
+    config.headers.Authorization = `Bearer ${UserStore?.token?.token}`
     return config
   },
   (error) => {
@@ -35,9 +37,13 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     hideLoading()
-    const code = error.response.status
-    const msg = error.response.data.message
+    const code = error?.response?.status
+    const msg = error?.response?.data?.message
     console.error('[Axios Error]', error)
+    if (code === 500) {
+      ElMessage.error(`Code: ${code}, Message: 请检查网络`)
+      return
+    }
     if (code === 401) {
       ElMessage.error(`Code: ${code}, Message: ${msg}`)
 
