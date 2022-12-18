@@ -5,7 +5,8 @@ import { useLocalStorage } from '@vueuse/core'
 import jwtDecode from 'jwt-decode'
 import { computed, unref } from 'vue'
 import type { ILoginResp } from '@/types/api'
-import { ApiUserInfo, ApiUserLogin, ApiUserStatistic } from '@/api/user'
+import {ApiUpdateUserInfo, ApiUserInfo, ApiUserLogin, ApiUserStatistic} from '@/api/user'
+import {ElMessage} from "element-plus";
 interface IMemoCount {
   memoCount: number
   tagCount: number
@@ -87,21 +88,35 @@ export const useUserStore = defineStore('user', () => {
     setToken(null)
     return true
   }
+  const updateNickName=async (nickname)=>{
+    const res = await ApiUpdateUserInfo({ nickname: nickname.value })
+    console.log(res)
+    if(res.data===true){
+      await   refreshUserInfo()
+      ElMessage.success("保存成功！")
+    }
+  }
 
   const username = computed(() => {
     return unref(userInfo)?.username || '浮墨用户'
+  })
+
+  const nickname = computed(() => {
+    return unref(userInfo)?.nickname || '浮墨用户'
   })
   const memo_count = computed(() => {
     return unref(userInfo)?.memo_count || 0
   })
   const dailyGrid = computed(() => {
-    return unref(userRecord)?.dailyGrid || 0
+    return unref(userRecord)?.dailyGrid
   })
   const isAuthenticated = computed(() => {
     return unref(token)?.token !== '' && unref(token)?.expires > Date.now()
   })
   return {
     token,
+    nickname,
+    updateNickName,
     userInfo,
     setToken,
     // getStatisticInfo,

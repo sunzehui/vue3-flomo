@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { toRefs } from 'vue'
 const props = defineProps<{
-  username: string
+  nickname: string
   isPro: boolean
 }>()
-const { username, isPro } = toRefs(props)
+const { nickname, isPro } = toRefs(props)
 </script>
 
 <template>
   <div class="user">
     <span class="username" @click="$router.push('/me')">
-      <span class="title">{{ username }}</span><span class="pro" :class="{ active: isPro }">PRO</span>
+      <span class="title">{{ nickname}}</span><span class="pro" :class="{ active: isPro }">PRO</span>
     </span>
     <div class="icons">
       <div class="notify mr-2">

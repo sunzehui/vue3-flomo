@@ -12,8 +12,7 @@ const nickname = resolveRef(userInfo.value.nickname)
 
 const router = useRouter()
 const handleSave = async () => {
-  const res = await ApiUpdateUserInfo({ nickname: nickname.value })
-  console.log(res)
+ useUserStore().updateNickName(nickname)
 }
 const handleLogout = () => {
   logout()

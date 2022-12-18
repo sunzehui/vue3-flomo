@@ -26,7 +26,7 @@ export async function ApiUserInfo() {
 export async function ApiUpdateUserInfo({ nickname }) {
   return await axios<any>({
     url: '/api/user/profile',
-    method: 'patch',
+    method: 'put',
     data: {
       nickname,
     },

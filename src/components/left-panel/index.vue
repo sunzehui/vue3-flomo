@@ -4,7 +4,7 @@ import { computed, onMounted, watch } from 'vue'
 import UserTitle from '../UserTitle.vue'
 import UserStatistical from '../UserStatistical.vue'
 import Tag from '../Tag.vue'
-import DailyRecord from '../DailyRecord.vue'
+import DailyRecord from './DailyRecord.vue'
 import SideBar from './SideBar.vue'
 import { useUserStore } from '@/store/user'
 import { useArticleStore } from '@/store/article'
@@ -31,7 +31,7 @@ console.log(userStore.dailyGrid)
 
 <template>
   <div class="left">
-    <UserTitle :username="userStore.username" :is-pro="true" />
+    <UserTitle :nickname="userStore.nickname" :is-pro="true" />
     <UserStatistical />
     <div class="checking">
       <DailyRecord />

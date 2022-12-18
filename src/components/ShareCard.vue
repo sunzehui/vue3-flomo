@@ -60,7 +60,7 @@ onMounted(async () => {
       </div>
       <footer>
         <span class="time ">{{ createTime }}</span>
-        <span class="">✍️ by <b>{{ memo.user.username }}</b></span>
+        <span class="">✍️ by <b>{{ memo.user.nickname }}</b></span>
       </footer>
     </div>
   </ElDialog>
