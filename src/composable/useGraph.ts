@@ -1,5 +1,5 @@
 import { ElPopper, ElTooltip } from 'element-plus'
-import { onMounted, reactive, ref, toRefs, unref, watch } from 'vue'
+import {onMounted, reactive, ref, toRefs, unref, watch, watchEffect} from 'vue'
 import dayjs from 'dayjs'
 import { useRouter } from 'vue-router'
 // moment 拿日期排列12 * 7次 从本周最后一天开始排
@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router'
 
 import { keys, toInteger } from 'lodash-es'
 import type { MaybeRef } from '@vueuse/core'
+import {useUserStore} from "@/store/user";
 
 interface WeekRecord {
   date: string
@@ -83,28 +84,29 @@ const colorSwitch = (count: number): string => {
 
   return ''
 }
-export function useGraph(memoCount: MaybeRef<{ [key: string]: number }>) {
+export function useGraph() {
+  const grid = createStateGrid()
+  const stateGrid = ref(grid)
+  const monthArray = createMonthArray(grid[0][0].date, grid[11][6].date)
+
+  const { dailyGrid } = toRefs(useUserStore())
   // 从服务端拉取记录，填充到表格
-  const updateRocordCount = (dataGrid: WeekRecord[][]) => {
-    const memoCountByDate = keys(unref(memoCount))
+  const updateGrid = (dataGrid: WeekRecord[][]) => {
+    const memoCountByDate = keys(unref(dailyGrid))
+    console.log({dataGrid})
 
     dataGrid.forEach((week) => {
       week.forEach((record) => {
         const day = record.date
         if (memoCountByDate.includes(day))
-          record.memo_count = memoCount.value[day]
+          record.memo_count = dailyGrid.value[day]
       })
     })
   }
-  const grid = createStateGrid()
-  const stateGrid = ref(grid)
-  const monthArray = createMonthArray(grid[0][0].date, grid[11][6].date)
 
-  watch(memoCount, () => {
-    // 页面加载完毕钩子
-    // 页面加载完毕，获取服务端记录
+  watchEffect(()=>{
     // 当服务端记录更新，更新表格
-    updateRocordCount(unref(stateGrid))
+    updateGrid(unref(stateGrid))
   })
   return {
     colorSwitch,
