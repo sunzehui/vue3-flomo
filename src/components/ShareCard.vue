@@ -39,6 +39,9 @@ onMounted(async () => {
       console.error("oops, something wents wrong!", error);
     });
 });
+const htmlContent = computed(() => {
+  return memo.value.content.replace(/\n/g, "<br />");
+});
 </script>
 <template>
   <ElDialog v-model="show" title="🙌 分享" width="380px">
@@ -49,7 +52,7 @@ onMounted(async () => {
       <img :src="imgUrl" alt="img" v-if="imgUrl" class="absolute" />
       <div class="content">
         <span class="time">{{ memo.createTime }}</span>
-        <span> {{ memo.content }} </span>
+        <span v-html="htmlContent">  </span>
       </div>
       <footer>
         ✍️ by <b>{{ memo.user.username }}</b>
