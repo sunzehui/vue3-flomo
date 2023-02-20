@@ -46,7 +46,7 @@ const onSubmit = async () => {
   });
 
   if (user) {
-    userStore.setToken(user.data.token);
+    userStore.setToken(user.data);
     router.push({
       path: "/memo",
     });

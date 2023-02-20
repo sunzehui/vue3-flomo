@@ -11,11 +11,6 @@ interface ILoginInfo {
   password: string;
 }
 interface ILoginResp {
-  token: {
     token: string;
     expires: string;
-  };
-  userInfo: {
-    username: string;
-  };
 }

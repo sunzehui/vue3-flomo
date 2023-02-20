@@ -37,12 +37,12 @@ const route = useRoute();
   <div class="left">
     <UserTitle :username="userStore.username" :isPro="true"/>
     <UserStatistical
-        :memo="userStore.memo_count.memoCount"
-        :tag="userStore.memo_count.tagCount"
-        :day="userStore.memo_count.day"
+        :memo="userStore.memoCount"
+        :tag="userStore.tagCount"
+        :day="userStore.daysCount"
     />
     <div class="checking">
-      <DailyRecord :grid="userStore.daily_grid"/>
+      <DailyRecord :grid="userStore.dailyGrid"/>
     </div>
     <SideBar/>
     <div v-if="!topicTag.length" class="empty-topic-tag">

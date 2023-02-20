@@ -4,6 +4,7 @@ import { useLocalStorage } from "@vueuse/core";
 import jwtDecode from "jwt-decode";
 import { ILoginResp } from "@/types/api";
 import { ApiUserInfo, ApiUserStatistic } from "@/api/user";
+import { IUserProfile } from "@/types/user";
 interface IMemoCount {
   memoCount: number;
   tagCount: number;
@@ -27,23 +28,24 @@ export const useUserStore = defineStore("user", {
         daily_grid: {},
         username: "浮墨用户",
       }),
-      a: 7,
+      userRecord: null as (null|IUserProfile['userRecord'])
     };
   },
   actions: {
-    setToken(_token: ILoginResp["token"]) {
-      const token = _token.token;
-      const expires = jwtDecode(_token.token).exp * 1000;
+    setToken({token, expires: expiresDuration}: ILoginResp){
+      if(!token) return;
+      const expires = (jwtDecode(token) as unknown as any).exp * 1000;
       this.token = {
         token,
         expires,
+        expiresDuration
       };
     },
     async getUserInfo() {
       const res = await ApiUserInfo();
-      const { username } = res.data;
-      this.userInfo.username = username;
-      return res;
+      const { userInfo,userRecord} = res.data;
+      this.userInfo= userInfo;
+      this.userRecord = userRecord;
     },
     async getStatisticInfo() {
       const res = await ApiUserStatistic();
@@ -59,11 +61,23 @@ export const useUserStore = defineStore("user", {
     username: (state) => {
       return state.userInfo.username;
     },
-    memo_count: (state) => {
-      return state.userInfo.memo_count;
+   dailyGrid: (state) => {
+      return state.userRecord?.dailyGrid || {};
     },
-    daily_grid: (state) => {
-      return state.userInfo.daily_grid;
+    memoCount: (state) => {
+      const userRecord = state.userRecord;
+      if(!userRecord) return 0;
+      return userRecord.memoCount
     },
+    tagCount: (state) => {
+       const userRecord = state.userRecord;
+      if(!userRecord) return 0;
+      return userRecord.tagCount
+    },
+    daysCount: (state) => {
+      const userRecord = state.userRecord;
+      if(!userRecord) return 0;
+      return userRecord.day
+    }
   },
 });

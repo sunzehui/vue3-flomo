@@ -1,4 +1,5 @@
 import { ILoginInfo, ILoginResp, Resp } from "@/types/api";
+import { IUserProfile } from "@/types/user";
 import axios from "@/utils/request";
 
 export function ApiUserLogin(data: ILoginInfo) {
@@ -14,9 +15,10 @@ export function ApiUserStatistic() {
     method: "get",
   });
 }
+
 export function ApiUserInfo() {
-  return axios<any>({
-    url: "/api/auth/profile",
+  return axios<IUserProfile>({
+    url: "/api/user/profile",
     method: "get",
   });
 }
