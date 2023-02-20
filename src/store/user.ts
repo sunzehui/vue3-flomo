@@ -1,83 +1,120 @@
-import { defineStore } from "pinia";
-import { useLocalStorage } from "@vueuse/core";
+import { defineStore } from 'pinia'
+import type { MaybeRef } from '@vueuse/core'
+import { useLocalStorage } from '@vueuse/core'
 
-import jwtDecode from "jwt-decode";
-import { ILoginResp } from "@/types/api";
-import { ApiUserInfo, ApiUserStatistic } from "@/api/user";
-import { IUserProfile } from "@/types/user";
-interface IMemoCount {
-  memoCount: number;
-  tagCount: number;
-  day: number;
+import jwtDecode from 'jwt-decode'
+import { computed, onMounted, unref } from 'vue'
+import { ElMessage } from 'element-plus'
+import type { ILoginResp } from '@/types/api'
+import { ApiUpdateUserInfo, ApiUserInfo, ApiUserLogin, ApiUserStatistic } from '@/api/user'
+import type { UserInfo } from '@/types/user'
+
+export interface DailyGrid {
+  [key: string]: number
+}
+export interface UserRecord {
+  tagCount: number
+  memoCount: number
+  day: number
+  dailyGrid: DailyGrid
 }
 
-export const useUserStore = defineStore("user", {
-  state: () => {
-    return {
-      token: useLocalStorage("token", {
-        token: "",
-        expires: 0,
-      }),
-      userInfo: useLocalStorage("userInfo", {
-        last_login: "",
-        memo_count: {
-          memoCount: 0,
-          tagCount: 0,
-          day: 0,
-        } as IMemoCount,
-        daily_grid: {},
-        username: "浮墨用户",
-      }),
-      userRecord: null as (null|IUserProfile['userRecord'])
-    };
-  },
-  actions: {
-    setToken({token, expires: expiresDuration}: ILoginResp){
-      if(!token) return;
-      const expires = (jwtDecode(token) as unknown as any).exp * 1000;
-      this.token = {
-        token,
-        expires,
-        expiresDuration
-      };
-    },
-    async getUserInfo() {
-      const res = await ApiUserInfo();
-      const { userInfo,userRecord} = res.data;
-      this.userInfo= userInfo;
-      this.userRecord = userRecord;
-    },
-    async getStatisticInfo() {
-      const res = await ApiUserStatistic();
-      const { memo_count, daily_grid } = res.data;
-      this.userInfo.memo_count = memo_count;
-      this.userInfo.daily_grid = daily_grid;
-    },
-  },
-  getters: {
-    isAuthenticated: (state) => {
-      return state.token.token !== "" && state.token.expires > Date.now();
-    },
-    username: (state) => {
-      return state.userInfo.username;
-    },
-   dailyGrid: (state) => {
-      return state.userRecord?.dailyGrid || {};
-    },
-    memoCount: (state) => {
-      const userRecord = state.userRecord;
-      if(!userRecord) return 0;
-      return userRecord.memoCount
-    },
-    tagCount: (state) => {
-       const userRecord = state.userRecord;
-      if(!userRecord) return 0;
-      return userRecord.tagCount
-    },
-    daysCount: (state) => {
-      const userRecord = state.userRecord;
-      if(!userRecord) return 0;
-      return userRecord.day
+export const useUserStore = defineStore('user', () => {
+  const token = useLocalStorage('token', {
+    token: '',
+    expires: 0,
+  })
+  const userInfo = useLocalStorage('userInfo', {} as UserInfo)
+  const userRecord = useLocalStorage('userRecord', {} as UserRecord)
+  const setToken = (loginResp: ILoginResp) => {
+    if (!loginResp)
+      return token.value = null
+    token.value = {
+      token: loginResp?.token,
+      expires: 36000,
     }
-  },
-});
+    try {
+      const expires = jwtDecode<{ exp: number }>(loginResp.token).exp * 1000
+      token.value.expires = expires
+    }
+    catch (e) {
+      console.log(e)
+      return token
+    }
+  }
+
+  async function refreshUserInfo() {
+    const res = await ApiUserInfo()
+    userInfo.value = res.data.userInfo
+    userRecord.value = res.data.userRecord
+  }
+
+  const login = async (username: MaybeRef<string>, password: MaybeRef<string>) => {
+    const loginRes = await ApiUserLogin({
+      username: unref(username),
+      password: unref(password),
+    })
+
+    if (loginRes) {
+      userInfo.value = null
+      setToken(loginRes)
+      await refreshUserInfo()
+      return true
+    }
+    return false
+  }
+
+  const logout = async () => {
+    userInfo.value = null
+    setToken(null)
+    return true
+  }
+  const updateNickName = async (nickname) => {
+    const res = await ApiUpdateUserInfo({ nickname: nickname.value })
+    console.log(res)
+    if (res.data === true) {
+      await refreshUserInfo()
+      ElMessage.success('保存成功！')
+    }
+  }
+
+  const username = computed(() => {
+    return unref(userInfo)?.username || '浮墨用户'
+  })
+
+  const nickname = computed(() => {
+    return unref(userInfo)?.nickname || '浮墨用户'
+  })
+  const memoCount = computed(() => {
+    return unref(userRecord)?.memoCount || 0
+  })
+  const tagCount = computed(() => {
+    return unref(userRecord)?.tagCount || 0
+  })
+  const daysCount = computed(() => {
+    return unref(userRecord)?.day || 0
+  })
+  const dailyGrid = computed(() => {
+    return unref(userRecord)?.dailyGrid
+  })
+  const isAuthenticated = computed(() => {
+    return unref(token)?.token !== '' && unref(token)?.expires > Date.now()
+  })
+  return {
+    token,
+    nickname,
+    updateNickName,
+    userInfo,
+    setToken,
+    isAuthenticated,
+    username,
+    dailyGrid,
+    login,
+    logout,
+    userRecord,
+
+    memoCount,
+    tagCount,
+    daysCount,
+  }
+})

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import LeftPanel from "@/components/left-panel/index.vue";
+import LeftPanel from '@/components/left-panel/index.vue'
 </script>
 
 <template>
   <div class="wrapper">
-    <LeftPanel/>
+    <LeftPanel />
     <main>
       <router-view v-slot="{ Component }">
         <keep-alive>
-          <component :is="Component" :key="$route.name"/>
+          <component :is="Component" :key="$route.name" />
         </keep-alive>
       </router-view>
     </main>
@@ -19,6 +19,7 @@ import LeftPanel from "@/components/left-panel/index.vue";
 .wrapper {
   @apply h-screen mx-auto flex justify-center;
 
+  @apply w-full sm:w-10/12 lg:w-9/12 xl:w-8/12 2xl:w-7/12;
   i {
     font-style: normal;
   }

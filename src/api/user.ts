@@ -2,18 +2,19 @@ import { ILoginInfo, ILoginResp, Resp } from "@/types/api";
 import { IUserProfile } from "@/types/user";
 import axios from "@/utils/request";
 
-export function ApiUserLogin(data: ILoginInfo) {
-  return axios<ILoginResp>({
-    url: "/api/auth/login",
-    method: "post",
+export async function ApiUserLogin(data: ILoginInfo) {
+  const res = await axios<ILoginResp>({
+    url: '/api/auth/login',
+    method: 'post',
     data,
-  });
+  })
+  return res.data
 }
 export function ApiUserStatistic() {
   return axios<any>({
-    url: "/api/statistic/grid",
-    method: "get",
-  });
+    url: '/api/statistic/grid',
+    method: 'get',
+  })
 }
 
 export function ApiUserInfo() {
@@ -22,13 +23,22 @@ export function ApiUserInfo() {
     method: "get",
   });
 }
+export async function ApiUpdateUserInfo({ nickname }) {
+  return await axios<any>({
+    url: '/api/user/profile',
+    method: 'put',
+    data: {
+      nickname,
+    },
+  })
+}
 export function ApiUserRegister(data) {
   return axios<{
-    status: true;
-    message: "ok";
+    status: true
+    message: 'ok'
   }>({
-    url: "/api/user/register",
-    method: "post",
+    url: '/api/user/register',
+    method: 'post',
     data,
-  });
+  })
 }

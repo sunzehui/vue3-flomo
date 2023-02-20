@@ -1,58 +1,53 @@
 <script lang="ts" setup>
-import UserTitle from "../UserTitle.vue";
-import UserStatistical from "../UserStatistical.vue";
-import Tag from "../Tag.vue";
-import DailyRecord from "../DailyRecord.vue";
-import {useRoute, useRouter} from "vue-router";
-import {onMounted, watch, computed} from "vue";
-import {useUserStore} from "@/store/user";
-import {useArticleStore} from "@/store/article";
+import { useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, watch } from 'vue'
+import UserTitle from '../UserTitle.vue'
+import UserStatistical from '../UserStatistical.vue'
+import Tag from '../Tag.vue'
+import DailyRecord from './DailyRecord.vue'
 import SideBar from './SideBar.vue'
+import { useUserStore } from '@/store/user'
+import { useArticleStore } from '@/store/article'
 
-const userStore = useUserStore();
-const articleStore = useArticleStore();
-const router = useRouter();
+const userStore = useUserStore()
+const articleStore = useArticleStore()
+const router = useRouter()
 
-onMounted(() => {
-  userStore.getStatisticInfo();
-  userStore.getUserInfo();
-  articleStore.getTagList();
-});
 const topicTag = computed(() =>
-    articleStore.tagList.filter((item) => item.is_topics)
-);
+  articleStore.tagList.filter(item => item.is_topics),
+)
 const tagList = computed(() =>
-    articleStore.tagList.filter((item) => !item.is_topics)
-);
-const route = useRoute();
+  articleStore.tagList.filter(item => !item.is_topics),
+)
+const route = useRoute()
 // watch(
 //     () => route.query,
 //     (newVal) => {
 //       articleStore.getTagList();
 //     }
 // );
+console.log(userStore.dailyGrid)
 </script>
 
 <template>
   <div class="left">
-    <UserTitle :username="userStore.username" :isPro="true"/>
-    <UserStatistical
-        :memo="userStore.memoCount"
-        :tag="userStore.tagCount"
-        :day="userStore.daysCount"
-    />
+    <UserTitle :nickname="userStore.nickname" :is-pro="true" />
+    <UserStatistical />
     <div class="checking">
-      <DailyRecord :grid="userStore.dailyGrid"/>
+      <DailyRecord />
     </div>
-    <SideBar/>
+    <SideBar />
     <div v-if="!topicTag.length" class="empty-topic-tag">
       置顶常用标签于此，以便访问。
     </div>
     <div v-if="topicTag.length" class="topic-tag">
-      <h4 class="tag-title">置顶标签</h4>
+      <h4 class="tag-title">
+        置顶标签
+      </h4>
       <ul class="tag-list">
-        <li class="relative" v-for="tag in topicTag" :key="tag.id">
-          <Tag :link="tag.content" :isTopic="tag.is_topics">{{
+        <li v-for="tag in topicTag" :key="tag.id" class="relative">
+          <Tag :link="tag.content" :is-topic="tag.is_topics">
+            {{
               tag.content
             }}
           </Tag>
@@ -61,10 +56,13 @@ const route = useRoute();
     </div>
 
     <div class="normal-tag">
-      <h4 class="tag-title">全部标签</h4>
+      <h4 class="tag-title">
+        全部标签
+      </h4>
       <ul class="tag-list">
-        <li class="relative" v-for="tag in tagList" :key="tag.id">
-          <Tag :link="tag.content" :isTopic="tag.is_topics">{{
+        <li v-for="tag in tagList" :key="tag.id" class="relative">
+          <Tag :link="tag.content" :is-topic="tag.is_topics">
+            {{
               tag.content
             }}
           </Tag>
@@ -83,7 +81,6 @@ const route = useRoute();
     height: 140px;
     @apply w-full;
   }
-
 
   .tag-title {
     @apply text-xs my-2 text-left;
