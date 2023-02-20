@@ -1,10 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import NotFound from "./views/NotFound.vue";
+import Mine from "./layouts/Mine.vue";
+import Memo from "./views/Memo.vue";
+import Login from "./views/Login.vue";
+
 
 export const routes = [
   {
     path: "/",
-    component: () => import("./layouts/Mine.vue"),
+    component: Mine,
     children: [
       {
         path: "",
@@ -16,7 +20,7 @@ export const routes = [
         meta: { title: "个人主页" },
         name: "memo",
         props: (route) => ({ tag: route.query.tag }),
-        component: () => import("./views/Memo.vue"),
+        component: Memo,
       },
       {
         path: "/wechat",
@@ -42,7 +46,7 @@ export const routes = [
     path: "/login",
     name: "Login",
     meta: { title: "登录", publicRoute: true },
-    component: () => import("./views/Login.vue"),
+    component: Login,
   },
   {
     path: "/logup",
