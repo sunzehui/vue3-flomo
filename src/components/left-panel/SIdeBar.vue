@@ -1,43 +1,49 @@
 <script setup lang="ts">
 import {
-  Menu,
   Comment,
-  TrendCharts,
   DeleteFilled,
-} from "@element-plus/icons-vue";
+  Menu,
+  TrendCharts,
+} from '@element-plus/icons-vue'
 import SideBarItem from './SideBarItem.vue'
-
+const barGroup = [
+  {
+    key: 'memo',
+    to: '/memo',
+    icon: Menu,
+    title: 'MEMO',
+  },
+  {
+    key: 'wechat',
+    to: '/wechat',
+    icon: Comment,
+    title: '微信输入',
+  },
+  {
+    key: 'review',
+    to: '/review',
+    icon: TrendCharts,
+    title: '每日回顾',
+  },
+  {
+    key: 'recycle',
+    to: '/recycle',
+    icon: DeleteFilled,
+    title: '回收站',
+  },
+]
 </script>
 
 <template>
   <div class="bar-list">
-    <SideBarItem to="/memo" key="memo">
+    <SideBarItem v-for="item in barGroup" :key="item.key" :to="item.to">
       <template #icon>
-        <Menu/>
+        <Component :is="item.icon" />
       </template>
-      MEMO
-    </SideBarItem>
-    <SideBarItem to="/wechat" key="wechat">
-      <template #icon>
-        <Comment/>
-      </template>
-      微信输入
-    </SideBarItem>
-    <SideBarItem to="/review" key="review">
-      <template #icon>
-        <TrendCharts/>
-      </template>
-      每日回顾
-    </SideBarItem>
-    <SideBarItem to="/recycle" key="recycle">
-      <template #icon>
-        <DeleteFilled/>
-      </template>
-      回收站
+      {{ item.title }}
     </SideBarItem>
   </div>
 </template>
-
 
 <style scoped>
 .bar-list {

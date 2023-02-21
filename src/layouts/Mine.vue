@@ -1,10 +1,27 @@
 <script lang="ts" setup>
+import { ref, toRefs, watch, watchEffect } from 'vue'
+import { ElDrawer } from 'element-plus'
+import { useMediaQuery } from '@vueuse/core'
 import LeftPanel from '@/components/left-panel/index.vue'
+import { useLayoutStore } from '@/store/layout'
+
+const isPC = useMediaQuery('(min-width: 650px)')
+
+const { isLeftMenuOpen } = toRefs(useLayoutStore())
 </script>
 
 <template>
   <div class="wrapper">
-    <LeftPanel />
+    <LeftPanel v-show="isPC" />
+    <ElDrawer
+      v-model="isLeftMenuOpen"
+      direction="ltr"
+      size="280px"
+      :with-header="false"
+    >
+      <LeftPanel />
+    </ElDrawer>
+
     <main>
       <router-view v-slot="{ Component }">
         <keep-alive>

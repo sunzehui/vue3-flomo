@@ -11,9 +11,10 @@ import DetailPanel from '@/components/DetailPanel.vue'
 import ShareCard from '@/components/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
+import { useLayoutStore } from '@/store/layout'
 
 const props = defineProps<{ tag?: string }>()
-const { articleList, articleListEnhance } = storeToRefs(useArticleStore())
+const { articleListEnhance } = storeToRefs(useArticleStore())
 const { setActiveTag, getArticleList } = (useArticleStore())
 provide('tag', props.tag)
 
@@ -62,7 +63,6 @@ const handleOpenShare = (val) => {
     </ul>
     <DetailPanel v-model:show="panelShow" :content="panelContent" />
     <ShareCard
-      v-if="shareState.show"
       v-model:show="shareState.show"
       :content="shareState.memo"
     />

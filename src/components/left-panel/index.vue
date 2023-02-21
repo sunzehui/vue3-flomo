@@ -11,7 +11,6 @@ import { useArticleStore } from '@/store/article'
 
 const userStore = useUserStore()
 const articleStore = useArticleStore()
-const router = useRouter()
 
 const topicTag = computed(() =>
   articleStore.tagList.filter(item => item.is_topics),
@@ -19,14 +18,6 @@ const topicTag = computed(() =>
 const tagList = computed(() =>
   articleStore.tagList.filter(item => !item.is_topics),
 )
-const route = useRoute()
-// watch(
-//     () => route.query,
-//     (newVal) => {
-//       articleStore.getTagList();
-//     }
-// );
-console.log(userStore.dailyGrid)
 </script>
 
 <template>
@@ -116,11 +107,5 @@ console.log(userStore.dailyGrid)
 
 i {
   font-style: normal;
-}
-
-@media screen and (max-width: 650px) {
-  .left {
-    display: none;
-  }
 }
 </style>

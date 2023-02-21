@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import { computed, nextTick, onMounted, ref, unref, watch } from 'vue'
-import { ElDialog } from 'element-plus'
+import { computed, nextTick, onMounted, ref, unref, watch, watchEffect } from 'vue'
+
+import { ElDialog, ElLoading } from 'element-plus'
 import { toCanvas as img2Canvas } from 'html-to-image'
 import dayjs from 'dayjs'
 import type { Memo } from '@/types/memo'
@@ -19,33 +20,42 @@ const show = computed({
   get: () => props.show,
   set: val => emit('update:show', val),
 })
+
 const memoRef = ref(null)
 const imgUrl = ref(null)
 const memo = computed(() => props.content)
 const createTime = computed(() => dayjs(unref(memo).createTime).format('YYYY-MM-DD HH:mm:ss'))
-onMounted(async () => {
+watch(() => props.show, async () => {
   if (!show.value)
     return
-  await nextTick()
+  if (!unref(memoRef))
+    await nextTick()
   const node = unref(memoRef)
-  if (!node)
-    return
 
+  const loading = ElLoading.service({
+    lock: true,
+    text: '生成中...',
+    spinner: 'el-icon-loading',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
   img2Canvas(node, {
     pixelRatio: window.devicePixelRatio * 2,
     backgroundColor: '#eaeaea',
   })
-    .then(canvas => canvas.toDataURL())
+    .then((canvas) => {
+      return canvas.toDataURL()
+    })
     .then((url) => {
       imgUrl.value = url
+      loading.close()
     })
-    .catch(function (error) {
-      console.error("oops, something wents wrong!", error);
-    });
-});
+    .catch((error) => {
+      console.error('oops, something wents wrong!', error)
+    })
+})
 const htmlContent = computed(() => {
-  return memo.value.content.replace(/\n/g, "<br />");
-});
+  return memo.value.content.replace(/\n/g, '<br />')
+})
 </script>
 
 <template>
@@ -58,7 +68,7 @@ const htmlContent = computed(() => {
       <img v-if="imgUrl" :src="imgUrl" alt="img" class="absolute">
       <div class="content">
         <span class="time">{{ memo.createTime }}</span>
-        <span v-html="htmlContent">  </span>
+        <span v-html="htmlContent" />
       </div>
       <footer>
         <span class="time ">{{ createTime }}</span>

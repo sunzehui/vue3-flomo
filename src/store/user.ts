@@ -3,7 +3,7 @@ import type { MaybeRef } from '@vueuse/core'
 import { useLocalStorage } from '@vueuse/core'
 
 import jwtDecode from 'jwt-decode'
-import { computed, onMounted, unref } from 'vue'
+import { computed, unref } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { ILoginResp } from '@/types/api'
 import { ApiUpdateUserInfo, ApiUserInfo, ApiUserLogin, ApiUserStatistic } from '@/api/user'

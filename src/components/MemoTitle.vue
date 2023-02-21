@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 import { computed, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useArticleStore } from '@/store/article'
-import { ApiTagUpdate } from '@/api/article'
+import { useLayoutStore } from '@/store/layout'
 
 const route = useRoute()
 
@@ -14,8 +14,10 @@ const bindTagName = ref('')
 watchEffect(() => {
   bindTagName.value = route.query.tag as string
 })
+
+const { setLeftMenuOpen } = useLayoutStore()
 const router = useRouter()
-const goRouter = (query = void 0) => {
+const goRouter = (query) => {
   router.push({
     name: 'memo',
     query,
@@ -36,6 +38,7 @@ const rename = () => {
 
 <template>
   <div class="title-wrp">
+    <span class="showLeftPanelBtn" @click.stop="setLeftMenuOpen(true)">三</span>
     <span class="title" @click.prevent="goRouter()"> MEMO </span>
     <div v-if="tagName" style="display: inline">
       <span class="line">/</span>
@@ -111,5 +114,9 @@ span > label {
 }
 .lastTag {
   @apply mx-1 text-gray-500 text-base;
+}
+.showLeftPanelBtn{
+  @apply text-gray-500 text-base mr-2;
+  cursor: pointer;
 }
 </style>
