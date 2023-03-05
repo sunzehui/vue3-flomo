@@ -1,31 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hans">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title></title>
-    <!-- <script src="https://unpkg.com/spacingjs" defer></script> -->
-    <link
-      rel="preload"
-      href="./fonts/Inter-roman.var.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
-    />
+    <title>flomo-浮墨笔记</title>
     <style>
       @font-face {
         font-family: "DIN-Regular";
-        src: url("/fonts/DINPro-Regular.otf") format("opentype");
+        src: url("fonts/DINPro-Regular.otf") format("opentype");
       }
       @font-face {
         font-family: "DIN-Regular";
-        src: url("/fonts/DINPro-Bold.otf") format("opentype");
+        src: url("fonts/DINPro-Bold.otf") format("opentype");
         font-weight: bold;
       }
+      
       * {
         font-family: "DIN-Regular", "PingFang SC", Helvetica, Arial, sans-serif;
       }
-      body {
+      html,
+      body,
+      #app {
         height: 100%;
         overflow: hidden;
         background: #fafafa;
@@ -33,16 +28,25 @@
       ::-webkit-scrollbar-track {
         background-color: transparent !important;
       }
+      #app {
+        position: relative;
+        min-width: 340px;
+      }
+      #loading-tag {
+        display: block;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+      }
     </style>
-    <!-- <link rel="preload" href="/font/Inter-italic.var.woff2" as="font" type="font/woff2" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="./fonts/inter.css" />
-    <script type="module" crossorigin src="./assets/index.75ec14bb.js"></script>
-    <link rel="modulepreload" href="./assets/vendor.680f2693.js">
-    <link rel="stylesheet" href="./assets/vendor.034382ed.css">
-    <link rel="stylesheet" href="./assets/index.baa0f5fe.css">
+    <script type="module" crossorigin src="./assets/index.f00ccd0c.js"></script>
+    <link rel="stylesheet" href="./assets/index.7cab732a.css">
   </head>
   <body class="h-full">
-    <div id="app" class="h-full"></div>
+    <div id="app" class="h-full">
+      <span id="loading-tag"> loading... </span>
+    </div>
     
   </body>
 </html>
