@@ -50,18 +50,22 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const login = async (username: MaybeRef<string>, password: MaybeRef<string>) => {
-    const loginRes = await ApiUserLogin({
-      username: unref(username),
-      password: unref(password),
-    })
+    try {
+      const loginRes = await ApiUserLogin({
+        username: unref(username),
+        password: unref(password),
+      })
 
-    if (loginRes) {
-      userInfo.value = null
-      setToken(loginRes)
-      await refreshUserInfo()
-      return true
+      if (loginRes) {
+        userInfo.value = null
+        setToken(loginRes)
+        refreshUserInfo()
+        return true
+      }
     }
-    return false
+    catch (e) {
+      return false
+    }
   }
 
   const logout = async () => {

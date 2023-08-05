@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
     console.error('[Axios Error]', error)
     if (code === 500) {
       ElMessage.error(`Code: ${code}, Message: 请检查网络`)
-      return
+      return Promise.reject(error)
     }
     if (code === 401) {
       ElMessage.error(`Code: ${code}, Message: ${msg}`)
@@ -49,14 +49,14 @@ axiosInstance.interceptors.response.use(
       router.push({
         path: '/login',
       })
-      return
+      return Promise.reject(error)
     }
     ElMessage.error(`Code: ${code}, Message: ${msg}`)
 
-    return null
+    return Promise.reject(error)
   },
 )
 export default async function<T = any>(config: AxiosRequestConfig): Resp<T> {
-  const { data } = await axiosInstance.request<Resp<T>>(config)
-  return data
+  const res = await axiosInstance.request<Resp<T>>(config)
+  return res.data
 }

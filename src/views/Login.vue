@@ -41,7 +41,6 @@ const { login } = useUserStore()
 
 const onSubmit = async () => {
   const isLogin = await login(username, password)
-
   if (isLogin)
     router.push({ path: '/' })
 }
