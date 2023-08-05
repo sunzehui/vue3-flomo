@@ -27,7 +27,7 @@ const tagList = computed(() =>
     <div class="checking">
       <DailyRecord />
     </div>
-    <SideBar />
+    <!-- <SideBar /> -->
     <div v-if="!topicTag.length" class="empty-topic-tag">
       置顶常用标签于此，以便访问。
     </div>

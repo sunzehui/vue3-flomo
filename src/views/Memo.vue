@@ -3,7 +3,6 @@ import { Refresh, Search } from '@element-plus/icons-vue'
 import { computed, provide, reactive, ref, toRefs, unref, watch, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import Editor from '../components/Editor.vue'
-import MemoCard from '@/components/MemoCard.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import MemoTitle from '@/components/MemoTitle.vue'
 import { useArticleStore } from '@/store/article'
@@ -11,7 +10,6 @@ import DetailPanel from '@/components/DetailPanel.vue'
 import ShareCard from '@/components/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
-import { useLayoutStore } from '@/store/layout'
 
 const props = defineProps<{ tag?: string }>()
 const { articleListEnhance } = storeToRefs(useArticleStore())

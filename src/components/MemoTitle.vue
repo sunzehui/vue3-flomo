@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Check, Edit, Refresh, Search } from '@element-plus/icons-vue'
-import { useToggle } from '@vueuse/core'
+import { useMediaQuery, useToggle } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
 import { computed, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -17,7 +17,7 @@ watchEffect(() => {
 
 const { setLeftMenuOpen } = useLayoutStore()
 const router = useRouter()
-const goRouter = (query) => {
+const goRouter = (query?) => {
   router.push({
     name: 'memo',
     query,
@@ -34,11 +34,12 @@ const rename = () => {
     })
   })
 }
+const isPC = useMediaQuery('(min-width: 650px)')
 </script>
 
 <template>
   <div class="title-wrp">
-    <span class="showLeftPanelBtn" @click.stop="setLeftMenuOpen(true)">三</span>
+    <span v-show="!isPC" class="showLeftPanelBtn" @click.stop="setLeftMenuOpen(true)">三</span>
     <span class="title" @click.prevent="goRouter()"> MEMO </span>
     <div v-if="tagName" style="display: inline">
       <span class="line">/</span>
@@ -87,7 +88,9 @@ span > label {
   flex-shrink: 0;
   @apply flex items-center;
 }
-.title-wrp > span.title {
+.title-wrp{
+
+ > span.title {
   flex: 1;
   font-size: 18px;
   font-weight: bold;
@@ -96,9 +99,13 @@ span > label {
   border-radius: 3px;
   flex-shrink: 0;
   @apply relative;
+  @apply px-2;
+ }
+
   svg {
     height: 14px;
     width: 14px;
+    @apply mx-1 mr-2;
   }
   &:hover {
     background: rgba(55, 53, 47, 0.08);
