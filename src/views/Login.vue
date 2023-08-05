@@ -56,14 +56,14 @@ const onSubmit = async () => {
           flomo
         </h3>
       </div>
-      <VForm class="mt-8 space-y-2" @submit="onSubmit">
+      <VForm class="mt-8" @submit="onSubmit">
         <div class="space-y-3 rounded-md shadow-sm">
           <UserNameField v-model="formData.username" :rule="usernameRule" />
           <PasswordField v-model="formData.password" :rule="passwordRule" />
         </div>
         <button
           type="submit"
-          class="group select-none relative w-full flex justify-center px-4 border border-transparent text-sm py-2.5 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          class="submit-btn"
         >
           登录
         </button>
@@ -80,3 +80,9 @@ const onSubmit = async () => {
   </div>
 </template>
 
+<style lang="scss" scoped>
+  .submit-btn {
+    @apply select-none relative w-full flex justify-center px-4 border border-transparent text-sm py-2.5 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+    @apply my-4;
+  }
+</style>
