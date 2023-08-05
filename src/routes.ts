@@ -54,10 +54,10 @@ export const routes = [
     component: Login,
   },
   {
-    path: '/logup',
-    name: 'Logup',
+    path: '/register',
+    name: 'Register',
     meta: { title: '注册', publicRoute: true },
-    component: () => import('./views/Logup.vue'),
+    component: () => import('./views/Register.vue'),
   },
 
   { path: '/:path(.*)', component: NotFound },

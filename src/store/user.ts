@@ -38,7 +38,6 @@ export const useUserStore = defineStore('user', () => {
       token.value.expires = expires
     }
     catch (e) {
-      console.log(e)
       return token
     }
   }
