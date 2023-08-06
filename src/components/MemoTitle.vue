@@ -89,14 +89,13 @@ span > label {
   @apply flex items-center;
 }
 .title-wrp{
-
+  @apply rounded-md duration-300 transition-colors;
  > span.title {
   flex: 1;
   font-size: 18px;
   font-weight: bold;
   color: #5f5f5f;
   cursor: pointer;
-  border-radius: 3px;
   flex-shrink: 0;
   @apply relative;
   @apply px-2;

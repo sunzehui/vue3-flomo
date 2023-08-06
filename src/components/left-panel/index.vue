@@ -5,7 +5,6 @@ import UserTitle from '../UserTitle.vue'
 import UserStatistical from '../UserStatistical.vue'
 import Tag from '../Tag.vue'
 import DailyRecord from './DailyRecord.vue'
-import SideBar from './SideBar.vue'
 import { useUserStore } from '@/store/user'
 import { useArticleStore } from '@/store/article'
 

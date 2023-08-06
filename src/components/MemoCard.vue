@@ -25,6 +25,7 @@ import { useArticleStore } from '@/store/article'
 import type { Article } from '@/types/article'
 import { CardType } from '@/types/card-type'
 import 'dayjs/locale/zh-cn'
+import { formatDate } from '@/utils/time'
 const props = defineProps<{
   article: Article
   isLast: Boolean
@@ -80,18 +81,12 @@ const tagClick = (tag) => {
   })
 }
 const { article } = toRefs(props)
+
 const updateTime = computed(() => {
   const memo = unref(article)
   if (memo.is_topic)
     return '置顶'
-  const memoTime = dayjs(memo.createTime)
-  const diffSec = memoTime.diff(dayjs(), 'second')
-  const diffDays = memoTime.diff(dayjs(), 'day')
-
-  if (diffDays < 0)
-    return memoTime.format('YYYY-MM-DD HH:mm:ss')
-
-  return dayjs.duration(diffSec, 'second').humanize(true)
+  return formatDate(memo.createTime)
 })
 </script>
 

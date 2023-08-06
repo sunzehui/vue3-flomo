@@ -1,5 +1,9 @@
 {
   "cSpell.words": [
     "VITE"
-  ]
+  ],
+  "vite.browserType": "system",
+  "vite.port": 8080,
+  "vite.showTerminal": true,
+  "vite.devCommand": "vite --host"
 }

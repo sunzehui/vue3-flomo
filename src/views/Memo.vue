@@ -2,6 +2,7 @@
 import { Refresh, Search } from '@element-plus/icons-vue'
 import { computed, provide, reactive, ref, toRefs, unref, watch, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useEventBus } from '@vueuse/core'
 import Editor from '../components/Editor.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import MemoTitle from '@/components/MemoTitle.vue'
@@ -10,6 +11,7 @@ import DetailPanel from '@/components/DetailPanel.vue'
 import ShareCard from '@/components/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
+import { ShareCardKey } from '@/common/event-bus'
 
 const props = defineProps<{ tag?: string }>()
 const { articleListEnhance } = storeToRefs(useArticleStore())
@@ -32,9 +34,11 @@ const shareState = reactive({
   show: false,
   memo: null,
 })
+const { emit } = useEventBus(ShareCardKey)
 const handleOpenShare = (val) => {
-  shareState.memo = val
-  shareState.show = true
+  emit({
+    action: 'open',
+  }, val)
 }
 </script>
 
@@ -60,10 +64,7 @@ const handleOpenShare = (val) => {
       </template>
     </ul>
     <DetailPanel v-model:show="panelShow" :content="panelContent" />
-    <ShareCard
-      v-model:show="shareState.show"
-      :content="shareState.memo"
-    />
+    <ShareCard />
   </div>
 </template>
 
