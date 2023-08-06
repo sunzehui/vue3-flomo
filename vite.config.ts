@@ -1,13 +1,13 @@
 import { resolve } from 'path'
 import vue from '@vitejs/plugin-vue'
-import { loadEnv } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import {
   ElementPlusResolve,
   createStyleImportPlugin,
 } from 'vite-plugin-style-import'
 
-export default ({ mode }) => {
+export default defineConfig(({ mode }) => {
   const root = process.cwd()
 
   const env = loadEnv(mode, root)
@@ -37,5 +37,12 @@ export default ({ mode }) => {
         },
       },
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "@/assets/styles/main.scss";',
+        },
+      },
+    },
   }
-}
+})

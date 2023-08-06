@@ -30,7 +30,6 @@ const htmlContent = computed(() => {
 
 const handleOpenShare = async () => {
   const node = unref(memoRef)
-
   img2Canvas(node, {
     pixelRatio: window.devicePixelRatio * 2,
     backgroundColor: '#eaeaea',
@@ -86,6 +85,12 @@ const handleClose = () => {
         <span v-html="htmlContent" />
       </div>
       <footer>
+        <span class="statistics">
+          <span class="num">0</span>
+          Day /
+          <span class="num">0</span>
+          Memos</span>
+
         <span class="">✍️ by <b>{{ memoData?.user?.nickname }}</b></span>
       </footer>
     </div>
@@ -127,13 +132,7 @@ header {
   font-weight: 400;
 }
 }
-@font-face {
-  font-family: "wenkai";
-  src: url("/fonts/LXGWWenKai-Light.ttf");
-}
-.content *{
-  font-family: 'wenkai','PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -142,7 +141,7 @@ header {
   background: white;
 
   font-size: 20px;
-  @apply py-3 px-3 w-full;
+  @apply py-3 px-3 w-full font-wenkai;
   span.time {
     color: #5f6775;
     @apply text-sm font-thin;
@@ -157,6 +156,16 @@ footer {
   width: 100%;
   box-sizing: border-box;
   @apply px-3 py-3 text-base flex justify-between;
+  span.statistics {
+    color: #5f6775;
+    @apply text-sm font-thin;
 
+    font-size: 14px;
+    color: #999;
+    font-weight: 400;
+    .num{
+      color: #333;
+    }
+  }
 }
 </style>
