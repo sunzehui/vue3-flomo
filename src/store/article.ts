@@ -60,11 +60,14 @@ export const useArticleStore = defineStore('article', {
     async save(data: Partial<Article>) {
       const { refreshUserInfo } = useUserStore()
       const res = await ApiSave(data)
-      if (res.code === 0)
+      if (res.code === 0) {
         ElMessage.success('保存成功')
-
-      else if (res.code === -1)
+        return Promise.resolve(res)
+      }
+      else if (res.code === -1) {
         ElMessage.success('保存失败，请稍后再试')
+        return Promise.reject(res)
+      }
 
       this.loadRemoteData()
       refreshUserInfo()

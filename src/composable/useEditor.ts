@@ -19,6 +19,8 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>, opt: OptionProp
 
   // 设置候选项active
   watch(textareaContent, () => {
+    if (!textareaContent.value)
+      return textareaRef.value.style.height = 'auto'
     textareaRef.value.style.height = 'auto'
     textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`
   })
@@ -45,8 +47,10 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>, opt: OptionProp
     })
   }
   useEventListener(textareaRef, 'keydown', (event: KeyboardEvent) => {
-    if (event.key == 'Enter' && event.ctrlKey)
+    if (event.key == 'Enter' && event.ctrlKey) {
       cbs.onSave()
+      textareaContent.value = ''
+    }
   })
   const articleStore = useArticleStore()
 

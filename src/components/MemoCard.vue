@@ -181,7 +181,7 @@ li.card {
   .content {
     color: #323232;
     font-size: 14px;
-    overflow: hidden;
+    word-break: break-all;
   }
 
   .more ul {

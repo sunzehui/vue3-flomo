@@ -18,7 +18,6 @@ export function useSuggestion(
   const { tagList: suggestionList } = toRefs(useArticleStore())
   const shouldSuggestionShow = ref(false)
   const partialPatternRef = ref('')
-  console.log('🚀 ~ file: useSuggestion.ts:23 ~ suggestionList:', suggestionList)
   const filteredList = computed(() => {
     const { value: partialValue } = partialPatternRef
     const { value: list } = suggestionList

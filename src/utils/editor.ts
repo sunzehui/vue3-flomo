@@ -2,7 +2,7 @@ import type { MaybeRef } from '@vueuse/core'
 import { unref } from 'vue'
 import { px2number } from '@/utils/Tool'
 
-export const computeSelectPos = (inputRef: MaybeRef<HTMLInputElement>) => {
+export const computeSelectPos = (inputRef: MaybeRef<HTMLTextAreaElement>) => {
   const input = unref(inputRef)
   // 初始位置
   const {

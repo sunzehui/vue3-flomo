@@ -53,7 +53,7 @@ const updateArticle = () => {
     throw new Error('can \'t find article id!')
   }
   loading.value = true
-  articleStore.update(id, article).then((result) => {
+  articleStore.update(id, article).finally(() => {
     loading.value = false
   })
 }
@@ -64,12 +64,13 @@ const saveArticle = () => {
     loading.value = false
     textareaContent.value = ''
     emit('submit')
+  }).finally(() => {
+    loading.value = false
   })
 }
 const handleSave = () => {
   if (props.type === EditorType.create)
     saveArticle()
-
   else if (props.type === EditorType.edit)
     updateArticle()
 }
@@ -91,9 +92,7 @@ onSave(() => handleSave())
         class="suggestion"
         @click="handleItemClick($event)"
       >
-        <template v-for="item of suggestionList">
-          <span :class="{ active: item.active }">{{ item.content }}</span>
-        </template>
+        <span v-for="item of suggestionList" :key="item.id" :class="{ active: item.active }">{{ item.content }}</span>
       </div>
     </transition>
 
@@ -129,7 +128,8 @@ onSave(() => handleSave())
 textarea {
   border: none;
   outline: 0;
-  height: 42px;
+  min-height: 42px;
+  height: auto;
   // padding: 0 10px;
   padding: 0;
   box-sizing: border-box;
