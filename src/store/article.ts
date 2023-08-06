@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import type { Article, tagType } from './../types/article'
+import { useUserStore } from './user'
 import {
   ApiList as ApiArticleList,
   ApiDelete as ApiDeleteArticle,
@@ -28,53 +29,69 @@ export const useArticleStore = defineStore('article', {
     }
   },
   actions: {
-    resetList() {
-      return Promise.all([this.getArticleList(), this.getTagList()])
+    loadRemoteData({ ...query }: any = {}) {
+      return Promise.all([this.getArticleList({ ...query }), this.getTagList()])
     },
-    getTagList() {
-      return ApiTagList().then((res) => {
-        this.tagList = res.data
-      })
+    async getTagList() {
+      const res = await ApiTagList()
+      this.tagList = res.data
     },
-    getArticleList({ tag } = { tag: '' }) {
-      return ApiArticleList({ tag }).then((res) => {
-        this.articleList = res.data
-      })
+    async getArticleList({ tag } = { tag: '' }) {
+      const res = await ApiArticleList({ tag })
+      this.articleList = res.data
     },
-    deleteArticle(id: number) {
-      ApiDeleteArticle(id).then((res) => {
+    async deleteArticle(id: number) {
+      const { refreshUserInfo } = useUserStore()
+      try {
+        const res = await ApiDeleteArticle(id)
         if (res.code === 0)
           ElMessage.success('删除成功')
 
         else if (res.code === -1)
           ElMessage.success('删除失败，请稍后再试')
 
-        this.resetList()
-      })
+        refreshUserInfo()
+        this.loadRemoteData()
+      }
+      catch (e) {
+        ElMessage.error(e.message)
+      }
     },
-    save(data) {
-      return ApiSave(data).then((res) => {
-        if (res.code === 0)
-          ElMessage.success('保存成功')
+    async save(data: Partial<Article>) {
+      const { refreshUserInfo } = useUserStore()
+      const res = await ApiSave(data)
+      if (res.code === 0)
+        ElMessage.success('保存成功')
 
-        else if (res.code === -1)
-          ElMessage.success('保存失败，请稍后再试')
+      else if (res.code === -1)
+        ElMessage.success('保存失败，请稍后再试')
 
-        this.resetList()
-        return Promise.resolve(res)
-      })
+      this.loadRemoteData()
+      refreshUserInfo()
+      return Promise.resolve(res)
     },
-    update(id, data) {
-      return ApiUpdate(id, data).then((res) => {
-        if (res.code === 0)
+    async update(id: Article['id'], data: Partial<Article>) {
+      try {
+        const res = await ApiUpdate(id, data)
+        if (res.code === 0) {
+          this.setArticle(id, {
+            type: CardType.article,
+            content: data.content,
+          })
+
           ElMessage.success('保存成功')
-
-        else if (res.code === -1)
+          return Promise.resolve(res)
+        }
+        else if (res.code === -1) {
           ElMessage.success('保存失败，请稍后再试')
+          return Promise.reject(res)
+        }
 
-        this.resetList()
-        return Promise.resolve(res)
-      })
+        return Promise.reject(res)
+      }
+      catch (err) {
+        return Promise.reject(err)
+      }
     },
     async tagRename(oldName: string, newName: string) {
       return await ApiUpdateTag(oldName, { content: newName })
@@ -82,27 +99,26 @@ export const useArticleStore = defineStore('article', {
     async setTagTop({ tag, topic: is_topics }) {
       const res = await ApiUpdateTag(tag, { is_topics })
       ElMessage.success('标签置顶成功！')
-      await this.resetList()
+      await this.loadRemoteData()
       return res
     },
     async setArticleTop(articleId) {
       const res = await ApiUpdateArticle(articleId, { is_topic: true })
       ElMessage.success('memo置顶成功！')
-      await this.resetList()
+      this.setArticle(articleId, { is_topic: true })
       return res
     },
     async cancelArticleTop(articleId) {
       const res = await ApiUpdateArticle(articleId, { is_topic: false })
       ElMessage.success('memo取消置顶成功！')
-      await this.resetList()
+      this.setArticle(articleId, { is_topic: false })
       return res
     },
-    setArticleType(articleId, type) {
+    setArticle(articleId: Article['id'], data: Partial<Article & { type: CardType }>) {
       const list = cloneDeep(this.articleList)
-      const idx = findIndex(list, (o: Article) => o.id == articleId)
-      list[idx].type = type
+      const idx = findIndex(list, (o: Article) => o.id.toString() === articleId.toString())
+      Object.assign(list[idx], data)
       this.articleList = list
-      console.log(list[idx])
     },
     setActiveTag(tag: string) {
       this.activeTag = tag
@@ -112,20 +128,21 @@ export const useArticleStore = defineStore('article', {
   getters: {
     articleListEnhance(state) {
       const list = state.articleList
+      const sortedListByTime = reverse(
+        orderBy(list, (obj) => {
+          if (obj.is_topic)
+            return Number.MAX_SAFE_INTEGER
+          const createTime = safeNaN(dayjs(obj.createTime).unix())
+          return createTime ?? Number(obj.id)
+        }),
+      )
+      const cardStateWarpper = (obj: Article & { type: CardType }, idx, arr) => {
+        const type = obj.type ?? CardType.article
+        const isLast = arr.length - 1 === idx
+        return { ...obj, type, isLast }
+      }
       return map(
-        reverse(
-          orderBy(list, (obj) => {
-            if (obj.is_topic)
-              return Number.MAX_SAFE_INTEGER
-            const createTime = safeNaN(dayjs(obj.createTime).unix())
-            return createTime ?? Number(obj.id)
-          }),
-        ),
-        (obj: Article & { type: CardType }, idx, arr) => {
-          const type = obj.type ?? CardType.article
-          const isLast = arr.length - 1 === idx
-          return { ...obj, type, isLast }
-        },
+        sortedListByTime, cardStateWarpper,
       )
     },
   },

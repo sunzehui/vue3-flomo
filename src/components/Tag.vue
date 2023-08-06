@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, ref, watch } from "vue";
+import {  ref, watch } from "vue";
 import { Download } from "@element-plus/icons-vue";
 import { useRoute, useRouter } from "vue-router";
 import { router } from "@/routes";

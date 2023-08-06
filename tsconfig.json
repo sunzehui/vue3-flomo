@@ -17,7 +17,7 @@
       "vite/client"
     ]
   },
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["node_modules/**", "dist"],
   "typeAcquisition": {
     "include": [
       "lodash"
@@ -26,6 +26,7 @@
   "vueCompilerOptions": {
     "target": 3
   },
+
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",

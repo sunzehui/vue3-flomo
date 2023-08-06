@@ -1,6 +1,7 @@
-import { ILoginInfo, ILoginResp, Resp } from "@/types/api";
-import { IUserProfile } from "@/types/user";
-import axios from "@/utils/request";
+import type { ILoginInfo, ILoginResp } from '@/types/api'
+import { Resp } from '@/types/api'
+import type { IUserProfile } from '@/types/user'
+import axios from '@/utils/request'
 
 export async function ApiUserLogin(data: ILoginInfo) {
   const res = await axios<ILoginResp>({
@@ -19,9 +20,9 @@ export function ApiUserStatistic() {
 
 export function ApiUserInfo() {
   return axios<IUserProfile>({
-    url: "/api/user/profile",
-    method: "get",
-  });
+    url: '/api/user/profile',
+    method: 'get',
+  })
 }
 export async function ApiUpdateUserInfo({ nickname }) {
   return await axios<any>({

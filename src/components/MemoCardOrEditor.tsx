@@ -2,7 +2,7 @@ import type { PropType } from 'vue'
 import { computed, defineComponent, unref } from 'vue'
 import MemoCard from '@/components/MemoCard.vue'
 import { CardType, EditorType } from '@/types/card-type'
-import type { Memo } from '@/types/memo'
+import type { Article as Memo } from '@/types/article'
 import Editor from '@/components/Editor.vue'
 
 type PropMemo = Memo & { type: CardType; isLast: boolean }

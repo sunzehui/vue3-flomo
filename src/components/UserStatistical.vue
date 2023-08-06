@@ -1,16 +1,12 @@
 <script lang="ts" setup>
-import { toRefs, unref } from 'vue'
+import { computed, toRefs, unref, watchEffect } from 'vue'
 import { useUserStore } from '@/store/user'
-const { userRecord} = toRefs(useUserStore())
 
+const { userRecord } = toRefs(useUserStore())
 
-const { 
-  memoCount:memo=0, 
-  tagCount:tag=0, 
-  day =0
-} = unref(userRecord)
-console.log(memo, tag, day);
-
+const memo = computed(() => unref(userRecord)?.memoCount || 0)
+const tag = computed(() => unref(userRecord)?.tagCount || 0)
+const day = computed(() => unref(userRecord)?.day || 0)
 </script>
 
 <template>

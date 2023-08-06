@@ -114,6 +114,7 @@ export const useUserStore = defineStore('user', () => {
     dailyGrid,
     login,
     logout,
+    refreshUserInfo,
     userRecord,
 
     memoCount,

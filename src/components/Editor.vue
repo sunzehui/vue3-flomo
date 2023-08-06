@@ -4,38 +4,38 @@ import { isEmpty } from 'lodash-es'
 import { ElMessage } from 'element-plus'
 import { useSuggestion } from '@/composable/useSuggestion'
 import { useArticleStore } from '@/store/article'
-import { useEditor } from '@/composable/useEditor'
 import { extractTags } from '@/utils/editor'
-import type { Memo } from '@/types/memo'
+import type { Article as Memo } from '@/types/article'
 import { EditorType } from '@/types/card-type'
 
 const props = defineProps<{
   memo?: Memo
   type: EditorType
 }>()
+const emit = defineEmits(['submit'])
 
 const suggestionRef = ref(null)
+const loading = ref(false)
+const articleStore = useArticleStore()
 
 // 监听onkeydown
 const textareaRef = ref(null)
-const editor = useEditor(textareaRef, {
-  onSave: () => handleSave(),
-  type: props.type,
-})
+
 const {
-  textareaContent,
   shouldSuggestionShow,
   handleIconClick,
   handleItemClick,
   suggestionList,
-} = useSuggestion(suggestionRef, editor)
+  editor: { insertContent, onSave, textareaContent },
+} = useSuggestion(suggestionRef, textareaRef, {
+  type: props.type,
+})
 
 onMounted(() => {
   if (props.memo && props.type === EditorType.edit)
-    editor.insertContent(props.memo?.content || '')
+    insertContent(props.memo?.content || '')
 })
 
-const articleStore = useArticleStore()
 const buildArticle = () => {
   const tags = extractTags(textareaContent.value)
   const article: Partial<Memo> = {
@@ -44,6 +44,7 @@ const buildArticle = () => {
   }
   return article
 }
+
 const updateArticle = () => {
   const article = buildArticle()
   const { memo: { id } } = props
@@ -62,6 +63,7 @@ const saveArticle = () => {
   articleStore.save(article).then((result) => {
     loading.value = false
     textareaContent.value = ''
+    emit('submit')
   })
 }
 const handleSave = () => {
@@ -72,7 +74,7 @@ const handleSave = () => {
     updateArticle()
 }
 
-const loading = ref(false)
+onSave(() => handleSave())
 </script>
 
 <template>

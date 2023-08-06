@@ -5,7 +5,7 @@ import { useGraph } from '@/composable/useGraph'
 import { useUserStore } from '@/store/user'
 
 const { colorSwitch, monthArray, stateGrid } = useGraph()
-console.log({monthArray,stateGrid})
+
 defineExpose({
   ElPopper,
 })

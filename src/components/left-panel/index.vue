@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router'
 import { computed, onMounted, watch } from 'vue'
 import UserTitle from '../UserTitle.vue'
 import UserStatistical from '../UserStatistical.vue'

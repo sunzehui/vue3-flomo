@@ -10,7 +10,7 @@ const { nickname, isPro } = toRefs(props)
 <template>
   <div class="user">
     <span class="username" @click="$router.push('/me')">
-      <span class="title">{{ nickname}}</span><span class="pro" :class="{ active: isPro }">PRO</span>
+      <span class="title">{{ nickname }}</span><span class="pro" :class="{ active: isPro }">PRO</span>
     </span>
     <div class="icons">
       <div class="notify mr-2">
@@ -95,14 +95,12 @@ const { nickname, isPro } = toRefs(props)
 .user {
   @apply flex py-3 items-center;
   .username {
-    flex: 1;
-    cursor: pointer;
     font-weight: bold;
     font-size: 18px;
     color: #5f5f5f;
+    @apply cursor-pointer flex items-center flex-1;
     .title {
       max-width: 120px;
-      display: inline-block;
       overflow: hidden;
     }
     .pro {
@@ -112,9 +110,6 @@ const { nickname, isPro } = toRefs(props)
       padding: 2px 4px;
       border-radius: 4px;
 
-      display: inline-block;
-      position: relative;
-      bottom: 8px;
       cursor: pointer;
       @apply mx-1;
       &.active {

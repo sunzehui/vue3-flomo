@@ -1,15 +1,12 @@
-import { ElPopper, ElTooltip } from 'element-plus'
-import {onMounted, reactive, ref, toRefs, unref, watch, watchEffect} from 'vue'
+import { reactive, ref, toRefs, unref, watchEffect } from 'vue'
 import dayjs from 'dayjs'
-import { useRouter } from 'vue-router'
 // moment 拿日期排列12 * 7次 从本周最后一天开始排
 // 排到最后 reverse
 // month 提取方法
 // 每周弹出最后一天，然后提取全部month后去重，重复填充空字符串，不重复保留
 
 import { keys, toInteger } from 'lodash-es'
-import type { MaybeRef } from '@vueuse/core'
-import {useUserStore} from "@/store/user";
+import { useUserStore } from '@/store/user'
 
 interface WeekRecord {
   date: string
@@ -62,11 +59,9 @@ export const createStateGrid = () => {
   // 方便展示，颠倒顺序
   stateGrid.reverse()
 
-  return reactive(
-    stateGrid.map((week) => {
-      return [...week].reverse()
-    }),
-  )
+  return stateGrid.map((week) => {
+    return [...week].reverse()
+  }) as WeekRecord[][]
 }
 
 // 绿色深度样式：循环时判断daily_memo_count >10 深色，
@@ -85,32 +80,32 @@ const colorSwitch = (count: number): string => {
   return ''
 }
 export function useGraph() {
-  const grid = createStateGrid()
-  const stateGrid = ref(grid)
-  const monthArray = createMonthArray(grid[0][0].date, grid[11][6].date)
+  const layoutGrid = reactive(
+    createStateGrid(),
+  )
+  const monthArray = createMonthArray(layoutGrid[0][0].date, layoutGrid[11][6].date)
 
-  const { dailyGrid } = toRefs(useUserStore())
   // 从服务端拉取记录，填充到表格
-  const updateGrid = (dataGrid: WeekRecord[][]) => {
-    const memoCountByDate = keys(unref(dailyGrid))
-    console.log({dataGrid})
+  const updateGrid = (girdRecord: Record<string, any>) => {
+    const memoCountByDate = keys(girdRecord)
 
-    dataGrid.forEach((week) => {
+    layoutGrid.forEach((week) => {
       week.forEach((record) => {
         const day = record.date
         if (memoCountByDate.includes(day))
-          record.memo_count = dailyGrid.value[day]
+          record.memo_count = girdRecord[day]
       })
     })
   }
 
-  watchEffect(()=>{
+  const { dailyGrid } = toRefs(useUserStore())
+  watchEffect(() => {
     // 当服务端记录更新，更新表格
-    updateGrid(unref(stateGrid))
+    updateGrid(dailyGrid.value)
   })
   return {
     colorSwitch,
-    stateGrid,
+    stateGrid: layoutGrid,
     monthArray,
   }
 }

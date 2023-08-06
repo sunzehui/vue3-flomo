@@ -1,26 +1,20 @@
 <script lang="ts" setup>
 import {
-  PropType,
   computed,
-  reactive,
-  ref,
-  toRef,
   toRefs,
   unref,
-  watch,
-  watchEffect,
 } from 'vue'
 import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElIcon,
 } from 'element-plus'
 import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 import * as dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import duration from 'dayjs/plugin/duration'
+import { Right as RightIcon } from '@/components/icon'
 import { useArticleStore } from '@/store/article'
 import type { Article } from '@/types/article'
 import { CardType } from '@/types/card-type'
@@ -65,7 +59,7 @@ const reducerAction = (event: Event) => {
       articleStore.setArticleTop(+props.article.id)
       break
     case 'edit':
-      articleStore.setArticleType(+props.article.id, CardType.editor)
+      articleStore.setArticle(+props.article.id, { type: CardType.editor })
       break
     default:
       break
@@ -96,21 +90,7 @@ const updateTime = computed(() => {
       <span class="time-text">{{ updateTime }}</span>
       <ElDropdown>
         <span class="el-dropdown-link">
-          <ElIcon class="el-icon--right">
-            <svg
-              class="more-action-bar"
-              width="16px"
-              height="16px"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
-              />
-            </svg>
-          </ElIcon>
+          <RightIcon />
         </span>
         <template #dropdown>
           <ElDropdownMenu @click="reducerAction">

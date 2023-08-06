@@ -12,16 +12,19 @@ import ShareCard from '@/components/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
 import { ShareCardKey } from '@/common/event-bus'
+import { useUserStore } from '@/store/user'
 
 const props = defineProps<{ tag?: string }>()
-const { articleListEnhance } = storeToRefs(useArticleStore())
-const { setActiveTag, getArticleList } = (useArticleStore())
-provide('tag', props.tag)
 
+const { articleListEnhance } = storeToRefs(useArticleStore())
+const { setActiveTag, loadRemoteData } = (useArticleStore())
+
+const { refreshUserInfo } = useUserStore()
 watchEffect(() => {
   const tag = props.tag
   setActiveTag(tag)
-  getArticleList({ tag })
+  loadRemoteData({ tag })
+  refreshUserInfo()
 })
 const panelShow = ref(false)
 const panelContent = ref('')
@@ -30,10 +33,6 @@ const handleOpenPanel = (val) => {
   panelShow.value = true
 }
 
-const shareState = reactive({
-  show: false,
-  memo: null,
-})
 const { emit } = useEventBus(ShareCardKey)
 const handleOpenShare = (val) => {
   emit({
