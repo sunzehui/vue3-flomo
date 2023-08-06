@@ -14,12 +14,14 @@ import { useRouter } from 'vue-router'
 import * as dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import duration from 'dayjs/plugin/duration'
+import TextClamp from 'vue3-text-clamp'
 import { Right as RightIcon } from '@/components/icon'
 import { useArticleStore } from '@/store/article'
 import type { Article } from '@/types/article'
 import { CardType } from '@/types/card-type'
 import 'dayjs/locale/zh-cn'
 import { formatDate } from '@/utils/time'
+
 const props = defineProps<{
   article: Article
   isLast: Boolean
@@ -123,9 +125,10 @@ const updateTime = computed(() => {
         fill="#333"
       />
     </div>
-    <div
+    <TextClamp
       class="content"
-      v-html="article.content.replace(/[\r\n]/g, '<br />')"
+      :text="article.content"
+      :max-height="100"
     />
     <div class="footer">
       <ul class="tag-view">
@@ -182,6 +185,7 @@ li.card {
     color: #323232;
     font-size: 14px;
     word-break: break-all;
+    white-space:pre-wrap;
   }
 
   .more ul {

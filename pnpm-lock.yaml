@@ -59,6 +59,9 @@ dependencies:
   vue-router:
     specifier: ^4.0.16
     version: registry.npmmirror.com/vue-router@4.0.16(vue@3.2.37)
+  vue3-text-clamp:
+    specifier: ^0.1.2
+    version: 0.1.2(resize-detector@0.3.0)(vue@3.2.37)
 
 devDependencies:
   '@antfu/eslint-config':
@@ -418,6 +421,10 @@ packages:
       vue-demi: 0.13.1(vue@3.2.37)
     dev: false
 
+  /resize-detector@0.3.0:
+    resolution: {integrity: sha512-R/tCuvuOHQ8o2boRP6vgx8hXCCy87H1eY9V5imBYeVNyNVpuL9ciReSccLj2gDcax9+2weXy3bc8Vv+NRXeEvQ==}
+    dev: false
+
   /scss@0.2.4:
     resolution: {integrity: sha512-4u8V87F+Q/upVhUmhPnB4C1R11xojkRkWjExL2v0CX2EXTg18VrKd+9JWoeyCp2VEMdSpJsyAvVU+rVjogh51A==}
     engines: {node: '>= 0.2.0'}
@@ -451,6 +458,16 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
+      vue: registry.npmmirror.com/vue@3.2.37
+    dev: false
+
+  /vue3-text-clamp@0.1.2(resize-detector@0.3.0)(vue@3.2.37):
+    resolution: {integrity: sha512-896tGhkwaDObKL4gUv9KhR6GQQYzIzut77P2jmfUoTaJ5lJP6kLMfCUEKwGQWbDgXXkqDcoE/QV/UtP4Jn7r3Q==}
+    peerDependencies:
+      resize-detector: ^0.3.0
+      vue: ^3.2.37
+    dependencies:
+      resize-detector: 0.3.0
       vue: registry.npmmirror.com/vue@3.2.37
     dev: false
 
