@@ -41,7 +41,7 @@ const isPC = useMediaQuery('(min-width: 650px)')
   <div class="title-wrp">
     <span v-show="!isPC" class="showLeftPanelBtn" @click.stop="setLeftMenuOpen(true)">三</span>
     <span class="title" @click.prevent="goRouter()"> MEMO </span>
-    <div v-if="tagName" style="display: inline">
+    <div v-if="tagName" class="flex items-center">
       <span class="line">/</span>
       <input
         v-show="isTagEdit"
@@ -49,7 +49,6 @@ const isPC = useMediaQuery('(min-width: 650px)')
         type="text"
         class="tagEdit"
       >
-
       <b v-show="!isTagEdit" class="lastTag">
         <span><label>{{ tagName }}</label></span>
       </b>
@@ -89,8 +88,8 @@ span > label {
   @apply flex items-center;
 }
 .title-wrp{
-  @apply rounded-md duration-300 transition-colors;
  > span.title {
+
   flex: 1;
   font-size: 18px;
   font-weight: bold;
@@ -99,6 +98,11 @@ span > label {
   flex-shrink: 0;
   @apply relative;
   @apply px-2;
+  @apply rounded-md duration-300 transition-colors;
+
+  &:hover {
+    background: rgba(55, 53, 47, 0.08);
+  }
  }
 
   svg {
@@ -106,9 +110,7 @@ span > label {
     width: 14px;
     @apply mx-1 mr-2;
   }
-  &:hover {
-    background: rgba(55, 53, 47, 0.08);
-  }
+
 }
 
 .tagEdit {

@@ -15,18 +15,22 @@ import * as dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import duration from 'dayjs/plugin/duration'
 import TextClamp from 'vue3-text-clamp'
+import { useEventBus } from '@vueuse/core'
+import Tags from './ui/tags.vue'
 import { Right as RightIcon } from '@/components/icon'
 import { useArticleStore } from '@/store/article'
 import type { Article } from '@/types/article'
 import { CardType } from '@/types/card-type'
 import 'dayjs/locale/zh-cn'
 import { formatDate } from '@/utils/time'
+import { MEMO_CARD } from '@/common/event-bus'
 
 const props = defineProps<{
   article: Article
   isLast: Boolean
 }>()
-const emit = defineEmits(['openPanel', 'openShare', 'edit'])
+const emit = defineEmits(['openDetail', 'openShare', 'edit'])
+
 dayjs.locale('zh-cn')
 
 dayjs.extend(duration)
@@ -41,6 +45,8 @@ type acType =
   | 'get-link'
 
 const articleStore = useArticleStore()
+
+const { emit: busEmit } = useEventBus(MEMO_CARD)
 const reducerAction = (event: Event) => {
   const type = (event.target as HTMLLIElement).dataset.type as acType
 
@@ -49,10 +55,10 @@ const reducerAction = (event: Event) => {
       articleStore.deleteArticle(+props.article.id)
       break
     case 'detail':
-      emit('openPanel', props.article.content)
+      busEmit({ action: 'open-detail-card' }, props.article)
       break
     case 'get-link':
-      emit('openShare', props.article)
+      busEmit({ action: 'open-share-card' }, props.article)
       break
     case 'cancel-top':
       articleStore.cancelArticleTop(+props.article.id)
@@ -131,15 +137,7 @@ const updateTime = computed(() => {
       :max-height="100"
     />
     <div class="footer">
-      <ul class="tag-view">
-        <li
-          v-for="item of article.tags"
-          :key="item.content"
-          @click.prevent="tagClick(item.content)"
-        >
-          #{{ item.content }}
-        </li>
-      </ul>
+      <Tags :tags="article.tags" @tagClick="tagClick" />
     </div>
   </li>
 </template>
@@ -195,23 +193,6 @@ li.card {
   .footer {
     margin-top: 10px;
 
-    .tag-view {
-      display: flex;
-    }
-
-    .tag-view > li {
-      @apply mx-1 inline-block h-full cursor-pointer;
-      color: #5783f7;
-      background-color: #eef3fe;
-      padding: 4px;
-      font-size: 12px;
-      border-radius: 3px;
-
-      &:hover {
-        color: #eef3fe;
-        background-color: #5783f7;
-      }
-    }
   }
 }
 </style>

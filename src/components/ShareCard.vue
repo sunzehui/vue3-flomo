@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
-import { computed, nextTick, onMounted, onUnmounted, ref, unref, watch, watchEffect } from 'vue'
-
+import { computed, onUnmounted, ref, unref } from 'vue'
 import { ElDialog, ElLoading } from 'element-plus'
 import { toCanvas as img2Canvas } from 'html-to-image'
 import dayjs from 'dayjs'
 import { useEventBus } from '@vueuse/core'
-import { ShareCardKey } from '@/common/event-bus'
+import { MEMO_CARD } from '@/common/event-bus'
 import { localTime } from '@/utils/time'
 
 const memoRef = ref(null)
@@ -45,9 +43,9 @@ const handleOpenShare = async () => {
       loadingService.close()
     })
 }
-const { on, off } = useEventBus(ShareCardKey)
+const { on, off } = useEventBus(MEMO_CARD)
 const eventHandler = (evt, payload) => {
-  if (evt.action === 'open') {
+  if (evt.action === 'open-share-card') {
     memoData.value = payload
     memoShow.value = true
     loadingService = ElLoading.service({

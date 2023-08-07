@@ -17,6 +17,8 @@ export default defineComponent({
     const isLast = computed(() => props.memo.isLast)
 
     const component = computed(() => {
+      if (!unref(memo))
+        return null
       if (unref(isEditor)) {
         return <Editor memo={unref(memo)} type={EditorType.edit}/>
       }

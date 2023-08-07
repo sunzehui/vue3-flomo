@@ -83,6 +83,8 @@ onSave(() => handleSave())
     <textarea
       ref="textareaRef"
       v-model="textareaContent"
+      aria-labelledby="memo input here..."
+      placeholder="memo input here..."
       name="text-input"
     />
     <transition name="fade">

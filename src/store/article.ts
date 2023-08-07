@@ -51,7 +51,8 @@ export const useArticleStore = defineStore('article', {
           ElMessage.success('删除失败，请稍后再试')
 
         refreshUserInfo()
-        this.loadRemoteData()
+        this.delArticle(id)
+        this.getTagList()
       }
       catch (e) {
         ElMessage.error(e.message)
@@ -62,16 +63,17 @@ export const useArticleStore = defineStore('article', {
       const res = await ApiSave(data)
       if (res.code === 0) {
         ElMessage.success('保存成功')
+        this.loadRemoteData()
+        refreshUserInfo()
         return Promise.resolve(res)
       }
       else if (res.code === -1) {
         ElMessage.success('保存失败，请稍后再试')
         return Promise.reject(res)
       }
-
-      this.loadRemoteData()
-      refreshUserInfo()
-      return Promise.resolve(res)
+      else {
+        return Promise.reject(res)
+      }
     },
     async update(id: Article['id'], data: Partial<Article>) {
       try {
@@ -117,11 +119,19 @@ export const useArticleStore = defineStore('article', {
       this.setArticle(articleId, { is_topic: false })
       return res
     },
-    setArticle(articleId: Article['id'], data: Partial<Article & { type: CardType }>) {
+    findIndex(articleId: Article['id']) {
       const list = cloneDeep(this.articleList)
       const idx = findIndex(list, (o: Article) => o.id.toString() === articleId.toString())
+      return idx
+    },
+    setArticle(articleId: Article['id'], data: Partial<Article & { type: CardType }>) {
+      const list = this.articleList
+      const idx = this.findIndex(articleId)
       Object.assign(list[idx], data)
-      this.articleList = list
+    },
+    delArticle(articleId: Article['id']) {
+      const idx = this.findIndex(articleId)
+      this.articleList.splice(idx, 1)
     },
     setActiveTag(tag: string) {
       this.activeTag = tag

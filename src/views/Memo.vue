@@ -11,7 +11,7 @@ import DetailPanel from '@/components/DetailPanel.vue'
 import ShareCard from '@/components/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
-import { ShareCardKey } from '@/common/event-bus'
+import { MEMO_CARD } from '@/common/event-bus'
 import { useUserStore } from '@/store/user'
 
 const props = defineProps<{ tag?: string }>()
@@ -26,19 +26,6 @@ watchEffect(() => {
   loadRemoteData({ tag })
   refreshUserInfo()
 })
-const panelShow = ref(false)
-const panelContent = ref('')
-const handleOpenPanel = (val) => {
-  panelContent.value = val
-  panelShow.value = true
-}
-
-const { emit } = useEventBus(ShareCardKey)
-const handleOpenShare = (val) => {
-  emit({
-    action: 'open',
-  }, val)
-}
 </script>
 
 <template>
@@ -55,14 +42,10 @@ const handleOpenShare = (val) => {
     </div>
     <ul class="card-container">
       <template v-for="memo of articleListEnhance" :key="memo.id">
-        <MemoCardOrEditor
-          :memo="memo"
-          @openPanel="handleOpenPanel"
-          @openShare="handleOpenShare"
-        />
+        <MemoCardOrEditor :memo="memo" />
       </template>
     </ul>
-    <DetailPanel v-model:show="panelShow" :content="panelContent" />
+    <DetailPanel />
     <ShareCard />
   </div>
 </template>
