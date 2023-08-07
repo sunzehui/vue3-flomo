@@ -16,7 +16,7 @@ import {
 
 import { ApiList as ApiTagList, ApiUpdate as ApiUpdateTag } from '@/api/tag'
 import { CardType } from '@/types/card-type'
-import { safeNaN } from '@/utils/Tool'
+import { safe2Num } from '@/utils/Tool'
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -63,8 +63,9 @@ export const useArticleStore = defineStore('article', {
       const res = await ApiSave(data)
       if (res.code === 0) {
         ElMessage.success('保存成功')
-        this.loadRemoteData()
+        this.getTagList()
         refreshUserInfo()
+        this.addArticle(res.data)
         return Promise.resolve(res)
       }
       else if (res.code === -1) {
@@ -133,6 +134,9 @@ export const useArticleStore = defineStore('article', {
       const idx = this.findIndex(articleId)
       this.articleList.splice(idx, 1)
     },
+    addArticle(article: Article) {
+      this.articleList.unshift(article)
+    },
     setActiveTag(tag: string) {
       this.activeTag = tag
     },
@@ -145,7 +149,7 @@ export const useArticleStore = defineStore('article', {
         orderBy(list, (obj) => {
           if (obj.is_topic)
             return Number.MAX_SAFE_INTEGER
-          const createTime = safeNaN(dayjs(obj.createTime).unix())
+          const createTime = safe2Num(dayjs(obj.createTime).unix())
           return createTime ?? Number(obj.id)
         }),
       )

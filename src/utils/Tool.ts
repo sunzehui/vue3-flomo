@@ -27,12 +27,13 @@ export function px2number(numberLike: string): number {
   return Number(numberLike.replace(/px$/, ''))
 }
 
-export function safeNaN(num: number) {
+export function safe2Num(num: unknown) {
   if (isNil(num))
     return null
-
-  if (isNaN(num))
-    return null
+  if (typeof num === 'number') {
+    if (isNaN(num))
+      return null
+  }
 
   return num
 }
