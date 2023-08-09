@@ -3,7 +3,7 @@ import { computed, onMounted, watch } from 'vue'
 import UserTitle from '../UserTitle.vue'
 import UserStatistical from '../UserStatistical.vue'
 import Tag from '../Tag.vue'
-import DailyRecord from './DailyRecord.vue'
+import HeatMap from './heat-map.vue'
 import { useUserStore } from '@/store/user'
 import { useArticleStore } from '@/store/article'
 
@@ -22,9 +22,7 @@ const tagList = computed(() =>
   <div class="left">
     <UserTitle :nickname="userStore.nickname" :is-pro="true" />
     <UserStatistical />
-    <div class="checking">
-      <DailyRecord />
-    </div>
+    <HeatMap />
     <!-- <SideBar /> -->
     <div v-if="!topicTag.length" class="empty-topic-tag">
       置顶常用标签于此，以便访问。
@@ -65,11 +63,7 @@ const tagList = computed(() =>
 .left {
   @apply h-full;
   width: 240px;
-
-  .checking {
-    height: 140px;
-    @apply w-full;
-  }
+  min-width: 218px;
 
   .tag-title {
     @apply text-xs my-2 text-left;

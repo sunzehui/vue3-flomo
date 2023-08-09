@@ -1,10 +1,28 @@
 <script lang="ts" setup>
 import { ElPopper, ElTooltip } from 'element-plus'
-import { computed, toRefs } from 'vue'
+import { computed, ref, toRefs, unref } from 'vue'
+import type { DayRecord } from '@/composable/useGraph'
 import { useGraph } from '@/composable/useGraph'
-import { useUserStore } from '@/store/user'
 
 const { colorSwitch, monthArray, stateGrid } = useGraph()
+
+const hoveredDay = ref<DayRecord>(null)
+const boxRef = ref(null)
+const hoveredDayMsg = computed(() => {
+  const day = unref(hoveredDay)
+  if (!day)
+    return ''
+  return `${day?.memo_count} memo on ${day?.date}`
+})
+
+const showTooltip = (e, i, j) => {
+  hoveredDay.value = stateGrid[i][j]
+  boxRef.value = e.currentTarget
+}
+
+const hideTooltip = (i, j) => {
+  hoveredDay.value = null
+}
 
 defineExpose({
   ElPopper,
@@ -13,14 +31,37 @@ defineExpose({
 
 <template>
   <div class="record-wrapper">
+    <ElTooltip
+      :content="hoveredDayMsg"
+      :visible="hoveredDay !== null"
+      :popper-options="{
+        modifiers: [
+          {
+            name: 'computeStyles',
+            options: {
+              adaptive: false,
+              enabled: false,
+            },
+          },
+        ],
+      }"
+      :virtual-ref="boxRef"
+      virtual-triggering
+      popper-class="singleton-tooltip"
+    >
+      <template #content>
+        <span> {{ hoveredDayMsg }} </span>
+      </template>
+    </ElTooltip>
     <div v-for="(week, i) of stateGrid" :key="i" class="grid week">
-      <ElTooltip
+      <span
         v-for="(day, j) in week"
         :key="j"
-        :content="`${day.memo_count} memo on ${day.date}`"
-      >
-        <span class="day" :class="{ [colorSwitch(day.memo_count)]: true }" />
-      </ElTooltip>
+        class="day"
+        :class="{ [colorSwitch(day.memo_count)]: true }"
+        @mouseleave="hideTooltip(i, j)"
+        @mouseenter="showTooltip($event, i, j)"
+      />
     </div>
   </div>
   <div class="grid month-title">
@@ -32,13 +73,17 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
+.checking {
+    @apply w-full;
+  }
 .record-wrapper {
   margin-top: 10px;
-  //   padding: 0 16px;
   height: 120px;
-  width: 218px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
+
+    height: 140px;
 }
 
 .grid {
@@ -89,3 +134,4 @@ defineExpose({
   }
 }
 </style>
+

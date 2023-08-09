@@ -8,7 +8,7 @@ import dayjs from 'dayjs'
 import { keys, toInteger } from 'lodash-es'
 import { useUserStore } from '@/store/user'
 
-interface WeekRecord {
+export interface DayRecord {
   date: string
   memo_count: number
   color?: ''
@@ -46,7 +46,7 @@ const createMonthArray = (start: string, end: string) => {
 export const createStateGrid = () => {
   const endOfWeek = dayjs().endOf('week')
 
-  const stateGrid = [] as WeekRecord[][]
+  const stateGrid = [] as DayRecord[][]
   let lastDay = dayjs(endOfWeek).add(1, 'day').format('YYYY-MM-DD')
 
   for (let i = 0; i < 12; i++) {
@@ -61,7 +61,7 @@ export const createStateGrid = () => {
 
   return stateGrid.map((week) => {
     return [...week].reverse()
-  }) as WeekRecord[][]
+  }) as DayRecord[][]
 }
 
 // 绿色深度样式：循环时判断daily_memo_count >10 深色，
