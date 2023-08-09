@@ -6,9 +6,11 @@ import { useUserStore } from '@/store/user'
 import PasswordField from '@/components/ui/form/password.vue'
 import UserNameField from '@/components/ui/form/username.vue'
 
+const isProd = import.meta.env.MODE === 'production'
+
 const formData = reactive({
-  username: '',
-  password: '',
+  username: isProd ? 'testuser' : '',
+  password: isProd ? 'testuser' : '',
 })
 
 const usernameRule = (username: string) => {
