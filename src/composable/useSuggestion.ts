@@ -56,11 +56,7 @@ export function useSuggestion({
 
   const shouldSuggestionShow = computed(() => !isEmpty(unref(filteredList)) && unref(partialPatternRef).length)
   whenWatch(shouldSuggestionShow, setSuggestionShow)
-  watchEffect(() => {
-    console.log('partialPatternRef', partialPatternRef.value)
-
-    console.log('canshow', shouldSuggestionShow.value)
-  })
+  
   // 设置候选项active
   let activeTagIdx: number | null = null
 
@@ -97,11 +93,9 @@ export function useSuggestion({
     if (activeTagIdx !== null && (key === 'Enter' || key === ' ')) {
       const activeItem = unref(filteredList)[activeTagIdx]
       const { value: partial } = partialPatternRef
-      console.log('🚀 敲回车', partial)
       const leftContent = `${activeItem.content.slice(partial.length - 1)} `
       editorHook.insertContent(leftContent)
       partialPatternRef.value = ''
-      // shouldSuggestionShow.value = false
     }
     syncPartialPattern()
   }

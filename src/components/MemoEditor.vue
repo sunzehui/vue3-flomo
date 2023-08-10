@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { isEmpty } from 'lodash-es'
 import { ElMessage } from 'element-plus'
-import { onMounted, reactive, ref, toRefs } from 'vue'
+import { onMounted, reactive, ref, toRefs, watchEffect } from 'vue'
 import Editor from './ui/Editor.vue'
 import { extractTags } from '@/utils/editor'
 import { EditorType } from '@/types/card-type'
@@ -15,6 +15,7 @@ const props = defineProps<{
 const memo = reactive(props.memo || {
   content: '',
 })
+
 const loading = ref(false)
 const articleStore = useArticleStore()
 const editorRef = ref(null)
@@ -70,11 +71,6 @@ const handleAddEmoji = (event: MouseEvent) => {
   editorRef.value.insertContent('😀')
 }
 
-onMounted(() => {
-  const editorInstance = editorRef.value
-  if (props.memo && props.type === EditorType.edit)
-    editorInstance.insertContent(props.memo?.content || '')
-})
 const editorFocused = ref(false)
 </script>
 
@@ -82,7 +78,10 @@ const editorFocused = ref(false)
   <div class="editor" :class="{ focused: editorFocused }">
     <Editor
       ref="editorRef"
-      :suggestion-list="tagList" :type="EditorType.create"
+      v-model="memo.content"
+      :suggestion-list="tagList"
+      :type="type"
+      :init-content="$props.memo?.content || ''"
       @focus="editorFocused = true"
       @blur="editorFocused = false"
       @change="handleEditorChange"

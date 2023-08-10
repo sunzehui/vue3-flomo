@@ -8,6 +8,19 @@ import Login from './views/Login.vue'
 export const routes = [
   {
     path: '/',
+    component: () => import('./layouts/Share.vue'),
+    redirect: '/memo',
+    children: [
+      {
+        path: '/user/:id',
+        name: 'user-memo',
+        meta: { title: '用户主页' },
+        component: () => import('./views/User/memo.vue'),
+      },
+    ],
+  },
+  {
+    path: '/',
     component: Mine,
     children: [
       {
@@ -22,6 +35,7 @@ export const routes = [
         props: route => ({ tag: route.query.tag }),
         component: Memo,
       },
+
       {
         path: '/wechat',
         name: 'wechat',

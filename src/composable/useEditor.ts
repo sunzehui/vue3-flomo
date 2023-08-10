@@ -52,24 +52,26 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>, opt: OptionProp
       textareaContent.value = ''
     }
   })
-  const articleStore = useArticleStore()
+  // const articleStore = useArticleStore()
 
-  if (opt?.type === EditorType.create) {
-    watchEffect(() => {
-      const tag = articleStore.activeTag
-      if (tag) {
-        nextTick(() => {
-          textareaContent.value = ''
-          insertContent(`#${tag} `)
-        })
-      }
-      else {
-        nextTick(() => {
-          textareaContent.value = ''
-        })
-      }
-    })
-  }
+  console.log('opt', opt.type)
+
+  // if (opt?.type === EditorType.create) {
+  //   watchEffect(() => {
+  //     const tag = articleStore.activeTag
+  //     if (tag) {
+  //       nextTick(() => {
+  //         textareaContent.value = ''
+  //         insertContent(`#${tag} `)
+  //       })
+  //     }
+  //     else {
+  //       nextTick(() => {
+  //         textareaContent.value = ''
+  //       })
+  //     }
+  //   })
+  // }
 
   return {
     textareaContent,

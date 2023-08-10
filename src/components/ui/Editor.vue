@@ -1,18 +1,15 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watchEffect } from 'vue'
-import { ElMessage } from 'element-plus'
+import { computed, onMounted, ref, watch, watchEffect } from 'vue'
 import { useSuggestion } from '@/composable/useSuggestion'
-import { useArticleStore } from '@/store/article'
 import type { Article as Memo, tagType } from '@/types/article'
 import type { EditorType } from '@/types/card-type'
 
 const props = defineProps<{
-  memo?: Memo
   type: EditorType
   suggestionList: tagType[]
+  initContent?: string
 }>()
-
-const emit = defineEmits(['change', 'onSave', 'focus','blur'])
+const emit = defineEmits(['change', 'onSave', 'focus', 'blur'])
 
 const suggestionRef = ref(null)
 // 监听onkeydown
@@ -35,6 +32,10 @@ const {
 onSave(() => {
   emit('onSave')
 })
+onMounted(() => {
+  if (props.initContent)
+    insertContent(props.initContent)
+})
 defineExpose({
   clear() {
     textareaContent.value = ''
@@ -43,8 +44,11 @@ defineExpose({
   getContent() {
     return textareaContent.value
   },
+  setContent(content: string) {
+    textareaContent.value = content
+  },
 })
-watchEffect(() => {
+watch(textareaContent, () => {
   emit('change', textareaContent.value)
 })
 </script>
