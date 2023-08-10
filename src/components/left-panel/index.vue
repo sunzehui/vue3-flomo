@@ -3,6 +3,7 @@ import { computed, onMounted, watch } from 'vue'
 import UserTitle from '../UserTitle.vue'
 import UserStatistical from '../UserStatistical.vue'
 import Tag from '../Tag.vue'
+import SideBar from './SideBar.vue'
 import HeatMap from './heat-map.vue'
 import { useUserStore } from '@/store/user'
 import { useArticleStore } from '@/store/article'
@@ -23,7 +24,7 @@ const tagList = computed(() =>
     <UserTitle :nickname="userStore.nickname" :is-pro="true" />
     <UserStatistical />
     <HeatMap />
-    <!-- <SideBar /> -->
+    <SideBar />
     <div v-if="!topicTag.length" class="empty-topic-tag">
       置顶常用标签于此，以便访问。
     </div>

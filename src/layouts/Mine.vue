@@ -5,9 +5,7 @@ import { useMediaQuery } from '@vueuse/core'
 import LeftPanel from '@/components/left-panel/index.vue'
 import { useLayoutStore } from '@/store/layout'
 
-const isPC = useMediaQuery('(min-width: 650px)')
-
-const { isLeftMenuOpen } = toRefs(useLayoutStore())
+const { isLeftMenuOpen, isPC } = toRefs(useLayoutStore())
 </script>
 
 <template>

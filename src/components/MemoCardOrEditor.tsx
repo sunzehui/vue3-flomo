@@ -14,7 +14,6 @@ export default defineComponent({
   setup(props) {
     const isEditor = computed(() => props.memo.type === CardType.editor)
     const memo = computed(() => props.memo)
-    const isLast = computed(() => props.memo.isLast)
 
     const component = computed(() => {
       if (!unref(memo))
@@ -26,7 +25,6 @@ export default defineComponent({
         return (
             <MemoCard
                 article={unref(memo)}
-                isLast={unref(isLast)}
             />
         )
       }

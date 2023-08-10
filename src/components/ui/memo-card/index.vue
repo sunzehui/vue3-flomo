@@ -3,7 +3,6 @@ import {
   computed,
   toRefs,
   unref,
-  watchEffect,
 } from 'vue'
 import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
@@ -11,16 +10,19 @@ import * as dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import duration from 'dayjs/plugin/duration'
 import TextClamp from 'vue3-text-clamp'
+import { useEventBus } from '@vueuse/core'
 import MemoAction from './action.vue'
 import Tags from '@/components/ui/tags.vue'
 
 import type { Article } from '@/types/article'
 import 'dayjs/locale/zh-cn'
 import { formatDate } from '@/utils/time'
+import { useUserStore } from '@/store/user'
+
+import { MEMO_CARD } from '@/common/event-bus'
 
 const props = defineProps<{
   article: Article
-  isLast: Boolean
 }>()
 
 dayjs.locale('zh-cn')
@@ -45,13 +47,22 @@ const updateTime = computed(() => {
     return '置顶'
   return formatDate(memo.createTime)
 })
+const userStore = useUserStore()
+const isLogin = computed(() => userStore.isAuthenticated)
+const { emit: busEmit } = useEventBus(MEMO_CARD)
+const showDetail = () => {
+  busEmit({ action: 'open-detail-card' }, props.article)
+}
 </script>
 
 <template>
-  <li class="card">
+  <div class="card">
     <div class="header relative">
-      <span class="time-text">{{ updateTime }}</span>
-      <MemoAction :article="article" />
+      <span class="time-text cursor-pointer" @click="showDetail">{{ updateTime }}</span>
+      <MemoAction
+        v-if="isLogin"
+        :article="article"
+      />
       <Pin
         v-show="article.is_topic"
         class="absolute -right-6 -top-4"
@@ -68,11 +79,11 @@ const updateTime = computed(() => {
     <div class="footer">
       <Tags :tags="article.tags" @tagClick="tagClick" />
     </div>
-  </li>
+  </div>
 </template>
 
 <style scoped lang="scss">
-li.card {
+.card {
   @apply bg-white px-5 py-2 duration-300 mt-2 rounded-md;
   &:hover {
     box-shadow: 0 2px 16px #dddddd;

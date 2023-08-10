@@ -1,26 +1,34 @@
 <script lang="ts" setup>
-import { Check, Edit, Refresh, Search } from '@element-plus/icons-vue'
-import { useMediaQuery, useToggle } from '@vueuse/core'
-import { ElMessage } from 'element-plus'
-import { computed, ref, watchEffect } from 'vue'
+import { Check, Edit, Loading, Refresh, Search } from '@element-plus/icons-vue'
+import { useToggle } from '@vueuse/core'
+import { ElMessage, ElTooltip } from 'element-plus'
+import { computed, ref, toRefs, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useArticleStore } from '@/store/article'
 import { useLayoutStore } from '@/store/layout'
 
 const route = useRoute()
 
-const tagName = computed(() => route.query.tag as string) || ref('')
+const tagName = computed(() => route.query.tag as string || '')
 const bindTagName = ref('')
 watchEffect(() => {
   bindTagName.value = route.query.tag as string
 })
 
 const { setLeftMenuOpen } = useLayoutStore()
+const { isPC } = toRefs(useLayoutStore())
 const router = useRouter()
-const goRouter = (query?) => {
+const refreshing = ref(false)
+const { loadRemoteData } = useArticleStore()
+const handleRefresh = (query?) => {
+  refreshing.value = true
   router.push({
     name: 'memo',
     query,
+  })
+
+  loadRemoteData(query).finally(() => {
+    refreshing.value = false
   })
 }
 const [isTagEdit, toggeEdit] = useToggle(false)
@@ -29,18 +37,17 @@ const rename = () => {
   articleStore.tagRename(tagName.value, bindTagName.value).then((res) => {
     isTagEdit.value = false
     ElMessage.success('修改成功')
-    goRouter({
+    handleRefresh({
       tag: bindTagName.value,
     })
   })
 }
-const isPC = useMediaQuery('(min-width: 650px)')
 </script>
 
 <template>
   <div class="title-wrp">
     <span v-show="!isPC" class="showLeftPanelBtn" @click.stop="setLeftMenuOpen(true)">三</span>
-    <span class="title" @click.prevent="goRouter()"> MEMO </span>
+    <span class="title hover-bg" @click.prevent="handleRefresh()"> MEMO </span>
     <div v-if="tagName" class="flex items-center">
       <span class="line">/</span>
       <input
@@ -59,18 +66,27 @@ const isPC = useMediaQuery('(min-width: 650px)')
       />
       <Check v-show="isTagEdit" class="icon" @click.prevent="rename" />
     </div>
-    <Refresh class="icon" @click.prevent="goRouter()" />
+    <ElTooltip
+      v-if="!refreshing"
+      effect="dark"
+      content="刷新"
+      placement="bottom"
+    >
+      <Refresh class="icon hover-bg" @click.prevent="handleRefresh()" />
+    </ElTooltip>
+    <Loading v-show="refreshing" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .icon {
   font-style: normal;
-  height: 14px;
-  width: 14px;
+  height: 18px;
+  width: 18px;
   display: inline-block;
   opacity: 0.8;
   cursor: pointer;
+  @apply p-2 box-content;
   &:hover {
     opacity: 1;
   }
@@ -87,6 +103,12 @@ span > label {
   flex-shrink: 0;
   @apply flex items-center;
 }
+.hover-bg {
+  @apply rounded-md duration-300 transition-colors;
+  &:hover {
+    background: rgba(55, 53, 47, 0.08);
+  }
+}
 .title-wrp{
  > span.title {
 
@@ -98,18 +120,8 @@ span > label {
   flex-shrink: 0;
   @apply relative;
   @apply px-2;
-  @apply rounded-md duration-300 transition-colors;
 
-  &:hover {
-    background: rgba(55, 53, 47, 0.08);
-  }
- }
-
-  svg {
-    height: 14px;
-    width: 14px;
-    @apply mx-1 mr-2;
-  }
+}
 
 }
 

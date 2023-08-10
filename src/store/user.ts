@@ -74,7 +74,6 @@ export const useUserStore = defineStore('user', () => {
   }
   const updateNickName = async (nickname) => {
     const res = await ApiUpdateUserInfo({ nickname: nickname.value })
-    console.log(res)
     if (res.data === true) {
       await refreshUserInfo()
       ElMessage.success('保存成功！')

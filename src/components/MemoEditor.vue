@@ -78,7 +78,6 @@ const editorFocused = ref(false)
   <div class="editor" :class="{ focused: editorFocused }">
     <Editor
       ref="editorRef"
-      v-model="memo.content"
       :suggestion-list="tagList"
       :type="type"
       :init-content="$props.memo?.content || ''"

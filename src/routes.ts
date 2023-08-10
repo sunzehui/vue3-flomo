@@ -6,19 +6,7 @@ import Memo from './views/Memo.vue'
 import Login from './views/Login.vue'
 
 export const routes = [
-  {
-    path: '/',
-    component: () => import('./layouts/Share.vue'),
-    redirect: '/memo',
-    children: [
-      {
-        path: '/user/:id',
-        name: 'user-memo',
-        meta: { title: '用户主页' },
-        component: () => import('./views/User/memo.vue'),
-      },
-    ],
-  },
+
   {
     path: '/',
     component: Mine,
@@ -73,7 +61,19 @@ export const routes = [
     meta: { title: '注册', publicRoute: true },
     component: () => import('./views/Register.vue'),
   },
-
+  {
+    path: '/',
+    component: () => import('./layouts/Share.vue'),
+    redirect: '/memo',
+    children: [
+      {
+        path: '/user/:id',
+        name: 'user-memo',
+        meta: { title: '用户主页', publicRoute: true },
+        component: () => import('./views/User/memo.vue'),
+      },
+    ],
+  },
   { path: '/:path(.*)', component: NotFound },
 ] as RouteRecordRaw[]
 export const router = createRouter({

@@ -11,7 +11,6 @@ import DetailPanel from '@/components/DetailPanel.vue'
 import ShareCard from '@/components/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
-import { MEMO_CARD } from '@/common/event-bus'
 import { useUserStore } from '@/store/user'
 
 const props = defineProps<{ tag?: string }>()
@@ -40,11 +39,11 @@ watchEffect(() => {
     <div class="input-container">
       <MemoEditor :type="EditorType.create" />
     </div>
-    <ul class="card-container">
+    <div class="card-container">
       <template v-for="memo of articleListEnhance" :key="memo.id">
         <MemoCardOrEditor :memo="memo" />
       </template>
-    </ul>
+    </div>
     <DetailPanel />
     <ShareCard />
   </div>
