@@ -1,7 +1,8 @@
 import { resolve } from 'path'
-import vue from '@vitejs/plugin-vue'
+import Vue from '@vitejs/plugin-vue'
+import VueMacros from 'unplugin-vue-macros/vite'
 import { defineConfig, loadEnv } from 'vite'
-import vueJsx from '@vitejs/plugin-vue-jsx'
+import VueJsx from '@vitejs/plugin-vue-jsx'
 import compression from 'vite-plugin-compression'
 import legacy from '@vitejs/plugin-legacy'
 import ElementPlus from 'unplugin-element-plus/vite'
@@ -14,8 +15,12 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
-      vue(),
-      vueJsx({}),
+      VueMacros({
+        plugins: {
+          vue: Vue(),
+          vueJsx: VueJsx(), // if needed
+        },
+      }),
       ElementPlus({}),
       legacy({
         targets: ['defaults', 'not IE 11'],

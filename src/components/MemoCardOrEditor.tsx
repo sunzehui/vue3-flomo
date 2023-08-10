@@ -3,7 +3,7 @@ import { computed, defineComponent, unref } from 'vue'
 import MemoCard from '@/components/MemoCard.vue'
 import { CardType, EditorType } from '@/types/card-type'
 import type { Article as Memo } from '@/types/article'
-import Editor from '@/components/Editor.vue'
+import MemoEditor from '@/components/MemoEditor.vue'
 
 type PropMemo = Memo & { type: CardType; isLast: boolean }
 
@@ -20,7 +20,7 @@ export default defineComponent({
       if (!unref(memo))
         return null
       if (unref(isEditor)) {
-        return <Editor memo={unref(memo)} type={EditorType.edit}/>
+        return <MemoEditor memo={unref(memo)} type={EditorType.edit}/>
       }
       else {
         return (

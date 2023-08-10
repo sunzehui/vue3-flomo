@@ -3,7 +3,7 @@ import { Refresh, Search } from '@element-plus/icons-vue'
 import { computed, provide, reactive, ref, toRefs, unref, watch, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useEventBus } from '@vueuse/core'
-import Editor from '../components/Editor.vue'
+import MemoEditor from '@/components/MemoEditor.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import MemoTitle from '@/components/MemoTitle.vue'
 import { useArticleStore } from '@/store/article'
@@ -38,7 +38,7 @@ watchEffect(() => {
       </div>
     </nav>
     <div class="input-container">
-      <Editor :type="EditorType.create" />
+      <MemoEditor :type="EditorType.create" />
     </div>
     <ul class="card-container">
       <template v-for="memo of articleListEnhance" :key="memo.id">
@@ -68,13 +68,12 @@ nav {
 
   height: 60px;
   .input-wrapper {
-    width: 73%  ;
+    width: 200px;
     position: relative;
     box-sizing: border-box;
-    // margin: 10px;
     input{
       width: 100%;
-    font-size: 14px;
+      font-size: 14px;
     }
     .input-icon {
 

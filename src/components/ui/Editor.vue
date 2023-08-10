@@ -1,0 +1,154 @@
+<script lang="ts" setup>
+import { computed, onMounted, ref, watchEffect } from 'vue'
+import { ElMessage } from 'element-plus'
+import { useSuggestion } from '@/composable/useSuggestion'
+import { useArticleStore } from '@/store/article'
+import type { Article as Memo, tagType } from '@/types/article'
+import type { EditorType } from '@/types/card-type'
+
+const props = defineProps<{
+  memo?: Memo
+  type: EditorType
+  suggestionList: tagType[]
+}>()
+
+const emit = defineEmits(['change', 'onSave', 'focus','blur'])
+
+const suggestionRef = ref(null)
+// 监听onkeydown
+const textareaRef = ref(null)
+
+const {
+  shouldSuggestionShow,
+  handleItemClick,
+  suggestionList,
+  editor: { insertContent, onSave, textareaContent },
+} = useSuggestion({
+  suggestionRef,
+  editorRef: textareaRef,
+  suggestionList: computed(() => props.suggestionList),
+  editorCfg: {
+    type: props.type,
+  },
+})
+
+onSave(() => {
+  emit('onSave')
+})
+defineExpose({
+  clear() {
+    textareaContent.value = ''
+  },
+  insertContent,
+  getContent() {
+    return textareaContent.value
+  },
+})
+watchEffect(() => {
+  emit('change', textareaContent.value)
+})
+</script>
+
+<template>
+  <textarea
+    ref="textareaRef"
+    v-model="textareaContent"
+    aria-labelledby="memo input here..."
+    placeholder="memo input here..."
+    name="text-input"
+    @focus="emit('focus')"
+    @blur="emit('blur')"
+  />
+  <transition name="fade">
+    <div
+      v-show="shouldSuggestionShow"
+      ref="suggestionRef"
+      class="suggestion"
+      @click="handleItemClick($event)"
+    >
+      <span v-for="item of suggestionList" :key="item.id" :class="{ active: item.active }">{{ item.content }}</span>
+    </div>
+  </transition>
+</template>
+
+<style lang="scss" scoped>
+textarea {
+  border: none;
+  outline: 0;
+  min-height: 42px;
+  height: auto;
+  // padding: 0 10px;
+  padding: 0;
+  box-sizing: border-box;
+  resize: none;
+  min-height: 42px;
+  max-height: 50vh;
+  width: 100%;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent !important;
+  }
+
+  min-height: 1rem;
+
+  &:focus {
+    outline: 0;
+    box-shadow: none;
+  }
+}
+
+.suggestion {
+  position: absolute;
+  background-color: black;
+  max-width: 350px;
+  padding: 5px;
+  z-index: 99;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+
+  &.hidden {
+    display: none;
+  }
+
+  span {
+    color: white;
+    padding: 3px 20px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    &.active {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  &.show {
+    display: block;
+  }
+}
+
+.fade-enter-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
