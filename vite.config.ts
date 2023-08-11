@@ -20,6 +20,8 @@ export default defineConfig(({ mode }) => {
           vue: Vue(),
           vueJsx: VueJsx(), // if needed
         },
+        defineRender: true,
+        defineModels: true,
       }),
       ElementPlus({}),
       legacy({

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { isEmpty } from 'lodash-es'
 import { ElMessage } from 'element-plus'
-import { onMounted, reactive, ref, toRefs, watchEffect } from 'vue'
-import Editor from './ui/Editor.vue'
+import { onMounted, reactive, ref, toRefs, unref, watch, watchEffect } from 'vue'
+import Editor from './text-editor.vue'
+import ImageUpload from './image-upload.vue'
 import { extractTags } from '@/utils/editor'
 import { EditorType } from '@/types/card-type'
 import type { Article as Memo } from '@/types/article'
@@ -15,11 +16,13 @@ const props = defineProps<{
 const memo = reactive(props.memo || {
   content: '',
 })
+const imgUploadRef = ref(null)
 
 const loading = ref(false)
 const articleStore = useArticleStore()
 const editorRef = ref(null)
 const { tagList } = toRefs(useArticleStore())
+const imageList = ref([])
 
 const handleEditorChange = (content: string) => {
   memo.content = content
@@ -30,6 +33,7 @@ const buildArticle = () => {
   const article: Partial<Memo> = {
     tags,
     content: memo.content,
+    images: unref(imageList),
   }
   return article
 }
@@ -51,7 +55,8 @@ const saveArticle = () => {
   loading.value = true
   articleStore.save(article).then((result) => {
     loading.value = false
-    editorRef.value.clear()
+    editorRef.value?.clear()
+    imgUploadRef.value?.clear()
   }).finally(() => {
     loading.value = false
   })
@@ -70,6 +75,13 @@ const handleAddTag = (event: MouseEvent) => {
 const handleAddEmoji = (event: MouseEvent) => {
   editorRef.value.insertContent('😀')
 }
+const isImgUploadShow = ref(false)
+const handleAddImage = (event: MouseEvent) => {
+  isImgUploadShow.value = !isImgUploadShow.value
+}
+const handleFileUploaded = (fileList: string[]) => {
+  imageList.value = fileList
+}
 
 const editorFocused = ref(false)
 </script>
@@ -86,10 +98,16 @@ const editorFocused = ref(false)
       @change="handleEditorChange"
       @onSave="handleEditorSave"
     />
+    <ImageUpload
+      v-if="isImgUploadShow" ref="imgUploadRef"
+      @fileChange="handleFileUploaded"
+    />
 
     <div class="bar">
-      <span class="item icon-tag" @click="handleAddTag($event)"> # </span>
-      <span class="item icon-emoji" @click="handleAddEmoji($event)"> # </span>
+      <span class="item icon-tag" @click="handleAddTag($event)"> 🔗 </span>
+      <span class="item icon-emoji" @click="handleAddEmoji($event)"> 😀 </span>
+      <span class="item icon-emoji" @click="handleAddImage($event)">🖼️</span>
+
       <button
         class="save"
         :disabled="isEmpty(memo.content)"

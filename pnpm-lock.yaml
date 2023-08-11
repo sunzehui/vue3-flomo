@@ -29,6 +29,9 @@ dependencies:
   html-to-image:
     specifier: ^1.11.1
     version: registry.npmmirror.com/html-to-image@1.11.1
+  image-conversion:
+    specifier: ^2.1.1
+    version: 2.1.1
   jwt-decode:
     specifier: ^3.1.2
     version: 3.1.2
@@ -2980,6 +2983,10 @@ packages:
     resolution: {integrity: sha512-vy7ClnArOZwCnqZgvv+ddgHgJiAFXe3Ge9ML5/mBctVJoUoYPCdxVucOywjDARn6CVoh3dRSFdPHy2sX80L0Wg==}
     engines: {node: '>=8'}
     dev: true
+
+  /image-conversion@2.1.1:
+    resolution: {integrity: sha512-hnMOmP7q2jxA+52FZ+wHNhg3fdFRlgfngsQH2JQHEQkafY7tj/8F15e6Rv/RxDegc872jvyaRHwMbkTZK1Cjbg==}
+    dev: false
 
   /is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}

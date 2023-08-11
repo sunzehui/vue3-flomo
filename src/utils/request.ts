@@ -18,9 +18,10 @@ axiosInstance.interceptors.request.use(
       fullscreen: false,
       background: 'transparent',
     })
+
+    config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json'
+    config.headers.Accept = config.headers.Accept || 'application/json'
     const userStore = useUserStore()
-    config.headers['Content-Type'] = 'application/json'
-    config.headers.Accept = 'application/json'
 
     config.headers.Authorization = `Bearer ${userStore?.token?.token}`
     return config

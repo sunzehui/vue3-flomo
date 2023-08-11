@@ -13,6 +13,7 @@ import TextClamp from 'vue3-text-clamp'
 import { useEventBus } from '@vueuse/core'
 import MemoAction from './action.vue'
 import Tags from '@/components/ui/tags.vue'
+import Gallery from '@/components/ui/memo-card/gallery.vue'
 
 import type { Article } from '@/types/article'
 import 'dayjs/locale/zh-cn'
@@ -75,6 +76,10 @@ const showDetail = () => {
       class="content"
       :text="article.content"
       :max-height="100"
+    />
+    <Gallery
+      v-if="article.images.length"
+      :images="article.images"
     />
     <div class="footer">
       <Tags :tags="article.tags" @tagClick="tagClick" />

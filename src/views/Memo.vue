@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { Refresh, Search } from '@element-plus/icons-vue'
-import { computed, provide, reactive, ref, toRefs, unref, watch, watchEffect } from 'vue'
+import { watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useEventBus } from '@vueuse/core'
-import MemoEditor from '@/components/MemoEditor.vue'
+import MemoEditor from '@/components/ui/editor/index.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import MemoTitle from '@/components/MemoTitle.vue'
 import { useArticleStore } from '@/store/article'
@@ -50,14 +49,6 @@ watchEffect(() => {
 </template>
 
 <style lang="scss" scoped>
-i {
-  font-style: normal;
-}
-
-svg {
-  display: inline;
-}
-
 nav {
   display: flex;
   padding: 0 10px;

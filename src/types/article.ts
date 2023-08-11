@@ -11,7 +11,11 @@ export interface tagType {
   is_topics?: boolean
   content: string
 }
-
+export interface FileRecord {
+  id: number
+  url: string
+  filePath: string
+}
 export interface Article {
   id: number
   content: string
@@ -21,4 +25,5 @@ export interface Article {
   is_topic: boolean
   user: User
   tags: any[]
+  images?: FileRecord[]
 }
