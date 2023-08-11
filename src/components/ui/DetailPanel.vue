@@ -2,7 +2,7 @@
 import { onUnmounted, ref, unref } from 'vue'
 import { useClipboard, useEventBus } from '@vueuse/core'
 import { ElButton, ElDrawer, ElMessage } from 'element-plus'
-import Tags from './ui/tags.vue'
+import Tags from '@/components/ui/tags.vue'
 import { MEMO_CARD } from '@/common/event-bus'
 
 const isShow = ref(false)

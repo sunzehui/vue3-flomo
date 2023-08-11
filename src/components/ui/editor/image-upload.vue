@@ -53,6 +53,7 @@ defineExpose({
   clear() {
     fileList.value = []
     fileIdList.value = []
+    emit('fileChange', unref(fileIdList))
   },
 })
 </script>

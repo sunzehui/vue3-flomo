@@ -57,6 +57,7 @@ const saveArticle = () => {
     loading.value = false
     editorRef.value?.clear()
     imgUploadRef.value?.clear()
+    console.log('🚀 ~ file: index.vue:60 ~ articleStore.save ~ imgUploadRef:', imgUploadRef.value)
   }).finally(() => {
     loading.value = false
   })

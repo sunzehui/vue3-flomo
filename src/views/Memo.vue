@@ -6,7 +6,7 @@ import MemoEditor from '@/components/ui/editor/index.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import MemoTitle from '@/components/MemoTitle.vue'
 import { useArticleStore } from '@/store/article'
-import DetailPanel from '@/components/DetailPanel.vue'
+import DetailPanel from '@/components/ui/DetailPanel.vue'
 import ShareCard from '@/components/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
