@@ -1,1 +1,1 @@
-export { default as Password } from "./Password.vue";
+export { default as Password } from '@/components/ui/form/password.vue";

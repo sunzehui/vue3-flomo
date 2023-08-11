@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, onMounted, watch } from 'vue'
-import UserTitle from '../UserTitle.vue'
-import UserStatistical from '../UserStatistical.vue'
-import Tag from '../Tag.vue'
-import SideBar from './SideBar.vue'
-import HeatMap from './heat-map.vue'
+import SideBar from '@/components/ui/side-bar/index.vue'
+import Tag from '@/components/ui/Tag.vue'
+import HeatMap from '@/components/ui/heat-map.vue'
+import UserStatistical from '@/components/ui/UserStatistical.vue'
+import UserTitle from '@/components/ui/UserTitle.vue'
 import { useUserStore } from '@/store/user'
 import { useArticleStore } from '@/store/article'
 

@@ -7,22 +7,16 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    DailyRecord: typeof import('./src/components/left-panel/DailyRecord.vue')['default']
     DetailPanel: typeof import('./src/components/DetailPanel.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
     EyeClose: typeof import('./src/components/icon/eye-close.vue')['default']
     EyeOpen: typeof import('./src/components/icon/eye-open.vue')['default']
-    LeftPanel: typeof import('./src/components/left-panel/index.vue')['default']
     LoginForm: typeof import('./src/components/LoginForm.vue')['default']
     MemoCard: typeof import('./src/components/MemoCard.vue')['default']
-    MemoTitle: typeof import('./src/components/MemoTitle.vue')['default']
     Password: typeof import('./src/components/ui/form/password.vue')['default']
     Right: typeof import('./src/components/icon/right.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    ShareCard: typeof import('./src/components/ShareCard.vue')['default']
-    SideBar: typeof import('./src/components/left-panel/SideBar.vue')['default']
-    SideBarItem: typeof import('./src/components/left-panel/SideBarItem.vue')['default']
     Tag: typeof import('./src/components/Tag.vue')['default']
     Tags: typeof import('./src/components/ui/tags.vue')['default']
     Username: typeof import('./src/components/ui/form/username.vue')['default']
