@@ -15,12 +15,11 @@ import { useUserStore } from '@/store/user'
 const props = defineProps<{ tag?: string }>()
 
 const { articleListEnhance } = storeToRefs(useArticleStore())
-const { setActiveTag, loadRemoteData } = (useArticleStore())
+const { loadRemoteData } = (useArticleStore())
 
 const { refreshUserInfo } = useUserStore()
 watchEffect(() => {
   const tag = props.tag
-  setActiveTag(tag)
   loadRemoteData({ tag })
   refreshUserInfo()
 })

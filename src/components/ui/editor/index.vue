@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { isEmpty } from 'lodash-es'
 import { ElMessage } from 'element-plus'
-import { onMounted, reactive, ref, toRefs, unref, watch, watchEffect } from 'vue'
+import { nextTick, onMounted, reactive, ref, toRefs, unref, watch, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
 import Editor from './text-editor.vue'
 import ImageUpload from './image-upload.vue'
 import { extractTags } from '@/utils/editor'
@@ -54,10 +55,8 @@ const saveArticle = () => {
   const article = buildArticle()
   loading.value = true
   articleStore.save(article).then((result) => {
-    loading.value = false
     editorRef.value?.clear()
     imgUploadRef.value?.clear()
-    console.log('🚀 ~ file: index.vue:60 ~ articleStore.save ~ imgUploadRef:', imgUploadRef.value)
   }).finally(() => {
     loading.value = false
   })
@@ -83,6 +82,23 @@ const handleAddImage = (event: MouseEvent) => {
 const handleFileUploaded = (fileList: string[]) => {
   imageList.value = fileList
 }
+// 页面选中某一标签时，自动插入标签
+const route = useRoute()
+watchEffect(() => {
+  const tag = route.query.tag
+  const editorInstance = editorRef.value
+  if (tag) {
+    nextTick(() => {
+      editorInstance?.clear()
+      editorInstance?.insertContent(`#${tag} `)
+    })
+  }
+  else {
+    nextTick(() => {
+      editorInstance?.clear()
+    })
+  }
+})
 
 const editorFocused = ref(false)
 </script>
