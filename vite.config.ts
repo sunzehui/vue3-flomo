@@ -90,6 +90,9 @@ export default defineConfig(({ mode }) => {
         },
       },
       brotliSize: false,
+      optimizeDeps: {
+        include: ['vue', 'vue-router', 'element-plus'],
+      },
     },
   }
 })

@@ -12,3 +12,9 @@ export function ApiUploadFile(file) {
     },
   })
 }
+export function ApiIsFileExist(md5: string) {
+  return request<any>({
+    url: `/api/files/is-exist/${md5}`,
+    method: 'get',
+  })
+}

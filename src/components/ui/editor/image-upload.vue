@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { computed, ref, unref, watch, watchEffect } from 'vue'
 import { Delete, Plus, ZoomIn } from '@element-plus/icons-vue'
-import { ElDialog, ElIcon, ElUpload } from 'element-plus'
-import type { UploadFile, UploadFiles, UploadHooks, UploadProps, UploadRawFile, UploadUserFile } from 'element-plus'
+import { ElDialog, ElIcon, ElMessage, ElUpload } from 'element-plus'
+import type { UploadFile, UploadFiles, UploadHooks, UploadInstance, UploadProps, UploadRawFile, UploadUserFile } from 'element-plus'
 import { compress } from 'image-conversion'
-import { ApiUploadFile } from '@/api/file'
+import { ApiIsFileExist, ApiUploadFile } from '@/api/file'
+import { calculateMD5 } from '@/utils/file'
 
 const emit = defineEmits(['fileChange'])
 
@@ -13,6 +14,11 @@ const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const fileIdList = ref<string[]>([])
 
+const uploadRef = ref<UploadInstance>()
+
+const submitUpload = () => {
+  uploadRef.value!.submit()
+}
 const handleRemove = (file: UploadFile) => {
   const fileId = (file.response as any).data.id
   fileIdList.value.splice(fileIdList.value.indexOf(fileId), 1)
@@ -25,30 +31,56 @@ const handlePictureCardPreview = (file: UploadFile) => {
   dialogVisible.value = true
 }
 
-const handleFileChange: UploadHooks['onChange'] = (file, files) => {
-  fileList.value = files
+const isValidImageType = (file) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+  return allowedTypes.includes(file.type)
 }
-// 上传前进行图片压缩
-const handleBeforeUpload = (rawFile: UploadRawFile): any => {
-  return new Promise((resolve, reject) => {
-    compress(rawFile, 0.4)
-      .then((res) => {
-        resolve(res)
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
-}
-const handleUpload: UploadProps['httpRequest'] = async (file) => {
-  const res = await ApiUploadFile(file.file)
 
-  return res
+const isValidImageSize = (file) => {
+  const maxSize = 5 * 1024 * 1024 // 5MB in bytes
+  return file.size <= maxSize
 }
-const handleUploadSuccess: UploadProps['onSuccess'] = async (res) => {
+const checkFileExistOnServer = async (file: File) => {
+  // Replace with your API call to check if file exists on the server
+  const md5 = await calculateMD5(file)
+  return await ApiIsFileExist(md5)
+}
+
+const handleUploadSuccess = async (res) => {
   fileIdList.value.push(res.data.id)
   emit('fileChange', unref(fileIdList))
 }
+const handleUpload = async (file) => {
+  const res = await ApiUploadFile(file.raw)
+  if (res.code === 0)
+    handleUploadSuccess(res)
+}
+const handleFileChange: UploadHooks['onChange'] = async (file, files) => {
+  const compressedFile = file.raw
+  const isFileExist = await checkFileExistOnServer(compressedFile)
+  if (isFileExist.data) {
+    // File already exists on the server
+    handleUploadSuccess(isFileExist) // Call the success callback directly
+    return false // Cancel upload
+  }
+  await handleUpload(file)
+  fileList.value = files
+}
+const handleBeforeUpload = async (rawFile: UploadRawFile) => {
+  const isImage = isValidImageType(rawFile)
+  const isSizeValid = isValidImageSize(rawFile)
+
+  if (!isImage) {
+    ElMessage.error('请选择有效的图片文件')
+    return false
+  }
+  else if (!isSizeValid) {
+    ElMessage.error('图片大小不能超过 5MB')
+    return false
+  }
+  return await compress(rawFile, 0.4) as File
+}
+
 defineExpose({
   clear() {
     fileList.value = []
@@ -65,6 +97,7 @@ defineExpose({
       action=""
       :http-request="handleUpload"
       :file-list="fileList"
+      :auto-upload="false"
       :before-upload="handleBeforeUpload"
       :on-change="handleFileChange"
       :on-success="handleUploadSuccess"
