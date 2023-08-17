@@ -13,6 +13,7 @@ const fileList = ref<UploadFiles>([])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const fileIdList = ref<string[]>([])
+const fileIdAndUUid = new Map()
 
 const uploadRef = ref<UploadInstance>()
 
@@ -20,7 +21,8 @@ const submitUpload = () => {
   uploadRef.value!.submit()
 }
 const handleRemove = (file: UploadFile) => {
-  const fileId = (file.response as any).data.id
+  const fileId = fileIdAndUUid.get(file.uid)
+  // const fileId = (file.response as any).data.id
   fileIdList.value.splice(fileIdList.value.indexOf(fileId), 1)
   emit('fileChange', unref(fileIdList))
   fileList.value.splice(fileList.value.indexOf(file), 1)
@@ -46,21 +48,27 @@ const checkFileExistOnServer = async (file: File) => {
   return await ApiIsFileExist(md5)
 }
 
-const handleUploadSuccess = async (res) => {
+const handleUploadSuccess = async (res, file) => {
+  fileIdAndUUid.set(file.uid, res.data.id)
   fileIdList.value.push(res.data.id)
   emit('fileChange', unref(fileIdList))
 }
 const handleUpload = async (file) => {
-  const res = await ApiUploadFile(file.raw)
-  if (res.code === 0)
-    handleUploadSuccess(res)
+  try {
+    const res = await ApiUploadFile(file.raw)
+    if (res.code === 0)
+      handleUploadSuccess(res, file)
+  }
+  catch (e) {
+    handleRemove(file)
+  }
 }
 const handleFileChange: UploadHooks['onChange'] = async (file, files) => {
   const compressedFile = file.raw
   const isFileExist = await checkFileExistOnServer(compressedFile)
   if (isFileExist.data) {
     // File already exists on the server
-    handleUploadSuccess(isFileExist) // Call the success callback directly
+    handleUploadSuccess(isFileExist, file) // Call the success callback directly
     return false // Cancel upload
   }
   await handleUpload(file)

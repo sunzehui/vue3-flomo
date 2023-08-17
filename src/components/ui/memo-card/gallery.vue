@@ -17,7 +17,7 @@ const previewList = computed(() => {
   <div class="img-container">
     <div v-for="(file, idx) in images" :key="file.id" class="relative imgwrp">
       <ElImage
-        class="el-upload-list__item-thumbnail"
+        class="el-upload-list__item-thumbnail rounded-sm"
         :src="file.filePath"
         :zoom-rate="1"
         hide-on-click-modal

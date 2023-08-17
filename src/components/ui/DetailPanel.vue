@@ -2,6 +2,7 @@
 import { onUnmounted, ref, unref } from 'vue'
 import { useClipboard, useEventBus } from '@vueuse/core'
 import { ElButton, ElDrawer, ElMessage } from 'element-plus'
+import Gallery from './memo-card/gallery.vue'
 import Tags from '@/components/ui/tags.vue'
 import { MEMO_CARD } from '@/common/event-bus'
 
@@ -52,6 +53,7 @@ defineExpose({
       </div>
     </template>
     <span class="memo-content">{{ memo.content || "额，好像什么都没有！" }}</span>
+    <Gallery :images="memo.images" />
     <Tags :tags="memo.tags" class="mt-3" />
   </ElDrawer>
 </template>

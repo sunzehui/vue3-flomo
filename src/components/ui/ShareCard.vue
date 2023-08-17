@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { computed, onUnmounted, ref, unref } from 'vue'
-import { ElDialog, ElLoading } from 'element-plus'
+import { ElDialog, ElLoading, ElMessage } from 'element-plus'
 import { toCanvas as img2Canvas } from 'html-to-image'
 import dayjs from 'dayjs'
 import { useEventBus } from '@vueuse/core'
+import Gallery from './memo-card/gallery.vue'
 import { MEMO_CARD } from '@/common/event-bus'
 import { localTime } from '@/utils/time'
 
@@ -31,6 +32,7 @@ const handleOpenShare = async () => {
   img2Canvas(node, {
     pixelRatio: window.devicePixelRatio * 2,
     backgroundColor: '#eaeaea',
+    preferredFontFormat: 'opentype',
   })
     .then(canvas => canvas.toDataURL())
     .then((url) => {
@@ -38,6 +40,7 @@ const handleOpenShare = async () => {
     })
     .catch((error) => {
       console.error('oops, something wents wrong!', error)
+      ElMessage.error('生成失败')
       imgUrl.value = null
     }).finally(() => {
       loadingService.close()
@@ -81,7 +84,15 @@ const handleClose = () => {
       <div class="content">
         <span class="time">{{ localTime(createTime) }}</span>
         <span v-html="htmlContent" />
+        <div class="gallery-container">
+          <img
+            v-for="item in memoData.images" :key="item.id" crossorigin="anonymous"
+            :src="item.filePath" alt=""
+            class="rounded-sm"
+          >
+        </div>
       </div>
+
       <footer>
         <span class="statistics">
           <span class="num">0</span>
@@ -147,6 +158,17 @@ header {
     font-size: 14px;
     color: #999;
     font-weight: 400;
+  }
+}
+.gallery-container{
+  height: 80px;
+  display: flex;
+  box-sizing: content-box;
+  padding: 5px 2px;
+  img{
+    height: 80px;
+    width: 80px;
+    margin-right: 10px;
   }
 }
 footer {
