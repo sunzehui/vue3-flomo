@@ -40,8 +40,8 @@ export const useMemoEditor = () => {
   const handleAddTag = () => {
     editorRef.value.insertContent('#')
   }
-  const handleAddEmoji = () => {
-    editorRef.value.insertContent('😀')
+  const handleAddEmoji = (emoji) => {
+    editorRef.value.insertContent(emoji.i)
   }
   const buildArticle = () => {
     const tags = extractTags(memo.value.content)

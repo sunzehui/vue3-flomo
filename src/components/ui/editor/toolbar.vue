@@ -2,12 +2,10 @@
 import { inject, ref, watchEffect } from 'vue'
 
 import { isEmpty } from 'lodash-es'
-import EmojiPicker from 'vue3-emoji-picker'
+import EmojiPicker from './emoji-picker.vue'
 import { EditorType } from '@/types/card-type'
 import ImageUpload from '@/components/ui/editor/image-upload.vue'
 import { useMemoEditor } from '@/composable/useMemoEditor'
-import 'vue3-emoji-picker/css'
-
 const emit = defineEmits([
   'addTag',
   'addEmoji',
@@ -34,9 +32,14 @@ const handleAddImage = (event: MouseEvent) => {
 const handleFileChange = (file: File) => {
   emit('fileChange', file)
 }
+const isPickerOpen = ref(false)
+const openEmojiPicker = () => {
+  isPickerOpen.value = true
+}
 defineExpose({
   clearImages: () => {
     imageUploadRef.value?.clear()
+    isImgUploadShow.value = false
   },
 })
 </script>
@@ -47,10 +50,14 @@ defineExpose({
     ref="imgUploadRef"
     @fileChange="handleFileChange"
   />
+  <EmojiPicker
+    v-model="isPickerOpen"
+    @picked="handleAddEmoji"
+  />
   <div class="bar">
     <span class="item icon-tag" @click="handleAddTag"> 🔗 </span>
-    <span class="item icon-emoji" @click="handleAddEmoji"> 😀 </span>
-    <span class="item icon-emoji" @click="handleAddImage">🖼️</span>
+    <span class="item icon-emoji" @click="openEmojiPicker"> 😀 </span>
+    <span class="item icon-image" @click="handleAddImage">🖼️</span>
 
     <button
       class="save"
