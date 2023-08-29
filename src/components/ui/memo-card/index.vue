@@ -23,7 +23,7 @@ import { useUserStore } from '@/store/user'
 import { MEMO_CARD } from '@/common/event-bus'
 
 const props = defineProps<{
-  article: Article
+  memo: Article
 }>()
 
 dayjs.locale('zh-cn')
@@ -40,7 +40,7 @@ const tagClick = (tag) => {
     },
   })
 }
-const { article } = toRefs(props)
+const { memo: article } = toRefs(props)
 
 const updateTime = computed(() => {
   const memo = unref(article)
@@ -52,7 +52,7 @@ const userStore = useUserStore()
 const isLogin = computed(() => userStore.isAuthenticated)
 const { emit: busEmit } = useEventBus(MEMO_CARD)
 const showDetail = () => {
-  busEmit({ action: 'open-detail-card' }, props.article)
+  busEmit({ action: 'open-detail-card' }, props.memo)
 }
 </script>
 
@@ -62,10 +62,10 @@ const showDetail = () => {
       <span class="time-text cursor-pointer" @click="showDetail">{{ updateTime }}</span>
       <MemoAction
         v-if="isLogin"
-        :article="article"
+        :article="memo"
       />
       <Pin
-        v-show="article.is_topic"
+        v-show="memo.is_topic"
         class="absolute -right-6 -top-4"
         theme="outline"
         size="24"
@@ -74,15 +74,15 @@ const showDetail = () => {
     </div>
     <TextClamp
       class="content"
-      :text="article.content"
+      :text="memo.content"
       :max-height="100"
     />
     <Gallery
-      v-if="article.images.length"
-      :images="article.images"
+      v-if="memo.images.length"
+      :images="memo.images"
     />
     <div class="footer">
-      <Tags :tags="article.tags" @tagClick="tagClick" />
+      <Tags :tags="memo.tags" @tagClick="tagClick" />
     </div>
   </div>
 </template>

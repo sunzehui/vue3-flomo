@@ -23,7 +23,7 @@ onMounted(() => {
   <div class="page-user-memo">
     <p>
       来自
-      <span class="highlight-nickname" v-if="userInfo">
+      <span v-if="userInfo" class="highlight-nickname">
         {{ userInfo.nickname }}
       </span>
       的Memo
@@ -32,7 +32,7 @@ onMounted(() => {
       <MemoCard
         v-for="memo in memoList"
         :key="memo.id"
-        :article="memo"
+        :memo="memo"
       />
     </div>
   </div>

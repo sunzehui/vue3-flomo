@@ -47,6 +47,9 @@ defineExpose({
   setContent(content: string) {
     textareaContent.value = content
   },
+  getType() {
+    return props.type
+  },
 })
 watch(textareaContent, () => {
   emit('change', textareaContent.value)
