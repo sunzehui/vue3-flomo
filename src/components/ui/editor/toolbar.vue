@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { inject, ref, watchEffect } from 'vue'
-
+import { ref } from 'vue'
 import { isEmpty } from 'lodash-es'
 import EmojiPicker from './emoji-picker.vue'
 import { EditorType } from '@/types/card-type'
@@ -64,7 +63,7 @@ defineExpose({
       :disabled="isEmpty(memo?.content)"
       @click.prevent="emit('save')"
     >
-      {{ editorType === EditorType.edit ? '保存' : '发送' }}
+      {{ editorType === EditorType.edit as EditorType ? '保存' : '发送' }}
     </button>
   </div>
 </template>

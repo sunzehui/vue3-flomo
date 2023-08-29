@@ -16,8 +16,6 @@ watchEffect(() => {
 })
 const pickerRef = ref(null)
 const createPicker = () => {
-  console.log('createPicker')
-
   const button = document.querySelector('.icon-emoji')
   createPopper(button, pickerRef.value, {
     placement: 'bottom-end',

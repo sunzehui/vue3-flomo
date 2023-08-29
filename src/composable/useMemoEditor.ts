@@ -55,13 +55,14 @@ export const useMemoEditor = () => {
 
   const updateArticle = () => {
     const article = buildArticle()
+    const _memo = unref(memo) as Memo
 
-    if (!memo.value.id) {
+    if (!_memo.id) {
       ElMessage.error('数据异常，请刷新')
       throw new Error('can \'t find article id!')
     }
     loading.value = true
-    articleStore.update(memo.value.id, article).finally(() => {
+    articleStore.update(_memo.id, article).finally(() => {
       loading.value = false
     })
   }
