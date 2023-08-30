@@ -6,6 +6,7 @@
   font-named-instance: 'Regular';
   src: url('Inter-roman.var.woff2') format('woff2');
 }
+
 @font-face {
   font-family: 'Inter var';
   font-weight: 100 900;
@@ -15,3 +16,19 @@
   src: url('Inter-italic.var.woff2') format('woff2');
 }
 
+
+@font-face {
+  font-family: "DIN-Regular";
+  src: url("/fonts/DINPro-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "DIN-Regular";
+  src: url("/fonts/DINPro-Bold.otf") format("opentype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "wenkai";
+  src: url("/fonts/LXGWWenKai-Light.ttf");
+}
