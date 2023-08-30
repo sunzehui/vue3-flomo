@@ -1,49 +1,58 @@
 <!DOCTYPE html>
 <html lang="zh-Hans">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>flomo-浮墨笔记</title>
-    <style>
-      @font-face {
-        font-family: "DIN-Regular";
-        src: url("/fonts/DINPro-Regular.otf") format("opentype");
-      }
-      @font-face {
-        font-family: "DIN-Regular";
-        src: url("/fonts/DINPro-Bold.otf") format("opentype");
-        font-weight: bold;
-      }
-  
-      html,
-      body,
-      #app {
-        height: 100%;
-        overflow: hidden;
-        background: #fafafa;
 
-        font-family: "DIN-Regular", "PingFang SC", Helvetica, Arial, sans-serif;
-      }
-      ::-webkit-scrollbar-track {
-        background-color: transparent !important;
-      }
-      #app {
-        position: relative;
-        min-width: 340px;
-      }
-      #loading-tag {
-        display: block;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-      }
-    </style>
-    <link rel="stylesheet" href="/fonts/inter.css" />
-  </head>
-  <body class="h-full">
-    <div id="app" class="h-full">
-      <span id="loading-tag"> loading... </span>
-    </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>flomo-浮墨笔记</title>
+  <style>
+    @font-face {
+      font-family: "DIN-Regular";
+      src: url("/fonts/DINPro-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "DIN-Regular";
+      src: url("/fonts/DINPro-Bold.otf") format("opentype");
+      font-weight: bold;
+    }
+
+    html,
+    body,
+    #app {
+      height: 100%;
+      overflow: hidden;
+      background: #fafafa;
+
+      font-family: "DIN-Regular", "PingFang SC", Helvetica, Arial, sans-serif;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: transparent !important;
+    }
+
+    #app {
+      position: relative;
+      min-width: 340px;
+    }
+
+    #loading-tag {
+      display: block;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+  </style>
+  <link rel="stylesheet" href="/fonts/inter.css" />
+</head>
+
+<body class="h-full">
+  <div id="app" class="h-full">
+    <span id="loading-tag"> loading... </span>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>
