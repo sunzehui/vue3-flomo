@@ -4,7 +4,7 @@ import { Check, Edit, Loading, Refresh, Search } from '@element-plus/icons-vue'
 import { ElMessage, ElTooltip } from 'element-plus'
 import { computed, ref, toRefs, unref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useArticleStore } from '@/store/article'
+import { useMemoStore } from '@/store/memo'
 import TopBar from '@/components/ui/topbar/index.vue'
 import { useLayoutStore } from '@/store/layout'
 
@@ -12,7 +12,7 @@ const route = useRoute()
 const tagName = computed(() => route.query.tag as string || '')
 const [isTagEdit, toggeEdit] = useToggle(false)
 const refreshing = ref(false)
-const { loadRemoteData } = useArticleStore()
+const { loadRemoteData } = useMemoStore()
 
 const router = useRouter()
 const handleRefresh = (query?) => {
@@ -32,7 +32,7 @@ watchEffect(() => {
 })
 
 const rename = () => {
-  const articleStore = useArticleStore()
+  const articleStore = useMemoStore()
   articleStore.tagRename(tagName.value, bindTagName.value).then((res) => {
     isTagEdit.value = false
     ElMessage.success('修改成功')

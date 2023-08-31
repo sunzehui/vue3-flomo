@@ -2,7 +2,7 @@ import type { Ref } from 'vue'
 import { nextTick, ref, watch, watchEffect } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import { computeSelectPos } from '@/utils/editor'
-import { useArticleStore } from '@/store/article'
+import { useMemoStore } from '@/store/memo'
 import { EditorType } from '@/types/card-type'
 
 interface OptionProp {

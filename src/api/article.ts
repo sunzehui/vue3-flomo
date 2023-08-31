@@ -9,7 +9,7 @@ export function ApiList(data) {
     params: data,
   })
 }
-export function ApiUpdate(id: number, data: Partial<Memo>) {
+export function ApiUpdate(id: number, data: Partial<Memo> & { recycle: boolean }) {
   return request<any>({
     url: `/api/article/${id}`,
     method: 'patch',

@@ -9,6 +9,7 @@
     },
     "module": "esnext",
     "target": "es6",
+    "noImplicitThis": true,
     "lib": ["esnext", "dom", "es5", "ES2015.Promise", "ES2015", "es2017"],
     "jsx": "preserve",
     "moduleResolution": "node",

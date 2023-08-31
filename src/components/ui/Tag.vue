@@ -4,7 +4,7 @@ import { Download } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
 import { router } from '@/routes'
-import { useArticleStore } from '@/store/article'
+import { useMemoStore } from '@/store/memo'
 const props = defineProps<{
   link: string
   isTopic: boolean
@@ -26,7 +26,7 @@ const handleClick = () => {
   })
 }
 
-const articleStore = useArticleStore()
+const articleStore = useMemoStore()
 const setTop = () => {
   const title = props.isTopic ? '取消置顶' : '置顶'
   ElMessageBox.confirm(`确定${title}该标签吗?`, 'Info', {

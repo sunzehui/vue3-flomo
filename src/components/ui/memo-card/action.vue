@@ -6,7 +6,7 @@ import {
 } from 'element-plus'
 import { useEventBus } from '@vueuse/core'
 import { Right as RightIcon } from '@/components/icon'
-import { useArticleStore } from '@/store/article'
+import { useMemoStore } from '@/store/memo'
 
 import { CardType } from '@/types/card-type'
 import { MEMO_CARD } from '@/common/event-bus'
@@ -15,7 +15,7 @@ const props = defineProps<{
   article: Memo
   isDeleted?: boolean
 }>()
-const articleStore = useArticleStore()
+const articleStore = useMemoStore()
 
 const { emit: busEmit } = useEventBus(MEMO_CARD)
 type acType =
@@ -32,7 +32,7 @@ const reducerAction = (event: Event) => {
 
   switch (type) {
     case 'delete':
-      articleStore.deleteArticle(+props.article.id)
+      articleStore.deleteMemo(+props.article.id)
       break
     case 'detail':
       busEmit({ action: 'open-detail-card' }, props.article)
@@ -50,6 +50,7 @@ const reducerAction = (event: Event) => {
       articleStore.setArticle(+props.article.id, { type: CardType.editor })
       break
     case 'recycle':
+      articleStore.recycleMemo(props.article.id)
       break
     default:
       break

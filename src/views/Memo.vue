@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import TopBar from '@/components/ui/topbar/index.vue'
 import MemoEditor from '@/components/ui/editor/index.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
-import { useArticleStore } from '@/store/article'
+import { useMemoStore } from '@/store/memo'
 import DetailPanel from '@/components/ui/DetailPanel.vue'
 import ShareCard from '@/components/ui/ShareCard.vue'
 
@@ -14,8 +14,8 @@ import MemoTopBar from '@/components/ui/memo-top-bar.vue'
 
 const props = defineProps<{ tag?: string }>()
 
-const { articleListEnhance } = storeToRefs(useArticleStore())
-const { loadRemoteData } = (useArticleStore())
+const { enhancedMemoList } = storeToRefs(useMemoStore())
+const { loadRemoteData } = (useMemoStore())
 
 const { refreshUserInfo } = useUserStore()
 watchEffect(() => {
@@ -32,7 +32,7 @@ watchEffect(() => {
       <MemoEditor :type="EditorType.create" />
     </div>
     <div class="card-container">
-      <template v-for="memo of articleListEnhance" :key="memo.id">
+      <template v-for="memo of enhancedMemoList" :key="memo.id">
         <MemoCardOrEditor :memo="memo" />
       </template>
     </div>

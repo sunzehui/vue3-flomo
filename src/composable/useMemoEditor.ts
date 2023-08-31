@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import type { Memo } from '@/types/memo'
 import { extractTags } from '@/utils/editor'
 import { EditorType } from '@/types/card-type'
-import { useArticleStore } from '@/store/article'
+import { useMemoStore } from '@/store/memo'
 
 let editorRef = null
 let toolbarRef = null
@@ -13,8 +13,8 @@ const memo = ref({
 })
 export const useMemoEditor = () => {
   const loading = ref(false)
-  const articleStore = useArticleStore()
-  const { tagList } = toRefs(useArticleStore())
+  const articleStore = useMemoStore()
+  const { tagList } = toRefs(useMemoStore())
   const imageList = ref([])
 
   let editorType = EditorType.create

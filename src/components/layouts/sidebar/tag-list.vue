@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import Tag from '@/components/ui/Tag.vue'
-import { useArticleStore } from '@/store/article'
+import { useMemoStore } from '@/store/memo'
 
-const articleStore = useArticleStore()
+const articleStore = useMemoStore()
 const topicTag = computed(() =>
   articleStore.tagList.filter(item => item.is_topics),
 )
