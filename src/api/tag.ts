@@ -1,4 +1,4 @@
-import type { tagType } from '@/types/article'
+import type { tagType } from '@/types/memo'
 import request from '@/utils/request'
 export function ApiList() {
   return request<tagType[]>({

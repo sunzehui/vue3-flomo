@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch, watchEffect } from 'vue'
 import { useSuggestion } from '@/composable/useSuggestion'
-import type { Article as Memo, tagType } from '@/types/article'
+import type { Memo, tagType } from '@/types/memo'
 import type { EditorType } from '@/types/card-type'
 
 const props = defineProps<{

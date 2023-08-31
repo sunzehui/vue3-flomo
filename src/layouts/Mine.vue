@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ref, toRefs, watch, watchEffect } from 'vue'
+import { toRefs } from 'vue'
 import { ElDrawer } from 'element-plus'
-import { useMediaQuery } from '@vueuse/core'
-import LeftPanel from '@/components/layouts/left-panel.vue'
+import LeftPanel from '@/components/layouts/sidebar/index.vue'
 import { useLayoutStore } from '@/store/layout'
 
 const { isLeftMenuOpen, isPC } = toRefs(useLayoutStore())

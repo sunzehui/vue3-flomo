@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import Editor from './text-editor.vue'
 import ToolBar from './toolbar.vue'
 import type { EditorType } from '@/types/card-type'
-import type { Article as Memo } from '@/types/article'
+import type { Memo } from '@/types/memo'
 import { useMemoEditor } from '@/composable/useMemoEditor'
 
 const props = defineProps<{

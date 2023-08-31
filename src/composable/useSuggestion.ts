@@ -4,7 +4,7 @@ import { computed, ref, unref, watchEffect } from 'vue'
 import { onClickOutside, useEventListener } from '@vueuse/core'
 import { isEmpty } from 'lodash-es'
 import { useEditor } from './useEditor'
-import type { tagType } from '@/types/article'
+import type { tagType } from '@/types/memo'
 import { px2number } from '@/utils/Tool'
 import { whenWatch } from '@/utils/when'
 
@@ -56,7 +56,7 @@ export function useSuggestion({
 
   const shouldSuggestionShow = computed(() => !isEmpty(unref(filteredList)) && unref(partialPatternRef).length)
   whenWatch(shouldSuggestionShow, setSuggestionShow)
-  
+
   // 设置候选项active
   let activeTagIdx: number | null = null
 

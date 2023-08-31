@@ -10,9 +10,10 @@ import { useArticleStore } from '@/store/article'
 
 import { CardType } from '@/types/card-type'
 import { MEMO_CARD } from '@/common/event-bus'
-import type { Article } from '@/types/article'
+import type { Memo } from '@/types/memo'
 const props = defineProps<{
-  article: Article
+  article: Memo
+  isDeleted?: boolean
 }>()
 const articleStore = useArticleStore()
 
@@ -24,6 +25,7 @@ type acType =
   | 'detail'
   | 'set-top'
   | 'get-link'
+  | 'recycle'
 
 const reducerAction = (event: Event) => {
   const type = (event.target as HTMLLIElement).dataset.type as acType
@@ -47,6 +49,8 @@ const reducerAction = (event: Event) => {
     case 'edit':
       articleStore.setArticle(+props.article.id, { type: CardType.editor })
       break
+    case 'recycle':
+      break
     default:
       break
   }
@@ -60,24 +64,35 @@ const reducerAction = (event: Event) => {
     </span>
     <template #dropdown>
       <ElDropdownMenu @click="reducerAction">
-        <ElDropdownItem data-type="get-link">
-          分享
-        </ElDropdownItem>
-        <ElDropdownItem v-if="article.is_topic" data-type="cancel-top">
-          取消置顶
-        </ElDropdownItem>
-        <ElDropdownItem v-if="!article.is_topic" data-type="set-top">
-          置顶
-        </ElDropdownItem>
-        <ElDropdownItem data-type="detail">
-          查看详情
-        </ElDropdownItem>
-        <ElDropdownItem data-type="edit">
-          编辑
-        </ElDropdownItem>
-        <ElDropdownItem data-type="delete">
-          删除
-        </ElDropdownItem>
+        <template
+          v-if="isDeleted"
+        >
+          <ElDropdownItem
+            data-type="recycle"
+          >
+            恢复
+          </ElDropdownItem>
+        </template>
+        <template v-else>
+          <ElDropdownItem data-type="get-link">
+            分享
+          </ElDropdownItem>
+          <ElDropdownItem v-if="article.is_topic" data-type="cancel-top">
+            取消置顶
+          </ElDropdownItem>
+          <ElDropdownItem v-if="!article.is_topic" data-type="set-top">
+            置顶
+          </ElDropdownItem>
+          <ElDropdownItem data-type="detail">
+            查看详情
+          </ElDropdownItem>
+          <ElDropdownItem data-type="edit">
+            编辑
+          </ElDropdownItem>
+          <ElDropdownItem data-type="delete">
+            移入回收站
+          </ElDropdownItem>
+        </template>
       </ElDropdownMenu>
     </template>
   </ElDropdown>

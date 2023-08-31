@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { Article } from '@/types/article'
+import type { Memo } from '@/types/memo'
 
 const props = defineProps<{
-  tags: Article['tags']
+  tags: Memo['tags']
 }>()
 const emit = defineEmits(['tagClick'])
 </script>

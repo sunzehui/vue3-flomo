@@ -4,8 +4,8 @@ import { cloneDeep, findIndex, map, orderBy, reverse, sortBy } from 'lodash-es'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import type { Article, tagType } from './../types/article'
 import { useUserStore } from './user'
+import type { Memo, tagType } from '@/types/memo'
 import {
   ApiList as ApiArticleList,
   ApiDelete as ApiDeleteArticle,
@@ -23,7 +23,7 @@ dayjs.extend(relativeTime)
 export const useArticleStore = defineStore('article', {
   state: () => {
     return {
-      articleList: [] as Article[],
+      articleList: [] as Memo[],
       tagList: [] as tagType[],
       activeTag: '',
     }
@@ -58,7 +58,7 @@ export const useArticleStore = defineStore('article', {
         ElMessage.error(e.message)
       }
     },
-    async save(data: Partial<Article>) {
+    async save(data: Partial<Memo>) {
       const { refreshUserInfo } = useUserStore()
       const res = await ApiSave(data)
       if (res.code === 0) {
@@ -76,7 +76,7 @@ export const useArticleStore = defineStore('article', {
         return Promise.reject(res)
       }
     },
-    async update(id: Article['id'], data: Partial<Article>) {
+    async update(id: Memo['id'], data: Partial<Memo>) {
       try {
         const res = await ApiUpdate(id, data)
         if (res.code === 0) {
@@ -120,21 +120,21 @@ export const useArticleStore = defineStore('article', {
       this.setArticle(articleId, { is_topic: false })
       return res
     },
-    findIndex(articleId: Article['id']) {
+    findIndex(articleId: Memo['id']) {
       const list = cloneDeep(this.articleList)
-      const idx = findIndex(list, (o: Article) => o.id.toString() === articleId.toString())
+      const idx = findIndex(list, (o: Memo) => o.id.toString() === articleId.toString())
       return idx
     },
-    setArticle(articleId: Article['id'], data: Partial<Article & { type: CardType }>) {
+    setArticle(articleId: Memo['id'], data: Partial<Memo & { type: CardType }>) {
       const list = this.articleList
       const idx = this.findIndex(articleId)
       Object.assign(list[idx], data)
     },
-    delArticle(articleId: Article['id']) {
+    delArticle(articleId: Memo['id']) {
       const idx = this.findIndex(articleId)
       this.articleList.splice(idx, 1)
     },
-    addArticle(article: Article) {
+    addArticle(article: Memo) {
       this.articleList.unshift(article)
     },
     setActiveTag(tag: string) {
@@ -145,6 +145,7 @@ export const useArticleStore = defineStore('article', {
   getters: {
     articleListEnhance(state) {
       const list = state.articleList
+      console.log('🚀 ~ file: article.ts:148 ~ articleListEnhance ~ list:', list)
       const sortedListByTime = reverse(
         orderBy(list, (obj) => {
           if (obj.is_topic)
@@ -153,7 +154,7 @@ export const useArticleStore = defineStore('article', {
           return createTime ?? Number(obj.id)
         }),
       )
-      const cardStateWarpper = (obj: Article & { type: CardType }, idx, arr) => {
+      const cardStateWarpper = (obj: Memo & { type: CardType }, idx, arr) => {
         const type = obj.type ?? CardType.article
         const isLast = arr.length - 1 === idx
         return { ...obj, type, isLast }

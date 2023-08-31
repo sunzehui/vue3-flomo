@@ -4,7 +4,6 @@ import {
   toRefs,
   unref,
 } from 'vue'
-import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 import TextClamp from 'vue3-text-clamp'
 import { useEventBus } from '@vueuse/core'
@@ -50,17 +49,11 @@ const showDetail = () => {
 <template>
   <div class="card">
     <div class="header relative">
-      <span class="time-text cursor-pointer" @click="showDetail">{{ updateTime }}</span>
+      <span class="time-text cursor-pointer" @click="showDetail">删除于{{ updateTime }}</span>
       <MemoAction
         v-if="isLogin"
         :article="memo"
-      />
-      <Pin
-        v-show="memo.is_topic"
-        class="absolute -right-6 -top-4"
-        theme="outline"
-        size="24"
-        fill="#333"
+        is-deleted
       />
     </div>
     <TextClamp

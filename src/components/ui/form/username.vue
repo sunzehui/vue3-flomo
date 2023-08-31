@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import { computed, ref, watchEffect } from 'vue'
 import { ErrorMessage, Field as VField, Form as VForm } from 'vee-validate'
+import { useVModel } from '@vueuse/core'
 const props = defineProps<{
   rule: string | ((value: string) => boolean | string)
   modelValue: string
 }>()
 const emit = defineEmits(['update:modelValue'])
 
-const username = computed({
-  get: () => props.modelValue,
-  set: (value: string) => emit('update:modelValue', value),
-})
+// const username = computed({
+//   get: () => props.modelValue,
+//   set: (value: string) => emit('update:modelValue', value),
+// })
+const username = useVModel(props, 'modelValue', emit)
 </script>
 
 <template>

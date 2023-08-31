@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { Download } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
@@ -11,25 +11,14 @@ const props = defineProps<{
 }>()
 const isClickMe = ref(false)
 const route = useRoute()
-watch(
-  () => [route.query, props.link],
-  ([newRoute, newLink]) => {
-    // @ts-expect-error
-    const { tag } = newRoute
 
-    if (tag == props.link)
-      isClickMe.value = true
+watchEffect(() => {
+  const { tag } = route.query
+  isClickMe.value = tag?.toString() === props.link?.toString()
+})
 
-    else
-      isClickMe.value = false
-  },
-  { immediate: true },
-)
-const updateQuery = (route) => {
-  router.push(route)
-}
 const handleClick = () => {
-  updateQuery({
+  router.push({
     name: 'memo',
     query: {
       tag: props.link,
@@ -43,19 +32,19 @@ const setTop = () => {
   ElMessageBox.confirm(`确定${title}该标签吗?`, 'Info', {
     lockScroll: false,
   })
-    .then(() => {
-      articleStore
-        .setTagTop({ tag: props.link, topic: !props.isTopic })
-        .then((res) => {
-          if (res.code === 0)
-            ElMessage.success(`${title}成功`)
-        })
-    })
+    .then(
+      () =>
+        articleStore
+          .setTagTop({ tag: props.link, topic: !props.isTopic }),
+    )
     .catch(() => {})
+    .then((res) => {
+      if (!res)
+        return
+      if (res.code === 0)
+        ElMessage.success(`${title}成功`)
+    })
 }
-defineExpose({
-  ElButton,
-})
 </script>
 
 <template>

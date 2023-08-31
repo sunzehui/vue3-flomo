@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { Refresh, Search } from '@element-plus/icons-vue'
 import { watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
+import TopBar from '@/components/ui/topbar/index.vue'
 import MemoEditor from '@/components/ui/editor/index.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
-import MemoTitle from '@/components/ui/MemoTitle.vue'
 import { useArticleStore } from '@/store/article'
 import DetailPanel from '@/components/ui/DetailPanel.vue'
 import ShareCard from '@/components/ui/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
 import { useUserStore } from '@/store/user'
+import MemoTopBar from '@/components/ui/memo-top-bar.vue'
 
 const props = defineProps<{ tag?: string }>()
 
@@ -27,13 +27,7 @@ watchEffect(() => {
 
 <template>
   <div class="memo-view">
-    <nav>
-      <MemoTitle />
-      <div class="input-wrapper">
-        <input type="text">
-        <Search class="input-icon" />
-      </div>
-    </nav>
+    <MemoTopBar />
     <div class="input-container">
       <MemoEditor :type="EditorType.create" />
     </div>
@@ -48,76 +42,20 @@ watchEffect(() => {
 </template>
 
 <style lang="scss" scoped>
-nav {
-  display: flex;
-  padding: 0 10px;
-  @apply py-3;
-    // line-height: 40px;
-  justify-content: space-between;
-
-  height: 60px;
-  .input-wrapper {
-    width: 200px;
-    position: relative;
-    box-sizing: border-box;
-    input{
-      width: 100%;
-      font-size: 14px;
-    }
-    .input-icon {
-
-      @apply absolute top-1/2 -translate-y-1/2 left-[10px];
-
-      height: 40px;
-      width: 25px;
-      text-align: center;
-      transition: all 0.3s;
-      line-height: 40px;
-      height: 14px;
-      width: 14px;
-
-      svg {
-      }
-    }
-  }
-
-  input {
-    // height: 40px;
-    height: 100%;
-    outline: 0;
-    border: none;
-    background: #efefef;
-    border-radius: 8px;
-    padding: 0 30px;
-
-    &:focus,
-    &:active {
-      outline: 0;
-      box-shadow: none;
-    }
-  }
-}
-
-.input-container {
-  @apply px-5;
-}
-
 .memo-view {
   height: 100%;
-
-  nav {
+  .input-container {
     @apply px-5;
   }
-}
-
-.card-container {
-  overflow-y: scroll;
-  height: 100%;
-  padding-bottom: 300px;
-  @apply px-5;
-  //谷歌适用
-  &::-webkit-scrollbar {
-    display: none;
+  .card-container {
+    overflow-y: scroll;
+    height: 100%;
+    padding-bottom: 300px;
+    @apply px-5;
+    //谷歌适用
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 </style>

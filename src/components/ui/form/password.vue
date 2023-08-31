@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { ErrorMessage, Field as VField, Form as VForm } from 'vee-validate'
+import { useVModel } from '@vueuse/core'
 import { EyeClose, EyeOpen } from '@/components/icon'
 
 const props = defineProps<{
@@ -10,13 +11,14 @@ const props = defineProps<{
 const emit = defineEmits(['update:modelValue'])
 
 const eyeShow = ref(false)
+const password = useVModel(props, 'modelValue', emit)
 
-const password = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emit('update:modelValue', value)
-  },
-})
+// const password = computed({
+//   get: () => props.modelValue,
+//   set: (value) => {
+//     emit('update:modelValue', value)
+//   },
+// })
 </script>
 
 <template>

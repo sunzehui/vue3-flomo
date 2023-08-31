@@ -1,7 +1,7 @@
 import { ElMessage } from 'element-plus'
 import { nextTick, ref, toRefs, unref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
-import type { Article as Memo } from '@/types/article'
+import type { Memo } from '@/types/memo'
 import { extractTags } from '@/utils/editor'
 import { EditorType } from '@/types/card-type'
 import { useArticleStore } from '@/store/article'

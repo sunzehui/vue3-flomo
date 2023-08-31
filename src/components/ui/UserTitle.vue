@@ -1,17 +1,21 @@
 <script lang="ts" setup>
 import { toRefs } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useLayoutStore } from '@/store/layout'
 const props = defineProps<{
   nickname: string
   isPro: boolean
 }>()
 const { nickname, isPro } = toRefs(props)
+
+const { setLeftMenuOpen } = useLayoutStore()
 </script>
 
 <template>
   <div class="user">
-    <span class="username" @click="$router.push('/me')">
+    <RouterLink class="username" to="/me" @click="setLeftMenuOpen(false)">
       <span class="title">{{ nickname }}</span><span class="pro" :class="{ active: isPro }">PRO</span>
-    </span>
+    </RouterLink>
   </div>
 </template>
 

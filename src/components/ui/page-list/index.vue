@@ -5,7 +5,7 @@ import {
   Menu,
   TrendCharts,
 } from '@element-plus/icons-vue'
-import SideBarItem from './SideBarItem.vue'
+import SideBarItem from './page-item.vue'
 const barGroup = [
   {
     key: 'memo',

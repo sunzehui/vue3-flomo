@@ -1,4 +1,4 @@
-import type { Article } from '@/types/article'
+import type { Memo } from '@/types/memo'
 import type { User } from '@/types/user'
 import request from '@/utils/request'
 
@@ -6,7 +6,7 @@ interface UserShareQuery {
   user_id: number | string
 }
 interface UserShareResp {
-  usersMemo: Article[]
+  usersMemo: Memo[]
   userInfo: User
 }
 export function ApiUser(query: UserShareQuery) {

@@ -2,7 +2,7 @@
 import { ElIcon, ElImage } from 'element-plus'
 import { computed, unref } from 'vue'
 import { ZoomIn } from '@element-plus/icons-vue'
-import type { FileRecord } from '@/types/article'
+import type { FileRecord } from '@/types/memo'
 
 const props = defineProps<{
   images: FileRecord[]

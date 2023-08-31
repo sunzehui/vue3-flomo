@@ -1,30 +1,29 @@
 <script lang="ts" setup>
-import { useLayoutStore } from "@/store/layout";
-import {computed} from "vue";
-import {useRoute} from "vue-router";
+import { computed } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+import { useLayoutStore } from '@/store/layout'
 
 const props = defineProps<{
-  to: string,
+  to: string
 }>()
 const route = useRoute()
 const itemActive = computed(() => route.path === props.to ? 'active' : '')
-const {setLeftMenuOpen} = useLayoutStore()
+const { setLeftMenuOpen } = useLayoutStore()
 const clickedPath = () => {
   setLeftMenuOpen(false)
-} 
+}
 </script>
 
 <template>
   <RouterLink :to="props.to" @click="clickedPath">
     <div class="item" :class="itemActive">
       <i class="icon">
-        <slot name="icon"></slot>
+        <slot name="icon" />
       </i>
       <slot>MEMO</slot>
     </div>
   </RouterLink>
 </template>
-
 
 <style scoped lang="scss">
 .item {
