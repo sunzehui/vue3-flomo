@@ -20,64 +20,22 @@ const { isPC } = toRefs(useLayoutStore())
 </template>
 
 <style lang="scss" scoped>
-.icon {
-  font-style: normal;
-  height: 18px;
-  width: 18px;
-  display: inline-block;
-  opacity: 0.8;
-  cursor: pointer;
-  @apply p-2 box-content;
-  &:hover {
-    opacity: 1;
-  }
-}
-span > label {
-  font-weight: bold;
-  color: #5f5f5f;
-}
-.line {
-  opacity: 0.5;
-  @apply mx-1;
-}
 .title-wrp{
   flex-shrink: 0;
   @apply flex items-center;
-}
-.hover-bg {
-  @apply rounded-md duration-300 transition-colors;
-  &:hover {
-    background: rgba(55, 53, 47, 0.08);
+  .hover-bg {
+    @apply rounded-md duration-300 transition-colors;
+    &:hover {
+      background: rgba(55, 53, 47, 0.08);
+    }
+  }
+ > span.title {
+    font-size: 18px;
+    color: #5f5f5f;
+    @apply relative px-2 cursor-pointer flex-shrink-0 font-bold flex-1;
   }
 }
-.title-wrp{
- > span.title {
-
-  flex: 1;
-  font-size: 18px;
-  font-weight: bold;
-  color: #5f5f5f;
-  cursor: pointer;
-  flex-shrink: 0;
-  @apply relative;
-  @apply px-2;
-
-}
-
-}
-
-.tagEdit {
-  display: inline-block;
-  width: 120px;
-  height: 30px;
-  border-radius: 4px;
-  margin-right: 5px;
-}
-.lastTag {
-  @apply mx-1 text-gray-500 text-base;
-}
 .showLeftPanelBtn{
-  @apply text-gray-500 text-base mr-2;
-  cursor: pointer;
+  @apply text-gray-500 text-base mr-2 cursor-pointer;
 }
 </style>

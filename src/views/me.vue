@@ -42,9 +42,6 @@ const handleLogout = () => {
 
 <template>
   <div class="page-profile">
-    <!-- <div class="page-title">
-      <h2>账号详情</h2>
-    </div> -->
     <TopBar title="账号详情" />
 
     <PageBody>

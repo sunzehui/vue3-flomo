@@ -129,4 +129,36 @@ watchEffect(() => {
       box-shadow: none;
     }
   }
+
+.icon {
+  font-style: normal;
+  height: 18px;
+  width: 18px;
+  display: inline-block;
+  opacity: 0.8;
+  cursor: pointer;
+  @apply p-2 box-content;
+  &:hover {
+    opacity: 1;
+  }
+}
+span > label {
+  font-weight: bold;
+  color: #5f5f5f;
+}
+.line {
+  opacity: 0.5;
+  @apply mx-1;
+}
+
+.tagEdit {
+  display: inline-block;
+  width: 120px;
+  height: 30px;
+  border-radius: 4px;
+  margin-right: 5px;
+}
+.lastTag {
+  @apply mx-1 text-gray-500 text-base;
+}
 </style>

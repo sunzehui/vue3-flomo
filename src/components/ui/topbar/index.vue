@@ -12,9 +12,9 @@ const props = defineProps<{
         {{ props.title }}
       </template>
       <template #tool>
-        <slot name="left" />
+        <slot name="tool" />
       </template>
-      <template #sub-title? />
+      <template #sub-title />
     </MemoTitle>
     <slot name="right" />
   </nav>
