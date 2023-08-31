@@ -9,7 +9,7 @@ export function ApiList(data) {
     params: data,
   })
 }
-export function ApiUpdate(id: number, data: Partial<Memo> & { recycle: boolean }) {
+export function ApiUpdate(id: number, data: Partial<Memo> | { recycle: boolean }) {
   return request<any>({
     url: `/api/article/${id}`,
     method: 'patch',
@@ -17,14 +17,14 @@ export function ApiUpdate(id: number, data: Partial<Memo> & { recycle: boolean }
   })
 }
 export function ApiDelete(id: number) {
-  return request<IResponse<any>>({
+  return request<any>({
     url: `/api/article/${id}`,
     method: 'delete',
   })
 }
 
-export function ApiSave(data: Partial<Memo>) {
-  return request<IResponse<any>>({
+export async function ApiSave(data: Partial<Memo>) {
+  return await request<Memo>({
     url: '/api/article',
     method: 'post',
     data,

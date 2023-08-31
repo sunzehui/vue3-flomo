@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
 import { router } from '@/routes'
 import { useMemoStore } from '@/store/memo'
+import { useLayoutStore } from '@/store/layout'
 const props = defineProps<{
   link: string
   isTopic: boolean
@@ -17,7 +18,11 @@ watchEffect(() => {
   isClickMe.value = tag?.toString() === props.link?.toString()
 })
 
+const {
+  toggleLeftMenuOpen,
+} = useLayoutStore()
 const handleClick = () => {
+  toggleLeftMenuOpen(false)
   router.push({
     name: 'memo',
     query: {

@@ -9,7 +9,7 @@ import { useRouter } from 'vue-router'
 import TextClamp from 'vue3-text-clamp'
 import { useEventBus } from '@vueuse/core'
 import MemoAction from './action.vue'
-import Tags from '@/components/ui/tags.vue'
+import Tags from '@/components/ui/memo-card/tags.vue'
 import Gallery from '@/components/ui/memo-card/gallery.vue'
 
 import type { Memo } from '@/types/memo'

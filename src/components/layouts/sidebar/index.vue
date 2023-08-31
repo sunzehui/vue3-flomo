@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import TagList from './tag-list.vue'
-import PageList from '@/components/ui/page-list/index.vue'
-import HeatMap from '@/components/ui/heat-map.vue'
-import UserStatistical from '@/components/ui/UserStatistical.vue'
-import UserTitle from '@/components/ui/UserTitle.vue'
+import TagList from '@/components/ui/sidebar/tag-list.vue'
+import PageList from '@/components/ui/sidebar/page-list/index.vue'
+import HeatMap from '@/components/ui/sidebar/heat-map.vue'
+import UserStatistical from '@/components/ui/sidebar/UserStatistical.vue'
+import UserTitle from '@/components/ui/topbar/UserTitle.vue'
 import { useUserStore } from '@/store/user'
 
 const userStore = useUserStore()

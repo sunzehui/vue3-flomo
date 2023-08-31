@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import Tag from '@/components/ui/Tag.vue'
+import Tag from '@/components/ui/sidebar/tag.vue'
 import { useMemoStore } from '@/store/memo'
 
 const articleStore = useMemoStore()

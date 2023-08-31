@@ -2,8 +2,8 @@
 import { onUnmounted, ref, unref } from 'vue'
 import { useClipboard, useEventBus } from '@vueuse/core'
 import { ElButton, ElDrawer, ElMessage } from 'element-plus'
-import Gallery from './memo-card/gallery.vue'
-import Tags from '@/components/ui/tags.vue'
+import Gallery from '@/components/ui/memo-card/gallery.vue'
+import Tags from '@/components/ui/memo-card/tags.vue'
 import { MEMO_CARD } from '@/common/event-bus'
 
 const isShow = ref(false)

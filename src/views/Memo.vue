@@ -5,12 +5,12 @@ import TopBar from '@/components/ui/topbar/index.vue'
 import MemoEditor from '@/components/ui/editor/index.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import { useMemoStore } from '@/store/memo'
-import DetailPanel from '@/components/ui/DetailPanel.vue'
-import ShareCard from '@/components/ui/ShareCard.vue'
+import DetailPanel from '@/components/ui/memo-card/DetailPanel.vue'
+import ShareCard from '@/components/ui/memo-card/ShareCard.vue'
 
 import { EditorType } from '@/types/card-type'
 import { useUserStore } from '@/store/user'
-import MemoTopBar from '@/components/ui/memo-top-bar.vue'
+import MemoTopBar from '@/components/ui/topbar/memo-top-bar.vue'
 
 const props = defineProps<{ tag?: string }>()
 

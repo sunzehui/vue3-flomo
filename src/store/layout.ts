@@ -7,12 +7,12 @@ export const useLayoutStore = defineStore('layout', () => {
 
   const isPC = useMediaQuery('(min-width: 650px)')
 
-  function setLeftMenuOpen(isOpen = false) {
+  function toggleLeftMenuOpen(isOpen = false) {
     isLeftMenuOpen.value = isOpen
   }
   return {
     isLeftMenuOpen,
-    setLeftMenuOpen,
+    toggleLeftMenuOpen,
     isPC,
   }
 })

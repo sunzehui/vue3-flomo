@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { toRefs } from 'vue'
 import { useLayoutStore } from '@/store/layout'
-const { setLeftMenuOpen } = useLayoutStore()
+const { toggleLeftMenuOpen } = useLayoutStore()
 
 const { isPC } = toRefs(useLayoutStore())
 </script>
 
 <template>
   <div class="title-wrp">
-    <span v-show="!isPC" class="showLeftPanelBtn" @click.stop="setLeftMenuOpen(true)">三</span>
+    <span v-show="!isPC" class="showLeftPanelBtn" @click.stop="toggleLeftMenuOpen(true)">三</span>
     <span class="title hover-bg">
       <slot name="title">
         MEMO

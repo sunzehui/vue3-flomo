@@ -8,12 +8,12 @@ const props = defineProps<{
 }>()
 const { nickname, isPro } = toRefs(props)
 
-const { setLeftMenuOpen } = useLayoutStore()
+const { toggleLeftMenuOpen } = useLayoutStore()
 </script>
 
 <template>
   <div class="user">
-    <RouterLink class="username" to="/me" @click="setLeftMenuOpen(false)">
+    <RouterLink class="username" to="/me" @click="toggleLeftMenuOpen(false)">
       <span class="title">{{ nickname }}</span><span class="pro" :class="{ active: isPro }">PRO</span>
     </RouterLink>
   </div>

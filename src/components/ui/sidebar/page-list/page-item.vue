@@ -8,9 +8,9 @@ const props = defineProps<{
 }>()
 const route = useRoute()
 const itemActive = computed(() => route.path === props.to ? 'active' : '')
-const { setLeftMenuOpen } = useLayoutStore()
+const { toggleLeftMenuOpen } = useLayoutStore()
 const clickedPath = () => {
-  setLeftMenuOpen(false)
+  toggleLeftMenuOpen(false)
 }
 </script>
 
