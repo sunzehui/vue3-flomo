@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import { useToggle } from '@vueuse/core'
-import { Check, Edit, Loading, Refresh, Search } from '@element-plus/icons-vue'
+import { Check, Edit, Loading, Refresh } from '@element-plus/icons-vue'
 import { ElMessage, ElTooltip } from 'element-plus'
 import { computed, ref, toRefs, unref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import Search from '@/components/ui/topbar/search.vue'
 import { useMemoStore } from '@/store/memo'
 import TopBar from '@/components/ui/topbar/index.vue'
 import { useLayoutStore } from '@/store/layout'
 
 const route = useRoute()
 const tagName = computed(() => route.query.tag as string || '')
+
 const [isTagEdit, toggeEdit] = useToggle(false)
 const refreshing = ref(false)
 const { loadRemoteData } = useMemoStore()
@@ -51,11 +53,16 @@ watchEffect(() => {
 
 <template>
   <TopBar title="MEMO">
-    <template #right>
-      <div class="input-wrapper">
-        <input type="text">
-        <Search class="input-icon" />
-      </div>
+    <template #tool>
+      <ElTooltip
+        v-if="!refreshing"
+        effect="dark"
+        content="刷新"
+        placement="bottom"
+      >
+        <Refresh class="icon hover-bg" @click.prevent="handleRefresh()" />
+      </ElTooltip>
+      <Loading v-show="refreshing" />
     </template>
     <template #sub-title>
       <div v-if="tagName" class="flex items-center">
@@ -79,65 +86,16 @@ watchEffect(() => {
         </div>
       </div>
     </template>
-    <template #tool>
-      <ElTooltip
-        v-if="!refreshing"
-        effect="dark"
-        content="刷新"
-        placement="bottom"
-      >
-        <Refresh class="icon hover-bg" @click.prevent="handleRefresh()" />
-      </ElTooltip>
-      <Loading v-show="refreshing" />
+    <!-- 搜索 -->
+    <template #right>
+      <Search />
     </template>
   </TopBar>
 </template>
 
 <style lang="scss" scoped>
-.input-wrapper {
-    max-width: 200px;
-    position: relative;
-    box-sizing: border-box;
-    input{
-      width: 100%;
-      font-size: 14px;
-    }
-    .input-icon {
-      @apply absolute top-1/2 -translate-y-1/2 left-[10px];
-      height: 40px;
-      width: 25px;
-      text-align: center;
-      transition: all 0.3s;
-      line-height: 40px;
-      height: 14px;
-      width: 14px;
-    }
-  }
-
-  input {
-    // height: 40px;
-    height: 100%;
-    outline: 0;
-    border: none;
-    background: #efefef;
-    border-radius: 8px;
-    padding: 0 30px;
-
-    &:focus,
-    &:active {
-      outline: 0;
-      box-shadow: none;
-    }
-  }
-
 .icon {
-  font-style: normal;
-  height: 18px;
-  width: 18px;
-  display: inline-block;
-  opacity: 0.8;
-  cursor: pointer;
-  @apply p-2 box-content;
+  @apply p-2 box-content h-4 w-4 block cursor-pointer opacity-80;
   &:hover {
     opacity: 1;
   }

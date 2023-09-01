@@ -1,11 +1,18 @@
 <script lang="ts" setup>
+import type { Ref } from 'vue'
+import { ElScrollbar } from 'element-plus'
 import {
   computed,
+  inject,
   toRefs,
   unref,
+  watchEffect,
 } from 'vue'
+
+import CustomScrollbar from 'custom-vue-scrollbar'
+import 'custom-vue-scrollbar/dist/style.css'
+import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
-import TextClamp from 'vue3-text-clamp'
 import { useEventBus } from '@vueuse/core'
 import MemoAction from './action.vue'
 import Tags from '@/components/ui/memo-card/tags.vue'
@@ -44,6 +51,14 @@ const { emit: busEmit } = useEventBus(MEMO_CARD)
 const showDetail = () => {
   busEmit({ action: 'open-detail-card' }, props.memo)
 }
+const cardContainerHeight = inject<Ref<number>>('cardContainerHeight') || null
+console.log('🚀 ~ file: deleted.vue:55 ~ cardContainerHeight:', cardContainerHeight)
+const memoContentMaxHeight = computed(() => {
+  if (!cardContainerHeight)
+    return '100%'
+  // 不能超过1/3屏
+  return `${cardContainerHeight.value / 3}px`
+})
 </script>
 
 <template>
@@ -56,11 +71,11 @@ const showDetail = () => {
         is-deleted
       />
     </div>
-    <TextClamp
-      class="content"
-      :text="memo.content"
-      :max-height="100"
-    />
+    <ElScrollbar :max-height="memoContentMaxHeight">
+      <div class="content">
+        <span v-html="memo.content" />
+      </div>
+    </ElScrollbar>
     <Gallery
       v-if="memo.images.length"
       :images="memo.images"

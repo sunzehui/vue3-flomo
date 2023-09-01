@@ -1,12 +1,18 @@
 <script lang="ts" setup>
+import type { Ref } from 'vue'
+import { ElScrollbar } from 'element-plus'
 import {
   computed,
+  inject,
   toRefs,
   unref,
+  watchEffect,
 } from 'vue'
+
+import CustomScrollbar from 'custom-vue-scrollbar'
+import 'custom-vue-scrollbar/dist/style.css'
 import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
-import TextClamp from 'vue3-text-clamp'
 import { useEventBus } from '@vueuse/core'
 import MemoAction from './action.vue'
 import Tags from '@/components/ui/memo-card/tags.vue'
@@ -45,10 +51,16 @@ const { emit: busEmit } = useEventBus(MEMO_CARD)
 const showDetail = () => {
   busEmit({ action: 'open-detail-card' }, props.memo)
 }
+
+const cardContainerHeight = inject<Ref<number>>('cardContainerHeight')
+const memoContentMaxHeight = computed(() => {
+  // 不能超过1/3屏
+  return `${cardContainerHeight.value / 3}px`
+})
 </script>
 
 <template>
-  <div class="card">
+  <div class="card scrollable-container">
     <div class="header relative">
       <span class="time-text cursor-pointer" @click="showDetail">{{ updateTime }}</span>
       <MemoAction
@@ -63,11 +75,12 @@ const showDetail = () => {
         fill="#333"
       />
     </div>
-    <TextClamp
-      class="content"
-      :text="memo.content"
-      :max-height="100"
-    />
+    <ElScrollbar :max-height="memoContentMaxHeight">
+      <div class="content">
+        <span v-html="memo.content" />
+      </div>
+    </ElScrollbar>
+
     <Gallery
       v-if="memo.images.length"
       :images="memo.images"
@@ -80,7 +93,7 @@ const showDetail = () => {
 
 <style scoped lang="scss">
 .card {
-  @apply bg-white px-5 py-2 duration-300 mt-2 rounded-md;
+  @apply bg-white px-5 py-2 relative duration-300 mt-2 rounded-md;
   &:hover {
     box-shadow: 0 2px 16px #dddddd;
   }
@@ -120,8 +133,27 @@ const showDetail = () => {
     font-size: 14px;
     word-break: break-all;
     white-space:pre-wrap;
+    // max-height: v-bind(memoContentMaxHeight);
+    // overflow: scroll;
   }
 
+  /* 定制滚动条样式 */
+.scrollable-container::-webkit-scrollbar {
+  width: 8px; /* 滚动条宽度 */
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 滚动条轨道的背景颜色 */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: #888; /* 滚动条滑块的背景颜色 */
+  border-radius: 4px; /* 滚动条滑块的圆角 */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+  background: #555; /* 鼠标悬停时滚动条滑块的背景颜色 */
+}
   .more ul {
     visibility: hidden;
   }

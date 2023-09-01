@@ -60,3 +60,24 @@ export const extractTags = (content: string) => {
     tag.slice(1),
   )
 }
+export const trimTag = (content: string) => {
+  // 消掉开头#
+  return escapeHtml(content).replaceAll(/#[^\s(?<!#)]+/g, '')
+}
+
+export function escapeHtml(text) {
+  return text.replace(/[&<"'>]/g, (match) => {
+    switch (match) {
+      case '&':
+        return '&amp;'
+      case '<':
+        return '&lt;'
+      case '>':
+        return '&gt;'
+      case '"':
+        return '&quot;'
+      case '\'':
+        return '&apos;'
+    }
+  })
+}

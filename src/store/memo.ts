@@ -1,29 +1,26 @@
 import { ElMessage } from 'element-plus'
 import { defineStore } from 'pinia'
-import { cloneDeep, findIndex, map, orderBy, reverse } from 'lodash-es'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import { chain, cloneDeep, findIndex, map, orderBy } from 'lodash-es'
 import { useUserStore } from './user'
 import type { Memo, tagType } from '@/types/memo'
+import type { GetListParams } from '@/api/memo'
 import {
-  ApiList as ApiArticleList,
-  ApiDelete as ApiDeleteArticle,
-  ApiSave,
-  ApiUpdate,
-  ApiUpdate as ApiUpdateArticle,
-} from '@/api/article'
+  ApiDelete as ApiDeleteMemo,
+  ApiList as ApiMemoList,
+  ApiSave as ApiSaveMemo,
+  ApiUpdate as ApiUpdateMemo,
+} from '@/api/memo'
 import { ApiList as ApiTagList, ApiUpdate as ApiUpdateTag } from '@/api/tag'
 import { CardType } from '@/types/card-type'
 import { safe2Num } from '@/utils/Tool'
+import { getUinx } from '@/utils/time'
 
-dayjs.extend(utc)
-dayjs.extend(relativeTime)
 interface StateTree {
   articleList: Memo[]
   tagList: tagType[]
   deletedMemoList: Memo[]
   activeTag: string
+  searchKeywords: string
 }
 
 export const useMemoStore = defineStore('memo', {
@@ -32,13 +29,14 @@ export const useMemoStore = defineStore('memo', {
     tagList: [],
     deletedMemoList: [],
     activeTag: '',
+    searchKeywords: '',
   }),
   actions: {
     loadRemoteData({ ...query }: any = {}) {
-      return Promise.all([this.getArticleList({ ...query }), this.getTagList()])
+      return Promise.all([this.getMemoList({ ...query }), this.getTagList()])
     },
     async loadDeletedMemo() {
-      return await ApiArticleList({ deleted: true })
+      return await ApiMemoList({ deleted: true })
         .then(r => r.data)
         .then((memoList) => {
           this.deletedMemoList = memoList
@@ -48,13 +46,14 @@ export const useMemoStore = defineStore('memo', {
       const res = await ApiTagList()
       this.tagList = res.data
     },
-    async getArticleList(query = { tag: '', deleted: false }) {
-      const res = await ApiArticleList({ ...query })
+    async getMemoList(query: Partial<GetListParams>) {
+      const res = await ApiMemoList(query)
+      this.searchKeywords = query?.content ?? ''
       this.articleList = res.data
     },
     async deleteMemo(id: number) {
       const { refreshUserInfo } = useUserStore()
-      const res = await ApiDeleteArticle(id)
+      const res = await ApiDeleteMemo(id)
       if (res.code === 0)
         ElMessage.success('删除成功')
 
@@ -67,7 +66,7 @@ export const useMemoStore = defineStore('memo', {
     },
     async recycleMemo(id: number) {
       const { refreshUserInfo } = useUserStore()
-      const res = await ApiUpdateArticle(id, {
+      const res = await ApiUpdateMemo(id, {
         recycle: true,
       })
       if (res.code === 0)
@@ -82,7 +81,7 @@ export const useMemoStore = defineStore('memo', {
     },
     async save(data: Partial<Memo>) {
       const { refreshUserInfo } = useUserStore()
-      const res = await ApiSave(data)
+      const res = await ApiSaveMemo(data)
       if (res.code === 0) {
         ElMessage.success('保存成功')
         this.getTagList()
@@ -100,7 +99,7 @@ export const useMemoStore = defineStore('memo', {
     },
     async update(id: Memo['id'], data: Partial<Memo>) {
       try {
-        const res = await ApiUpdate(id, data)
+        const res = await ApiUpdateMemo(id, data)
         if (res.code === 0) {
           this.setArticle(id, {
             type: CardType.article,
@@ -131,13 +130,13 @@ export const useMemoStore = defineStore('memo', {
       return res
     },
     async setArticleTop(articleId) {
-      const res = await ApiUpdateArticle(articleId, { is_topic: true })
+      const res = await ApiUpdateMemo(articleId, { is_topic: true })
       ElMessage.success('memo置顶成功！')
       this.setArticle(articleId, { is_topic: true })
       return res
     },
     async cancelArticleTop(articleId) {
-      const res = await ApiUpdateArticle(articleId, { is_topic: false })
+      const res = await ApiUpdateMemo(articleId, { is_topic: false })
       ElMessage.success('memo取消置顶成功！')
       this.setArticle(articleId, { is_topic: false })
       return res
@@ -164,26 +163,33 @@ export const useMemoStore = defineStore('memo', {
     },
   },
   getters: {
-    // 增强：支持排序，置顶
+    // 增强：支持排序，置顶，查询高亮
     enhancedMemoList(state) {
-      // this.
       const list = state.articleList
-      const sortedListByTime = reverse(
-        orderBy(list, (obj) => {
-          if (obj.is_topic)
-            return Number.MAX_SAFE_INTEGER
-          const createTime = safe2Num(dayjs(obj.createTime).unix())
-          return createTime ?? Number(obj.id)
-        }),
-      )
+      const sortedListByTime = orderBy(list, (obj) => {
+        if (obj.is_topic)
+          return Number.MIN_SAFE_INTEGER
+        const createTime = safe2Num(getUinx(obj.createTime))
+        return -createTime ?? -Number(obj.id)
+      })
+
       const cardStateWarpper = (obj: Memo & { type: CardType }, idx, arr) => {
         const type = obj.type ?? CardType.article
         const isLast = arr.length - 1 === idx
         return { ...obj, type, isLast }
       }
-      return map(
-        sortedListByTime, cardStateWarpper,
-      )
+
+      return sortedListByTime.map(cardStateWarpper).map((item) => {
+        if (state.searchKeywords === '')
+          return item
+        const matchRule = new RegExp(state.searchKeywords, 'ig')
+
+        item.content = item.content.replace(
+          matchRule,
+          matched => `<mark>${matched}</mark>`,
+        )
+        return item
+      })
     },
   },
 })

@@ -60,7 +60,6 @@ watch(textareaContent, () => {
   <textarea
     ref="textareaRef"
     v-model="textareaContent"
-    aria-labelledby="memo input here..."
     placeholder="memo input here..."
     name="text-input"
     @focus="emit('focus')"
@@ -147,6 +146,9 @@ textarea {
 
   &.show {
     display: block;
+  }
+  ::placeholder{
+    color: #aaa;
   }
 }
 

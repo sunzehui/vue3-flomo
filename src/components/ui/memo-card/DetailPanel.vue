@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onUnmounted, ref, unref } from 'vue'
+import { computed, onUnmounted, ref, unref } from 'vue'
 import { useClipboard, useEventBus } from '@vueuse/core'
 import { ElButton, ElDrawer, ElMessage } from 'element-plus'
 import Gallery from '@/components/ui/memo-card/gallery.vue'
@@ -35,6 +35,9 @@ onUnmounted(() => {
   off(eventHandler)
 })
 
+const memoContent = computed(() => {
+  return memo.value.content || '额，好像什么都没有！'
+})
 defineExpose({
   open,
 })
@@ -52,7 +55,7 @@ defineExpose({
         </ElButton>
       </div>
     </template>
-    <span class="memo-content">{{ memo.content || "额，好像什么都没有！" }}</span>
+    <span class="memo-content" v-html="memoContent" />
     <Gallery :images="memo.images" />
     <Tags :tags="memo.tags" class="mt-3" />
   </ElDrawer>

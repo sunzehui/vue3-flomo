@@ -2,7 +2,7 @@ import { ElMessage } from 'element-plus'
 import { nextTick, ref, toRefs, unref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Memo } from '@/types/memo'
-import { extractTags } from '@/utils/editor'
+import { extractTags, trimTag } from '@/utils/editor'
 import { EditorType } from '@/types/card-type'
 import { useMemoStore } from '@/store/memo'
 
@@ -47,7 +47,7 @@ export const useMemoEditor = () => {
     const tags = extractTags(memo.value.content)
     const article: Partial<Memo> = {
       tags,
-      content: memo.value.content,
+      content: trimTag(unref(memo).content),
       images: unref(imageList),
     }
     return article

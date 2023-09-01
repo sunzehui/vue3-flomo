@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { watchEffect } from 'vue'
+import { provide, ref, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
-import TopBar from '@/components/ui/topbar/index.vue'
+import { useElementBounding } from '@vueuse/core'
 import MemoEditor from '@/components/ui/editor/index.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import { useMemoStore } from '@/store/memo'
@@ -23,6 +23,10 @@ watchEffect(() => {
   loadRemoteData({ tag })
   refreshUserInfo()
 })
+const cardContainerRef = ref(null)
+const { x, y, top, right, bottom, left, width, height } = useElementBounding(cardContainerRef)
+
+provide('cardContainerHeight', height)
 </script>
 
 <template>
@@ -31,7 +35,7 @@ watchEffect(() => {
     <div class="input-container">
       <MemoEditor :type="EditorType.create" />
     </div>
-    <div class="card-container">
+    <div ref="cardContainerRef" class="card-container">
       <template v-for="memo of enhancedMemoList" :key="memo.id">
         <MemoCardOrEditor :memo="memo" />
       </template>
