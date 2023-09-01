@@ -15,7 +15,6 @@ export default defineComponent({
   setup(props) {
     const isEditor = computed(() => props.memo.type === CardType.editor)
     const memo = computed(() => props.memo)
-    provide('memo', memo)
 
     const component = computed(() => {
       if (!unref(memo))

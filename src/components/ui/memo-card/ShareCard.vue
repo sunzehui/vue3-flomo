@@ -84,7 +84,7 @@ const handleClose = () => {
       <div class="content">
         <span class="time">{{ localTime(createTime) }}</span>
         <span v-html="htmlContent" />
-        <div class="gallery-container">
+        <div v-if="memoData?.images?.length" class="gallery-container">
           <img
             v-for="item in memoData.images" :key="item.id" crossorigin="anonymous"
             :src="item.filePath" alt=""
