@@ -5,6 +5,7 @@ import '@/assets/styles/main.scss'
 import App from './App.vue'
 import { router } from './routes'
 import applyMiddleware from './middleware'
+
 const app = createApp(App)
 const pinia = createPinia()
 

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { provide, ref, watchEffect } from 'vue'
+import { ElEmpty, vLoading } from 'element-plus'
 import { storeToRefs } from 'pinia'
-import { useElementBounding } from '@vueuse/core'
+import { useAsyncState, useElementBounding } from '@vueuse/core'
 import MemoEditor from '@/components/ui/editor/index.vue'
 import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import { useMemoStore } from '@/store/memo'
@@ -18,13 +19,17 @@ const { enhancedMemoList } = storeToRefs(useMemoStore())
 const { loadRemoteData } = (useMemoStore())
 
 const { refreshUserInfo } = useUserStore()
+refreshUserInfo()
+
+let tag = props.tag
+const { isLoading, execute } = useAsyncState(() => loadRemoteData({ tag }), null)
 watchEffect(() => {
-  const tag = props.tag
-  loadRemoteData({ tag })
-  refreshUserInfo()
+  tag = props.tag
+  execute()
 })
+
 const cardContainerRef = ref(null)
-const { x, y, top, right, bottom, left, width, height } = useElementBounding(cardContainerRef)
+const { height } = useElementBounding(cardContainerRef)
 
 provide('cardContainerHeight', height)
 </script>
@@ -35,11 +40,14 @@ provide('cardContainerHeight', height)
     <div class="input-container">
       <MemoEditor :type="EditorType.create" />
     </div>
-    <div ref="cardContainerRef" class="card-container">
+    <div ref="cardContainerRef" v-loading="isLoading" class="card-container">
       <template v-for="memo of enhancedMemoList" :key="memo.id">
         <MemoCardOrEditor :memo="memo" />
       </template>
+
+      <ElEmpty v-if="!isLoading && enhancedMemoList.length === 0" description="0 memo" />
     </div>
+
     <DetailPanel />
     <ShareCard />
   </div>
