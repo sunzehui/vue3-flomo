@@ -15,11 +15,7 @@ watchEffect(() => {
   loadDeletedMemo()
 })
 const cardContainerRef = ref(null)
-const { x, y, top, right, bottom, left, width, height } = useElementBounding(cardContainerRef)
-watchEffect(() => {
-  console.log('🚀 ~ file: Recycle.vue:17 ~ height:', height)
-})
-
+const { height } = useElementBounding(cardContainerRef)
 provide('cardContainerHeight', height)
 </script>
 
@@ -30,6 +26,7 @@ provide('cardContainerHeight', height)
     <div class="header px-5 mb-2">
       <ElAlert title="在回收站中超过 30 天的 MEMO 将会自动删除" type="info" show-icon />
     </div>
+
     <PageBody class="flex-1 !px-0">
       <div v-if="deletedMemoList.length" ref="cardContainerRef" class="card-container">
         <template v-for="memo of deletedMemoList " :key="memo.id">
@@ -37,8 +34,6 @@ provide('cardContainerHeight', height)
         </template>
       </div>
       <ElEmpty v-if="deletedMemoList.length === 0" description="0 memo" />
-
-      <ElBacktop :right="100" :bottom="100" />
     </PageBody>
   </div>
 </template>

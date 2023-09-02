@@ -9,8 +9,6 @@ import {
   watchEffect,
 } from 'vue'
 
-import CustomScrollbar from 'custom-vue-scrollbar'
-import 'custom-vue-scrollbar/dist/style.css'
 import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 import { useEventBus } from '@vueuse/core'

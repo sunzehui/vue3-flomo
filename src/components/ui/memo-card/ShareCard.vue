@@ -4,9 +4,16 @@ import { ElDialog, ElLoading, ElMessage } from 'element-plus'
 import { toCanvas as img2Canvas } from 'html-to-image'
 import dayjs from 'dayjs'
 import { useEventBus } from '@vueuse/core'
-import Gallery from './memo-card/gallery.vue'
+import { storeToRefs } from 'pinia'
 import { MEMO_CARD } from '@/common/event-bus'
 import { localTime } from '@/utils/time'
+import { useUserStore } from '@/store/user'
+
+const { userRecord } = storeToRefs(useUserStore())
+
+const memo = computed(() => unref(userRecord)?.memoCount || 0)
+const tag = computed(() => unref(userRecord)?.tagCount || 0)
+const day = computed(() => unref(userRecord)?.day || 0)
 
 const memoRef = ref(null)
 const imgUrl = ref(null)
@@ -86,8 +93,7 @@ const handleClose = () => {
         <span v-html="htmlContent" />
         <div v-if="memoData?.images?.length" class="gallery-container">
           <img
-            v-for="item in memoData.images" :key="item.id" crossorigin="anonymous"
-            :src="item.filePath" alt=""
+            v-for="item in memoData.images" :key="item.id" crossorigin="anonymous" :src="item.filePath" alt=""
             class="rounded-sm"
           >
         </div>
@@ -95,9 +101,9 @@ const handleClose = () => {
 
       <footer>
         <span class="statistics">
-          <span class="num">0</span>
+          <span class="num">{{ day }}</span>
           Day /
-          <span class="num">0</span>
+          <span class="num">{{ memo }}</span>
           Memos</span>
 
         <span class="">✍️ by <b>{{ memoData?.user?.nickname }}</b></span>
@@ -111,14 +117,17 @@ const handleClose = () => {
   border-radius: 10px;
   overflow: hidden;
 }
+
 .memo-view .el-dialog__body {
   padding: 0;
   border-radius: 10px;
 }
-.memo-view .el-dialog__header{
+
+.memo-view .el-dialog__header {
   padding: 0px;
 }
-.memo-view .el-overlay{
+
+.memo-view .el-overlay {
   z-index: 1000 !important;
 }
 </style>
@@ -129,28 +138,31 @@ header {
   border-bottom-width: 1px;
   border-style: solid;
   border-color: #e5e7eb;
-.title{
-  font-weight: 500;
-  font-size: 20px;
-  color: #323232;
-}
-.sub-title{
-  font-size: 14px;
-  margin-left: 10px;
-  color: #999;
-  font-weight: 400;
-}
+
+  .title {
+    font-weight: 500;
+    font-size: 20px;
+    color: #323232;
+  }
+
+  .sub-title {
+    font-size: 14px;
+    margin-left: 10px;
+    color: #999;
+    font-weight: 400;
+  }
 }
 
 .content {
   display: flex;
   flex-direction: column;
   text-align: left;
-  // padding: 0 20px;
   background: white;
-
-  font-size: 20px;
+  word-break: break-all;
+  white-space: pre-wrap;
+  font-size: 14px;
   @apply py-3 px-3 w-full font-wenkai;
+
   span.time {
     color: #5f6775;
     @apply text-sm font-thin;
@@ -160,22 +172,26 @@ header {
     font-weight: 400;
   }
 }
-.gallery-container{
+
+.gallery-container {
   height: 80px;
   display: flex;
   box-sizing: content-box;
   padding: 5px 2px;
-  img{
+
+  img {
     height: 80px;
     width: 80px;
     margin-right: 10px;
   }
 }
+
 footer {
   background-color: rgb(229, 231, 235);
   width: 100%;
   box-sizing: border-box;
   @apply px-3 py-3 text-base flex justify-between;
+
   span.statistics {
     color: #5f6775;
     @apply text-sm font-thin;
@@ -183,7 +199,8 @@ footer {
     font-size: 14px;
     color: #999;
     font-weight: 400;
-    .num{
+
+    .num {
       color: #333;
     }
   }

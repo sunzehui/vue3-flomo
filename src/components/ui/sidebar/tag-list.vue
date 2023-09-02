@@ -21,13 +21,11 @@ const tagList = computed(() =>
       置顶标签
     </h4>
     <ul class="tag-list">
-      <li v-for="tag in topicTag" :key="tag.id" class="relative">
-        <Tag :link="tag.content" :is-topic="tag.is_topics">
-          {{
-            tag.content
-          }}
-        </Tag>
-      </li>
+      <Tag v-for="tag in topicTag" :key="tag.id" class="relative" :link="tag.content" :is-topic="tag.is_topics">
+        {{
+          tag.content
+        }}
+      </Tag>
     </ul>
   </div>
 
@@ -35,15 +33,13 @@ const tagList = computed(() =>
     <h4 class="tag-title">
       全部标签
     </h4>
-    <ul class="tag-list">
-      <li v-for="tag in tagList" :key="tag.id" class="relative">
-        <Tag :link="tag.content" :is-topic="tag.is_topics">
-          {{
-            tag.content
-          }}
-        </Tag>
-      </li>
-    </ul>
+    <div class="tag-list">
+      <Tag v-for="tag in tagList" :key="tag.id" :link="tag.content" :is-topic="tag.is_topics">
+        {{
+          tag.content
+        }}
+      </Tag>
+    </div>
   </div>
 </template>
 
