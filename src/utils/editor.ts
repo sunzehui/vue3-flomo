@@ -62,7 +62,7 @@ export const extractTags = (content: string) => {
 }
 export const trimTag = (content: string) => {
   // 消掉开头#
-  return escapeHtml(content).replaceAll(/#[^\s(?<!#)]+/g, '')
+  return `<p>${escapeHtml(content).replaceAll(/#[^\s(?<!#)]+/g, '')}</p>`
 }
 
 export function escapeHtml(text) {
@@ -80,4 +80,65 @@ export function escapeHtml(text) {
         return '&apos;'
     }
   })
+}
+
+export function getMemoWordCount(memoContent) {
+  if (!memoContent)
+    return 0
+  // 过滤掉 html 标签
+  const memoContentWithoutHtml = memoContent.replace(/<[^>]*>/g, '')
+
+  return memoContentWithoutHtml.length
+}
+export function mergeRanges(ranges) {
+  const mergedRanges = []
+  let currentRange = null
+  ranges.sort((a, b) => a[0] - b[0]) // Sort ranges by start index
+  for (const range of ranges) {
+    if (!currentRange) {
+      currentRange = [...range]
+    }
+    else if (range[0] <= currentRange[1]) {
+      // Overlapping ranges
+      currentRange[1] = Math.max(range[1], currentRange[1])
+      // update the text in case the range is expanded
+      const text
+          = currentRange[2].slice(0, range[0] - currentRange[0])
+          + range[2]
+          + currentRange[2].slice(range[1] - currentRange[0])
+      currentRange[2] = text
+    }
+    else {
+      // Non-overlapping range
+      mergedRanges.push(currentRange)
+      currentRange = [...range]
+    }
+  }
+  if (currentRange)
+    mergedRanges.push(currentRange)
+
+  return mergedRanges
+}
+export function renderMemoContent(pre_content, highlight_words = null) {
+  if (!pre_content)
+    return pre_content
+
+  let rendered_content = pre_content.replace(/>([^<]+)</g, (matched) => {
+    // 排除 flomoapp.com/mine/?memo_id=xxx，flomoapp.com 链接可点
+    matched = matched.replace(/(https?:\/\/([^\s<\/\#)）]+)[^\s<)）]*)/g, (matchedLink, p1, p2) => {
+      return `<a href="${p1}" target="_blank" class="blank_memo_link">${p2}</a>`
+    })
+
+    return matched
+  })
+  // rendered_content = rendered_content.replace(/>([^>^<]*)/g, (matched) => {
+  //   // 只匹配 html content
+  //   matched = matched.replace(/#([^\s<#]+)/g, '<span class="tag">#$1</span>') // 标签可点
+  //   return matched
+  // })
+  const explorer = window.navigator.userAgent.toLowerCase()
+  if (!explorer.includes('chrome') && explorer.includes('safari'))
+    rendered_content = rendered_content.replace('<p></p>', '<p>&zwnj;</p>')
+
+  return rendered_content
 }

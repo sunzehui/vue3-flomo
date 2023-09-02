@@ -21,6 +21,7 @@ import { formatDate } from '@/utils/time'
 import { useUserStore } from '@/store/user'
 
 import { MEMO_CARD } from '@/common/event-bus'
+import { renderMemoContent } from '@/utils/editor'
 
 const props = defineProps<{
   memo: Memo
@@ -74,9 +75,7 @@ const memoContentMaxHeight = computed(() => {
       />
     </div>
     <ElScrollbar :max-height="memoContentMaxHeight">
-      <div class="content">
-        <span v-html="memo.content" />
-      </div>
+      <div class="content" v-html="renderMemoContent(memo.content)" />
     </ElScrollbar>
 
     <Gallery
