@@ -62,7 +62,7 @@ export const extractTags = (content: string) => {
 }
 export const trimTag = (content: string) => {
   // 消掉开头#
-  return `<p>${escapeHtml(content).replaceAll(/#[^\s(?<!#)]+/g, '')}</p>`
+  return `${escapeHtml(content).replaceAll(/#[^\s(?<!#)]+/g, '')}`
 }
 
 export function escapeHtml(text) {
@@ -131,6 +131,7 @@ export function renderMemoContent(pre_content, highlight_words = null) {
 
     return matched
   })
+
   // rendered_content = rendered_content.replace(/>([^>^<]*)/g, (matched) => {
   //   // 只匹配 html content
   //   matched = matched.replace(/#([^\s<#]+)/g, '<span class="tag">#$1</span>') // 标签可点
@@ -140,5 +141,17 @@ export function renderMemoContent(pre_content, highlight_words = null) {
   if (!explorer.includes('chrome') && explorer.includes('safari'))
     rendered_content = rendered_content.replace('<p></p>', '<p>&zwnj;</p>')
 
+  if (!highlight_words)
+    return rendered_content
+
+  const matchRule = />([^>^<]*)/g
+  rendered_content = rendered_content.replace(
+    matchRule,
+    (matched) => {
+      return matched.replace(new RegExp(highlight_words, 'ig'), (p) => {
+        return `<mark>${p}</mark>`
+      })
+    },
+  )
   return rendered_content
 }

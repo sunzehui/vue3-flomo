@@ -22,7 +22,7 @@ const { refreshUserInfo } = useUserStore()
 refreshUserInfo()
 
 let tag = props.tag
-const { isLoading, execute } = useAsyncState(() => loadRemoteData({ tag }), null)
+const { isLoading, execute } = useAsyncState(() => loadRemoteData({ tag }), null, { immediate: false })
 watchEffect(() => {
   tag = props.tag
   execute()

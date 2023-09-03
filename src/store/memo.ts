@@ -173,23 +173,13 @@ export const useMemoStore = defineStore('memo', {
         return -createTime ?? -Number(obj.id)
       })
 
-      const cardStateWarpper = (obj: Memo & { type: CardType }, idx, arr) => {
+      const cardStateWrapper = (obj: Memo & { type: CardType }, idx, arr) => {
         const type = obj.type ?? CardType.article
         const isLast = arr.length - 1 === idx
         return { ...obj, type, isLast }
       }
 
-      return sortedListByTime.map(cardStateWarpper).map((item) => {
-        if (state.searchKeywords === '')
-          return item
-        const matchRule = new RegExp(state.searchKeywords, 'ig')
-
-        item.content = item.content.replace(
-          matchRule,
-          matched => `<mark>${matched}</mark>`,
-        )
-        return item
-      })
+      return sortedListByTime.map(cardStateWrapper)
     },
   },
 })

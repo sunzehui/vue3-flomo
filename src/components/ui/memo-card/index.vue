@@ -6,22 +6,20 @@ import {
   inject,
   toRefs,
   unref,
-  watchEffect,
 } from 'vue'
-
+import { storeToRefs } from 'pinia'
 import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 import { useEventBus } from '@vueuse/core'
 import MemoAction from './action.vue'
 import Tags from '@/components/ui/memo-card/tags.vue'
 import Gallery from '@/components/ui/memo-card/gallery.vue'
-
 import type { Memo } from '@/types/memo'
 import { formatDate } from '@/utils/time'
 import { useUserStore } from '@/store/user'
-
 import { MEMO_CARD } from '@/common/event-bus'
 import { renderMemoContent } from '@/utils/editor'
+import { useMemoStore } from '@/store/memo'
 
 const props = defineProps<{
   memo: Memo
@@ -56,6 +54,7 @@ const memoContentMaxHeight = computed(() => {
   // 不能超过1/3屏
   return `${cardContainerHeight.value / 3}px`
 })
+const { searchKeywords } = storeToRefs(useMemoStore())
 </script>
 
 <template>
@@ -75,7 +74,7 @@ const memoContentMaxHeight = computed(() => {
       />
     </div>
     <ElScrollbar :max-height="memoContentMaxHeight">
-      <div class="content" v-html="renderMemoContent(memo.content)" />
+      <div class="content" v-html="renderMemoContent(memo.content, searchKeywords)" />
     </ElScrollbar>
 
     <Gallery
