@@ -44,33 +44,32 @@ const tagList = computed(() =>
 </template>
 
 <style lang="scss" scoped>
-  .empty-topic-tag {
-    @apply text-xs my-2 text-left  bg-gray-100 rounded-lg py-2 pl-2;
-    font-size: 12px;
-    color: #9d9d9d;
-    margin: 20px 0 0;
-  }
-  .tag-title {
-    @apply text-xs my-2 text-left;
-    font-size: 12px;
-    color: #ded1b7;
-    margin: 20px 0 0;
-  }
+.empty-topic-tag {
+  @apply text-xs my-2 text-left bg-gray-100 text-regular-text rounded-lg py-2 pl-2;
+  font-size: 12px;
+  margin: 20px 0 0;
+}
+
+.tag-title {
+  @apply text-xs my-2 text-left text-list-title-text;
+  font-size: 12px;
+  margin: 20px 0 0;
+}
 
 .tag-list {
-    color: #9d9d9d;
-    font-size: 14px;
-    list-style-type: none;
-    -webkit-padding-start: 0;
-    padding-inline-start: 0;
-    margin: 8px 0 18px;
-  }
+  @apply text-regular-text;
+  font-size: 14px;
+  list-style-type: none;
+  -webkit-padding-start: 0;
+  padding-inline-start: 0;
+  margin: 8px 0 18px;
+}
 
-  .topic-tag {
-    @apply mt-4;
-  }
+.topic-tag {
+  @apply mt-4;
+}
 
-  .normal-tag {
-    @apply mt-4;
-  }
+.normal-tag {
+  @apply mt-4;
+}
 </style>

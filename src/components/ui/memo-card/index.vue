@@ -61,26 +61,14 @@ const { searchKeywords } = storeToRefs(useMemoStore())
   <div class="card scrollable-container">
     <div class="header relative">
       <span class="time-text cursor-pointer" @click="showDetail">{{ updateTime }}</span>
-      <MemoAction
-        v-if="isLogin"
-        :article="memo"
-      />
-      <Pin
-        v-show="memo.is_topic"
-        class="absolute -right-6 -top-4"
-        theme="outline"
-        size="24"
-        fill="#333"
-      />
+      <MemoAction v-if="isLogin" :article="memo" />
+      <Pin v-show="memo.is_topic" class="absolute -right-6 -top-4" theme="outline" size="24" fill="#333" />
     </div>
     <ElScrollbar :max-height="memoContentMaxHeight">
       <div class="content" v-html="renderMemoContent(memo.content, searchKeywords)" />
     </ElScrollbar>
 
-    <Gallery
-      v-if="memo.images.length"
-      :images="memo.images"
-    />
+    <Gallery v-if="memo.images.length" :images="memo.images" />
     <div class="footer">
       <Tags :tags="memo.tags" @tagClick="tagClick" />
     </div>
@@ -90,6 +78,7 @@ const { searchKeywords } = storeToRefs(useMemoStore())
 <style scoped lang="scss">
 .card {
   @apply bg-white px-5 py-2 relative duration-300 mt-2 rounded-md;
+
   &:hover {
     box-shadow: 0 2px 16px #dddddd;
   }
@@ -99,7 +88,7 @@ const { searchKeywords } = storeToRefs(useMemoStore())
     justify-content: space-between;
     align-items: center;
     line-height: 1.8em;
-    color: #8f9193;
+    @apply text-regular-text;
 
     svg {
       cursor: pointer;
@@ -112,7 +101,7 @@ const { searchKeywords } = storeToRefs(useMemoStore())
       text-decoration: none;
     }
 
-    > .more {
+    >.more {
       position: relative;
       height: 1.8em;
       padding: 0 20px;
@@ -125,31 +114,38 @@ const { searchKeywords } = storeToRefs(useMemoStore())
   }
 
   .content {
-    color: #323232;
+    @apply text-primary-text;
     font-size: 14px;
     word-break: break-all;
-    white-space:pre-wrap;
+    white-space: pre-wrap;
     // max-height: v-bind(memoContentMaxHeight);
     // overflow: scroll;
+
   }
 
   /* 定制滚动条样式 */
-.scrollable-container::-webkit-scrollbar {
-  width: 8px; /* 滚动条宽度 */
-}
+  .scrollable-container::-webkit-scrollbar {
+    width: 8px;
+    /* 滚动条宽度 */
+  }
 
-.scrollable-container::-webkit-scrollbar-track {
-  background: #f1f1f1; /* 滚动条轨道的背景颜色 */
-}
+  .scrollable-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* 滚动条轨道的背景颜色 */
+  }
 
-.scrollable-container::-webkit-scrollbar-thumb {
-  background: #888; /* 滚动条滑块的背景颜色 */
-  border-radius: 4px; /* 滚动条滑块的圆角 */
-}
+  .scrollable-container::-webkit-scrollbar-thumb {
+    background: #888;
+    /* 滚动条滑块的背景颜色 */
+    border-radius: 4px;
+    /* 滚动条滑块的圆角 */
+  }
 
-.scrollable-container::-webkit-scrollbar-thumb:hover {
-  background: #555; /* 鼠标悬停时滚动条滑块的背景颜色 */
-}
+  .scrollable-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* 鼠标悬停时滚动条滑块的背景颜色 */
+  }
+
   .more ul {
     visibility: hidden;
   }

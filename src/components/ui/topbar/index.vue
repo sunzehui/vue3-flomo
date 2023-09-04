@@ -37,12 +37,11 @@ const { isPC } = toRefs(useLayoutStore())
   }
  > span.title {
     font-size: 18px;
-    color: #5f5f5f;
-    @apply relative px-2 cursor-pointer flex-shrink-0 font-bold flex-1;
+    @apply text-secondary-text relative px-2 cursor-pointer flex-shrink-0 font-bold flex-1;
   }
 }
 .showLeftPanelBtn{
-  @apply text-gray-500 text-base mr-2 cursor-pointer;
+  @apply text-secondary-text text-base mr-2 cursor-pointer;
 }
 nav {
   display: flex;

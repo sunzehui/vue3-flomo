@@ -23,25 +23,21 @@ const { toggleLeftMenuOpen } = useLayoutStore()
 .user {
   @apply flex py-3 items-center;
   .username {
-    font-weight: bold;
     font-size: 18px;
-    color: #5f5f5f;
-    @apply cursor-pointer flex items-center flex-1;
+    @apply text-secondary-text font-bold cursor-pointer flex items-center flex-1;
     .title {
       max-width: 120px;
       overflow: hidden;
     }
     .pro {
-      color: white;
-      background: #9d9d9d;
+      @apply bg-regular-text text-white mx-1 cursor-pointer;
       font-size: 12px;
       padding: 2px 4px;
       border-radius: 4px;
-
       cursor: pointer;
-      @apply mx-1;
       &.active {
-        background: #212f4b;
+        // background: #212f4b;
+        @apply bg-black-fill;
       }
     }
   }

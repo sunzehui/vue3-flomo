@@ -1,0 +1,33 @@
+// // styles/element/index.scss
+// /* just override what you need */
+// @forward 'element-plus/theme-chalk/src/common/var.scss' with (
+//   $colors: (
+//     'primary': (
+//       'base': $primary,
+//     ),
+//     'success': (
+//       'base': $primary
+//     )
+//   ),
+//   // Message
+//   // css3 var in packages/theme-chalk/src/message.scss
+//   $message: (
+//       'bg-color': $primary,
+//       // 'border-color': getCssVar('border-color-lighter'),
+//       // 'padding': 15px 19px,
+//       // 'close-size': 16px,
+//       // 'close-icon-color': getCssVar('text-color-placeholder'),
+//       // 'close-hover-color': getCssVar('text-color-secondary'),
+//     )
+  
+  
+// );
+
+// // If you just import on demand, you can ignore the following content.
+// // if you want to import all styles:
+// // @use "element-plus/theme-chalk/src/index.scss" as *;
+
+.el-message--success{
+  --el-message-bg-color: $primary-light-1 !important;
+  --el-message-text-color: $primary !important;
+}

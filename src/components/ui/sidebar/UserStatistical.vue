@@ -36,15 +36,14 @@ const day = computed(() => unref(userRecord)?.day || 0)
 .statistical {
   @apply w-full flex justify-between;
   .num-jar {
+    @apply text-regular-text;
     .num {
       font-weight: bold;
       font-size: 24px;
       line-height: 1;
-      color: #9d9d9d;
     }
     span {
       font-size: 10px;
-      color: #9d9d9d;
       line-height: 2;
     }
   }

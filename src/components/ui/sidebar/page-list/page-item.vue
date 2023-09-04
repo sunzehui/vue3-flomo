@@ -40,8 +40,7 @@ const clickedPath = () => {
   }
 
   &.active {
-    background: #55bb8e;
-    color: white;
+    @apply bg-primary text-white;
   }
 }
 </style>

@@ -3,8 +3,10 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
+  ElMessage,
 } from 'element-plus'
 import { useEventBus } from '@vueuse/core'
+import { onMounted } from 'vue'
 import { Right as RightIcon } from '@/components/icon'
 import { useMemoStore } from '@/store/memo'
 
@@ -64,7 +66,7 @@ const reducerAction = (event: Event) => {
       <RightIcon />
     </span>
     <template #dropdown>
-      <ElDropdownMenu @click="reducerAction">
+      <ElDropdownMenu class="el-dropdown-custom" @click="reducerAction">
         <template
           v-if="isDeleted"
         >
@@ -98,3 +100,10 @@ const reducerAction = (event: Event) => {
     </template>
   </ElDropdown>
 </template>
+
+<style lang="scss" scoped>
+.el-dropdown-custom {
+  --el-dropdown-menuItem-hover-fill: $tag-fill;
+  --el-dropdown-menuItem-hover-color: $tag-text;
+}
+</style>

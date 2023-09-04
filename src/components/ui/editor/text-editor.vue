@@ -106,6 +106,9 @@ textarea {
     outline: 0;
     box-shadow: none;
   }
+   ::placeholder{
+    @apply text-placeholder;
+  }
 }
 
 .suggestion {
@@ -147,9 +150,7 @@ textarea {
   &.show {
     display: block;
   }
-  ::placeholder{
-    color: #aaa;
-  }
+
 }
 
 .fade-enter-active {

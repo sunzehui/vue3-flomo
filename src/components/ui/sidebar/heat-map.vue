@@ -53,7 +53,7 @@ defineExpose({
         <span> {{ hoveredDayMsg }} </span>
       </template>
     </ElTooltip>
-    <div v-for="(week, i) of stateGrid" :key="i" class="grid week">
+    <div v-for="(week, i) of stateGrid" :key="i" class="grid week activity-color">
       <span
         v-for="(day, j) in week"
         :key="j"
@@ -96,8 +96,6 @@ defineExpose({
   .day {
     height: 14px;
     width: 14px;
-
-    color: #d3ecdd;
     border: 1px solid transparent;
     border-radius: 2px;
     margin-bottom: 4px;
@@ -114,23 +112,23 @@ defineExpose({
   }
 }
 
-.day {
-  background: #efefef;
+.activity-color .day {
+  @apply bg-base-fill;
 
   &.today {
-    background: #55bb8e;
+    @apply bg-primary;
   }
 
   &.lightGreen {
-    background: #d3ecdd;
+    @apply bg-primary-light-1;
   }
 
   &.green {
-    background: #8ddeb5;
+    @apply bg-primary-light-2
   }
 
   &.darkGreen {
-    background: #55bb8e;
+    @apply bg-primary;
   }
 }
 </style>
