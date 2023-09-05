@@ -15,6 +15,7 @@ const { loadDeletedMemo } = useMemoStore()
 const { isLoading } = useAsyncState(loadDeletedMemo, null)
 
 const cardContainerRef = ref(null)
+
 const { height } = useElementBounding(cardContainerRef)
 provide('cardContainerHeight', height)
 </script>

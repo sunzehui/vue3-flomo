@@ -52,7 +52,6 @@ const showDetail = () => {
   busEmit({ action: 'open-detail-card' }, props.memo)
 }
 const cardContainerHeight = inject<Ref<number>>('cardContainerHeight') || null
-console.log('🚀 ~ file: deleted.vue:55 ~ cardContainerHeight:', cardContainerHeight)
 const memoContentMaxHeight = computed(() => {
   if (!cardContainerHeight)
     return '100%'
