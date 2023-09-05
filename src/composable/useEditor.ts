@@ -17,13 +17,17 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>, opt: OptionProp
     onSave: () => {},
   }
 
-  // 设置候选项active
-  watch(textareaContent, () => {
+  const resize = () => {
     if (!textareaContent.value)
       return textareaRef.value.style.height = 'auto'
     textareaRef.value.style.height = 'auto'
-    textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`
-  })
+    nextTick(() => {
+      textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`
+    })
+  }
+
+  // 设置候选项active
+  watch(textareaContent, resize)
 
   useEventListener(textareaRef, 'input', (e: InputEvent) => {
     textareaContent.value = (e.target as HTMLInputElement).value
@@ -59,5 +63,6 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>, opt: OptionProp
     onSave: (cb: () => void) => {
       cbs.onSave = cb
     },
+    resize,
   }
 }

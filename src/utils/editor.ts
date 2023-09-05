@@ -62,7 +62,10 @@ export const extractTags = (content: string) => {
 }
 export const trimTag = (content: string) => {
   // 消掉开头#
-  return `${escapeHtml(content).replaceAll(/#[^\s(?<!#)]+/g, '')}`
+  return `<p>${escapeHtml(content).replaceAll(/#[^\s(?<!#)]+/g, '')}</p>`
+}
+export const unTrim = (content: string) => {
+  return `${unescapeHtml(content)}`.replace('<p>', '').replace('</p>', '')
 }
 
 export function escapeHtml(text) {
@@ -80,6 +83,13 @@ export function escapeHtml(text) {
         return '&apos;'
     }
   })
+}
+export function unescapeHtml(text) {
+  return text.replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, '\'')
 }
 
 export function getMemoWordCount(memoContent) {
@@ -142,7 +152,7 @@ export function renderMemoContent(pre_content, highlight_words = null) {
     rendered_content = rendered_content.replace('<p></p>', '<p>&zwnj;</p>')
 
   if (!highlight_words)
-    return rendered_content
+    return (rendered_content)
 
   const matchRule = />([^>^<]*)/g
   rendered_content = rendered_content.replace(
@@ -153,5 +163,6 @@ export function renderMemoContent(pre_content, highlight_words = null) {
       })
     },
   )
-  return rendered_content
+
+  return (rendered_content)
 }

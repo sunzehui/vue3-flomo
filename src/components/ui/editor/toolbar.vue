@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { isEmpty } from 'lodash-es'
 import EmojiPicker from './emoji-picker.vue'
 import { EditorType } from '@/types/card-type'
 import ImageUpload from '@/components/ui/editor/image-upload.vue'
 import { useMemoEditor } from '@/composable/useMemoEditor'
+const props = withDefaults(defineProps<{
+  submitDisabled: boolean
+}>(), {
+  submitDisabled: true,
+})
 const emit = defineEmits([
   'addTag',
   'addEmoji',
@@ -12,13 +17,7 @@ const emit = defineEmits([
   'fileChange',
   'save',
 ])
-
 const {
-  handler: {
-    handleAddEmoji,
-    handleAddTag,
-  },
-  memo,
   editorType,
 } = useMemoEditor()
 
@@ -30,6 +29,12 @@ const handleAddImage = (event: MouseEvent) => {
 }
 const handleFileChange = (file: File) => {
   emit('fileChange', file)
+}
+const handleAddEmoji = (emoji) => {
+  emit('addEmoji', emoji)
+}
+const handleAddTag = () => {
+  emit('addTag')
 }
 const isPickerOpen = ref(false)
 const openEmojiPicker = () => {
@@ -60,7 +65,7 @@ defineExpose({
 
     <button
       class="save"
-      :disabled="isEmpty(memo?.content)"
+      :disabled="props.submitDisabled"
       @click.prevent="emit('save')"
     >
       {{ editorType === EditorType.edit as EditorType ? '保存' : '发送' }}

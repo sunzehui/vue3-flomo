@@ -19,7 +19,7 @@ const {
   shouldSuggestionShow,
   handleItemClick,
   suggestionList,
-  editor: { insertContent, onSave, textareaContent },
+  editor: { insertContent, onSave, textareaContent, resize },
 } = useSuggestion({
   suggestionRef,
   editorRef: textareaRef,
@@ -50,6 +50,7 @@ defineExpose({
   getType() {
     return props.type
   },
+  resize,
 })
 watch(textareaContent, () => {
   emit('change', textareaContent.value)

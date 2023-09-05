@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watchEffect } from 'vue'
+import { isEmpty } from 'lodash-es'
 import Editor from './text-editor.vue'
 import ToolBar from './toolbar.vue'
-import type { EditorType } from '@/types/card-type'
+import { EditorType } from '@/types/card-type'
 import type { Memo } from '@/types/memo'
 import { useMemoEditor } from '@/composable/useMemoEditor'
+import { unTrim, unescapeHtml } from '@/utils/editor'
 
 const props = defineProps<{
   memo?: Memo
@@ -20,16 +22,25 @@ const {
   loading,
   registerComponentRef,
   setEditorConfig,
+  memo,
 } = useMemoEditor()
 
 onMounted(() => {
   registerComponentRef(editorRef, toolbarRef)
+  // 编辑时会传入memo信息
   setEditorConfig({
     type: props.type,
     memo: props.memo,
   })
 })
+
 const editorFocused = ref(false)
+const initContent = computed(() => {
+  if (props.type === EditorType.edit)
+    return unTrim(props.memo.content)
+
+  return ''
+})
 </script>
 
 <template>
@@ -38,7 +49,7 @@ const editorFocused = ref(false)
       ref="editorRef"
       :suggestion-list="tagList"
       :type="type"
-      :init-content="$props.memo?.content || ''"
+      :init-content="initContent"
       @focus="editorFocused = true"
       @blur="editorFocused = false"
       @change="handler.handleEditorChange"
@@ -46,6 +57,7 @@ const editorFocused = ref(false)
     />
     <ToolBar
       ref="toolbarRef"
+      :submit-disabled="isEmpty(memo?.content)"
       @add-emoji="handler.handleAddEmoji"
       @add-tag="handler.handleAddTag"
       @save="handler.handleEditorSave"

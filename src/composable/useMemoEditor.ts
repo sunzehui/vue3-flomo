@@ -1,21 +1,21 @@
 import { ElMessage } from 'element-plus'
-import { nextTick, ref, toRefs, unref, watchEffect } from 'vue'
+import { nextTick, ref, toRaw, toRefs, unref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Memo } from '@/types/memo'
 import { extractTags, trimTag } from '@/utils/editor'
 import { EditorType } from '@/types/card-type'
 import { useMemoStore } from '@/store/memo'
 
-let editorRef = null
-let toolbarRef = null
-const memo = ref({
-  content: '',
-})
 export const useMemoEditor = () => {
+  let editorRef = null
+  let toolbarRef = null
   const loading = ref(false)
   const articleStore = useMemoStore()
   const { tagList } = toRefs(useMemoStore())
   const imageList = ref([])
+  const memo = ref({
+    content: '',
+  })
 
   let editorType = EditorType.create
 
@@ -25,13 +25,12 @@ export const useMemoEditor = () => {
   }
   const setEditorConfig = (_editorConfig) => {
     if (_editorConfig.memo)
-      memo.value = _editorConfig.memo
-
+      memo.value = toRaw(_editorConfig.memo)
     editorType = _editorConfig.type
   }
 
   const handleEditorChange = (content: string) => {
-    unref(memo).content = content
+    memo.value.content = content
   }
   const handleFileChange = (fileList: string[]) => {
     imageList.value = fileList
@@ -105,6 +104,7 @@ export const useMemoEditor = () => {
       })
     }
   })
+
   return {
     handler: {
       handleEditorChange,
