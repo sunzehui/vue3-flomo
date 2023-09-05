@@ -96,15 +96,15 @@ defineExpose({
     position: absolute;
     right: 6px;
     bottom: 4px;
-    border-color: #aaddc6;
-    background: #55bb8e;
-    color: #fff;
+    @apply bg-primary ring-primary-light-3 text-light-fill;
+    @apply dark:bg-dark-primary dark:ring-dark-primary-light-3 dark:text-dark-primary-text;
     font-size: 12px;
     display: inline-block;
     line-height: 12px;
     white-space: nowrap;
     cursor: pointer;
     border: 1px solid #dcdfe6;
+    @apply dark:border-0;
     -webkit-appearance: none;
     text-align: center;
     box-sizing: border-box;
@@ -121,8 +121,7 @@ defineExpose({
 
     &:disabled {
       cursor: not-allowed;
-      background-color: #aaddc6;
-      color: white;
+      @apply bg-disabled text-regular-text dark:text-regular-text dark:bg-dark-disabled;
     }
   }
 }

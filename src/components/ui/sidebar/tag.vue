@@ -83,15 +83,13 @@ const setTop = () => {
 .tag-wrap{
   @apply relative flex justify-between items-center w-full;
   border-radius: 5px;
-  // background-color: $primary;
   &:hover {
-    background: #efefef;
-    color: #9d9d9d;
+    @apply bg-base-fill text-regular-text;
+    @apply dark:bg-dark-base-fill dark:text-dark-regular-text;
   }
   &.active {
-    // background: #55bb8e;
-    @apply bg-primary text-white;
-    // color: white;
+    @apply bg-primary text-primary-text;
+    @apply dark:bg-dark-primary text-dark-primary-text;
   }
 }
 span.tag {

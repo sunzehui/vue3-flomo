@@ -28,19 +28,19 @@ const clickedPath = () => {
 <style scoped lang="scss">
 .item {
   @apply flex items-center cursor-pointer text-sm py-2 pl-2 rounded-md;
+  border-radius: 5px;
   .icon {
     @apply mr-2 inline-block;
     width: 1em;
   }
 
   &:hover {
-    background: #efefef;
-    border-radius: 5px;
-    color: #9d9d9d;
+    @apply bg-base-fill text-regular-text;
+    @apply dark:bg-dark-base-fill dark:text-dark-regular-text;
   }
 
   &.active {
-    @apply bg-primary text-white;
+    @apply bg-primary text-primary-text dark:bg-dark-primary dark:text-dark-primary-text;
   }
 }
 </style>

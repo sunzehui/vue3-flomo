@@ -37,7 +37,7 @@ const onSearch = async () => {
     height: 100%;
     outline: 0;
     border: none;
-    @apply bg-base-fill;
+    @apply bg-base-fill dark:bg-dark-base-fill;
     border-radius: 8px;
     @apply pl-8;
 
@@ -47,17 +47,13 @@ const onSearch = async () => {
       box-shadow: none;
     }
     &::placeholder {
-      @apply text-placeholder;
+      @apply text-placeholder dark:text-dark-placeholder;
     }
   }
 
   .input-icon {
     @apply absolute top-1/2 -translate-y-1/2 left-[10px] h-4 w-4;
     text-align: center;
-    // transition: all 0.3s;
-    // line-height: 40px;
-    // height: 14px;
-    // width: 14px;
   }
 }
 </style>

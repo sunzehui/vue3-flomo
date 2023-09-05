@@ -72,16 +72,20 @@ const initContent = computed(() => {
 
 <style lang="scss" scoped>
 .editor {
-  border: 2px solid #e8e8e8;
+  border: 1px solid #e8e8e8;
+  border: 1px solid rgba(232, 232, 232, 0.2);
+
   border-radius: 8px;
   padding: 10px;
   padding-bottom: 0;
   position: relative;
-  background: #fff;
+  @apply bg-base-fill dark:bg-dark-base-fill;
   margin: 10px 0;
   &.focused  {
-    border-color: #aaddc6;
+    // border-color: #aaddc6;
+    @apply ring-primary-light-2 dark:ring-dark-primary-light-2;
     box-shadow: 0 2px 10px #ddd;
+    @apply dark:shadow-none;
   }
 }
 .loading-box {

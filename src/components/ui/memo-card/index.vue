@@ -77,10 +77,11 @@ const { searchKeywords } = storeToRefs(useMemoStore())
 
 <style scoped lang="scss">
 .card {
-  @apply bg-white px-5 py-2 relative duration-300 mt-2 rounded-md;
+  @apply bg-base-fill dark:bg-dark-base-fill px-5 py-2 relative duration-300 mt-2 rounded-md;
 
   &:hover {
     box-shadow: 0 2px 16px #dddddd;
+    @apply dark:shadow-none;
   }
 
   .header {
@@ -114,7 +115,7 @@ const { searchKeywords } = storeToRefs(useMemoStore())
   }
 
   .content {
-    @apply text-primary-text;
+    @apply text-primary-text dark:text-dark-primary-text;
     font-size: 14px;
     word-break: break-all;
     white-space: pre-wrap;

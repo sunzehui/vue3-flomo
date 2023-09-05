@@ -5,5 +5,7 @@
   "vite.browserType": "system",
   "vite.port": 8080,
   "vite.showTerminal": true,
-  "vite.devCommand": "vite --host"
+  "vite.devCommand": "vite --host",
+  "css.customData": [".vscode/tailwind.json"],
+  "css.lint.unknownAtRules": "ignore"
 }

@@ -45,19 +45,21 @@ const tagList = computed(() =>
 
 <style lang="scss" scoped>
 .empty-topic-tag {
-  @apply text-xs my-2 text-left bg-gray-100 text-regular-text rounded-lg py-2 pl-2;
+  @apply text-xs my-2 text-left bg-primary-light-1 text-regular-text rounded-lg py-2 pl-2;
+  @apply dark:text-regular-text dark:bg-dark-light-fill;
   font-size: 12px;
   margin: 20px 0 0;
 }
 
 .tag-title {
   @apply text-xs my-2 text-left text-list-title-text;
+  @apply dark:text-dark-list-title-text;
   font-size: 12px;
   margin: 20px 0 0;
 }
 
 .tag-list {
-  @apply text-regular-text;
+  @apply text-regular-text dark:text-dark-regular-text;
   font-size: 14px;
   list-style-type: none;
   -webkit-padding-start: 0;

@@ -24,20 +24,20 @@ const { toggleLeftMenuOpen } = useLayoutStore()
   @apply flex py-3 items-center;
   .username {
     font-size: 18px;
-    @apply text-secondary-text font-bold cursor-pointer flex items-center flex-1;
+    @apply text-secondary-text dark:text-dark-secondary-text font-bold cursor-pointer flex items-center flex-1;
     .title {
       max-width: 120px;
       overflow: hidden;
     }
     .pro {
-      @apply bg-regular-text text-white mx-1 cursor-pointer;
+      @apply bg-regular-text text-white dark:bg-dark-regular-text mx-1 cursor-pointer;
       font-size: 12px;
       padding: 2px 4px;
       border-radius: 4px;
       cursor: pointer;
       &.active {
         // background: #212f4b;
-        @apply bg-black-fill;
+        @apply bg-black-fill dark:bg-dark-black-fill;
       }
     }
   }
