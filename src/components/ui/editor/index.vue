@@ -79,20 +79,18 @@ const initContent = computed(() => {
   padding: 10px;
   padding-bottom: 0;
   position: relative;
-  @apply bg-base-fill dark:bg-dark-base-fill;
+  @apply bg-base-fill;
   margin: 10px 0;
   &.focused  {
-    // border-color: #aaddc6;
-    @apply ring-primary-light-2 dark:ring-dark-primary-light-2;
     box-shadow: 0 2px 10px #ddd;
-    @apply dark:shadow-none;
+    @apply ring-primary-light-2 dark:shadow-none;
   }
 }
 .loading-box {
   display: flex;
   height: 100%;
   width: 100%;
-  background: white;
+  background: var(--flomo-defalut-bg);
   position: absolute;
   top: 0;
   left: 0;

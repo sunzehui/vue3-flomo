@@ -1,0 +1,68 @@
+@mixin lightVars{
+  --flomo-defalut-bg: #fafafa;
+   --flomo-primary: #55bb8e;
+  --flomo-primary-light-1: #d3ecdd;
+  --flomo-primary-light-2: #8ddeb5;
+  --flomo-primary-light-3: #aaddc6;
+  --flomo-list-title-text: #ded1b7;
+  --flomo-tag-text: #5783f7;
+  --flomo-tag-fill: #eef3fe;
+  --flomo-dark-fill-1: #212f4b;
+  --flomo-dark-fill-2: #efefef;
+  --flomo-base-fill: #fff;
+  --flomo-light-fill: #fafafa;
+  --flomo-placeholder: #aaaaaa;
+  --flomo-secondary-text: #5f5f5f;
+  --flomo-regular-text: #9d9d9d;
+  --flomo-primary-text: #323232;
+  --flomo-disabled: #aaddc6;
+  --flomo-light-text: #ffffff
+}
+//  'fill': '#121212',
+
+
+@mixin darkVars{
+  --flomo-defalut-bg: #121212;
+  --flomo-primary: #397354;
+  --flomo-primary-light-1: #475446;
+  --flomo-primary-light-2: #5d795c;
+  --flomo-primary-light-3: #aaddc6;
+
+  --flomo-list-title-text: #fff;
+  --flomo-tag-text: #2b88d8;
+  --flomo-tag-fill: #3a4359;
+  
+  --flomo-dark-fill-1: #3d3d3d;
+  --flomo-dark-fill-2: #3d3d3d;
+
+  --flomo-base-fill: #202020;
+  --flomo-light-fill: #5f5f5f;
+  --flomo-placeholder: #aaa;
+  --flomo-secondary-text: #5f5f5f;
+  --flomo-regular-text: #9d9d9d;
+  --flomo-primary-text: #d9d9d9;
+  --flomo-disabled: rgba(255,255,255,.1);
+  
+  --flomo-light-text: #ffffff
+}
+:root{
+  @include lightVars;
+}
+
+html.light {
+  @include lightVars;
+}
+html.dark {
+  @include darkVars;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    @include darkVars;
+  }
+}
+@media (prefers-color-scheme: light) {
+  html:not(.dark) {
+    @include lightVars;
+  }
+}

@@ -57,9 +57,9 @@ const handleLogout = () => {
             昵称：
           </span>
           <div class="input-wrap w-26 mr-2">
-            <ElInput v-model="nickname" type="text" class="h-8" size="small" placeholder="浮墨用户" />
+            <ElInput v-model="nickname" type="text" size="small" placeholder="浮墨用户" />
           </div>
-          <ElButton type="default" @click="handleSave">
+          <ElButton type="default" size="small" @click="handleSave">
             保存
           </ElButton>
         </div>
@@ -71,10 +71,10 @@ const handleLogout = () => {
             <ElInput
               :value="shareLink"
               disabled
-              type="text" class="h-8" size="small" placeholder="link"
+              type="text" size="small" placeholder="link"
             />
           </div>
-          <ElButton type="default" @click="handleCopyLink">
+          <ElButton type="default" size="small" @click="handleCopyLink">
             复制
           </ElButton>
         </div>
@@ -84,7 +84,7 @@ const handleLogout = () => {
           账号操作
         </div>
         <div class="info-item flex items-center">
-          <ElButton type="danger" @click="handleLogout">
+          <ElButton type="danger" size="small" @click="handleLogout">
             退出登录
           </ElButton>
         </div>
@@ -96,27 +96,27 @@ const handleLogout = () => {
 <style lang="scss" scoped>
 .page-profile{
   .page-title{
-      color: #333;
-      @apply text-base font-bold;
+      // color: #333;
+    @apply text-primary-text font-bold;
   }
 
   .card{
     border-radius: 4px;
-    background-color: #fff;
+    // background-color: #fff;
+    @apply bg-base-fill;
     .card-title{
-      @apply text-sm font-thin pt-4 text-neutral-500;
+      @apply text-sm font-thin text-neutral-500;
     }
  }
   .user-info{
-      font-size: 16px;
+      font-size: 12px;
       font-weight: 500;
       display: flex;
       flex-direction: column;
       @apply py-3 px-2;
 
       .info-item{
-        @apply mt-2;
-        display: flex;
+        @apply mt-2 flex items-center;
       }
   }
 }

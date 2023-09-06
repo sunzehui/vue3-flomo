@@ -37,7 +37,9 @@ const username = useVModel(props, 'modelValue', emit)
 
 <style scoped lang="scss">
 .flomo-input {
-  @apply appearance-none relative block w-full px-3 py-2 border border-gray-200 placeholder-gray-300 text-gray-900 rounded-md sm:text-sm h-10;
+  @apply appearance-none relative block h-10 w-full px-3 py-2;
+  @apply border border-gray-200 placeholder-gray-300 text-gray-900;
+  @apply rounded-md sm:text-sm;
   &:on-active {
     @apply focus:outline-white focus:ring-indigo-500 focus:border-indigo-500 focus:z-10;
   }

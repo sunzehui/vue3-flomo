@@ -37,7 +37,7 @@ const onSearch = async () => {
     height: 100%;
     outline: 0;
     border: none;
-    @apply bg-base-fill dark:bg-dark-base-fill;
+    @apply bg-dark-fill-2 ;
     border-radius: 8px;
     @apply pl-8;
 
@@ -47,7 +47,7 @@ const onSearch = async () => {
       box-shadow: none;
     }
     &::placeholder {
-      @apply text-placeholder dark:text-dark-placeholder;
+      @apply text-placeholder ;
     }
   }
 

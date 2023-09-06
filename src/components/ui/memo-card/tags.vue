@@ -22,14 +22,12 @@ const emit = defineEmits(['tagClick'])
 
 .tag-view>li {
   @apply mx-1 inline-block h-full cursor-pointer text-tag-text bg-tag-fill;
-  @apply dark:text-dark-tag-text dark:bg-dark-tag-fill;
   padding: 4px;
   font-size: 12px;
   border-radius: 3px;
 
   &:hover {
     @apply text-tag-fill bg-tag-text;
-    @apply dark:text-tag-fill dark:bg-dark-disabled;
   }
 }
 </style>

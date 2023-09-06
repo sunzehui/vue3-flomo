@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ElConfigProvider } from 'element-plus'
+import { useDark } from '@vueuse/core'
+useDark()
 </script>
 
 <template>

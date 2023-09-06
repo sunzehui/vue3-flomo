@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import 'element-plus/theme-chalk/el-overlay.css' // 遮罩层样式
+import 'element-plus/theme-chalk/dark/css-vars.css'
 import { createPinia } from 'pinia'
 import '@/assets/styles/main.scss'
 import App from './App.vue'

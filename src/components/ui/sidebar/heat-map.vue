@@ -113,22 +113,22 @@ defineExpose({
 }
 
 .activity-color .day {
-  @apply bg-base-fill dark:bg-dark-base-fill;
+  @apply bg-dark-fill-2;
 
   &.today {
-    @apply bg-primary dark:bg-dark-primary;
+    @apply bg-primary ;
   }
 
   &.lightGreen {
-    @apply bg-primary-light-1 dark:bg-dark-primary-light-1;
+    @apply bg-primary-light-1 ;
   }
 
   &.green {
-    @apply bg-primary-light-2 dark:bg-dark-primary-light-2
+    @apply bg-primary-light-2
   }
 
   &.darkGreen {
-    @apply bg-primary dark:bg-dark-primary;
+    @apply bg-primary ;
   }
 }
 </style>

@@ -93,9 +93,9 @@ textarea {
   width: 100%;
   overflow-y: scroll;
 
-  @apply bg-base-fill dark:bg-dark-base-fill;
+  @apply bg-base-fill ;
 
-  @apply text-primary-text dark:text-dark-primary-text;
+  @apply text-primary-text ;
   &::-webkit-scrollbar {
     display: none;
   }

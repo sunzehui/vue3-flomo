@@ -35,12 +35,11 @@ const clickedPath = () => {
   }
 
   &:hover {
-    @apply bg-base-fill text-regular-text;
-    @apply dark:bg-dark-base-fill dark:text-dark-regular-text;
+    @apply bg-dark-fill-2 text-regular-text;
   }
 
   &.active {
-    @apply bg-primary text-primary-text dark:bg-dark-primary dark:text-dark-primary-text;
+    @apply bg-primary text-light-text ;
   }
 }
 </style>

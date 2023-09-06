@@ -47,8 +47,8 @@ const setTop = () => {
 </script>
 
 <template>
-  <div class="tag-wrap" :class="{ active: isClickMe }">
-    <span class="tag" @click.prevent="handleClick">
+  <div class="tag-wrap" :class="{ active: isClickMe }" @click.prevent="handleClick">
+    <span class="tag">
       <svg
         class="sharp-icon"
         width="18"
@@ -81,22 +81,19 @@ const setTop = () => {
 
 <style lang="scss" scoped>
 .tag-wrap{
-  @apply relative flex justify-between items-center w-full;
+  @apply relative flex justify-between items-center w-full cursor-pointer;
   border-radius: 5px;
   &:hover {
-    @apply bg-base-fill text-regular-text;
-    @apply dark:bg-dark-base-fill dark:text-dark-regular-text;
+    @apply bg-dark-fill-2 text-regular-text;
   }
   &.active {
-    @apply bg-primary text-primary-text;
-    @apply dark:bg-dark-primary text-dark-primary-text;
+    @apply bg-primary text-light-text;
   }
 }
 span.tag {
   line-height: 40px;
   display: flex;
   align-items: center;
-  cursor: pointer;
   user-select: none;
   border-radius: 0.375rem;
   padding-left: 0.5rem;

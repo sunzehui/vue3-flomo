@@ -106,7 +106,7 @@ span > label {
 }
 .line {
   opacity: 0.5;
-  @apply mx-1 text-black-fill dark:text-dark-black-fill;
+  @apply mx-1 text-dark-fill-1 ;
 }
 
 .tagEdit {

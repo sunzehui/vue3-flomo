@@ -36,7 +36,7 @@ const day = computed(() => unref(userRecord)?.day || 0)
 .statistical {
   @apply w-full flex justify-between;
   .num-jar {
-    @apply text-regular-text dark:text-dark-regular-text;
+    @apply text-regular-text ;
     .num {
       font-weight: bold;
       font-size: 24px;

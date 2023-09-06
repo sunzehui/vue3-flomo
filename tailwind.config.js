@@ -5,6 +5,7 @@ const colors = require('tailwindcss/colors')
 module.exports = {
   mode: 'jit',
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -14,47 +15,24 @@ module.exports = {
     },
     colors: {
       ...colors,
-      'primary': '#55bb8e',
-      'primary-light-1': '#d3ecdd',
-      'primary-light-2': '#8ddeb5',
-      'primary-light-3': '#aaddc6',
+      'primary': 'var(--flomo-primary)',
+      'primary-light-1': 'var(--flomo-primary-light-1)',
+      'primary-light-2': 'var(--flomo-primary-light-2)',
+      'primary-light-3': 'var(--flomo-primary-light-3)',
+      'list-title-text': 'var(--flomo-list-title-text)',
+      'tag-text': 'var(--flomo-tag-text)',
+      'tag-fill': 'var(--flomo-tag-fill)',
+      'base-fill': 'var(--flomo-base-fill)',
+      'dark-fill-1': 'var(--flomo-dark-fill-1)',
+      'dark-fill-2': 'var(--flomo-dark-fill-2)',
 
-      'list-title-text': '#ded1b7',
-      'tag': {
-        text: '#5783f7',
-        fill: '#eef3fe',
-      },
-      'black-fill': '#212f4b',
-      'base-fill': '#efefef',
-      'light-fill': '#fafafa',
-      'placeholder': '#aaaaaa',
-      'secondary-text': '#5f5f5f',
-      'regular-text': '#9d9d9d',
-      'primary-text': '#323232',
-      'disabled': '#aaddc6',
-      'dark': {
-        'fill': '#121212',
-        'primary': '#397354',
-        'primary-light-1': '#475446',
-        'primary-light-2': '#5d795c',
-        'primary-light-3': '#aaddc6',
-
-        'list-title-text': '#fff',
-        'tag': {
-          text: '#2b88d8',
-          fill: '#3a4359',
-        },
-        'base-fill': '#202020',
-        'black-fill': '#3d3d3d',
-        // 'black-fill': '#212f4b',
-        'light-fill': '#5f5f5f',
-        'placeholder': '#aaa',
-        'secondary-text': '#5f5f5f',
-        'regular-text': '#9d9d9d',
-        'primary-text': '#d9d9d9',
-
-        'disabled': 'rgba(255,255,255,.1)',
-      },
+      'light-fill': 'var(--flomo-light-fill)',
+      'placeholder': 'var(--flomo-placeholder)',
+      'secondary-text': 'var(--flomo-secondary-text)',
+      'regular-text': 'var(--flomo-regular-text)',
+      'primary-text': 'var(--flomo-primary-text)',
+      'disabled': 'var(--flomo-disabled)',
+      'light-text': 'var(--flomo-light-text)',
     },
   },
   plugins: [

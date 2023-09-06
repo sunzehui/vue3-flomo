@@ -96,8 +96,7 @@ defineExpose({
     position: absolute;
     right: 6px;
     bottom: 4px;
-    @apply bg-primary ring-primary-light-3 text-light-fill;
-    @apply dark:bg-dark-primary dark:ring-dark-primary-light-3 dark:text-dark-primary-text;
+    @apply bg-primary ring-primary-light-3 text-light-text;
     font-size: 12px;
     display: inline-block;
     line-height: 12px;
@@ -121,7 +120,7 @@ defineExpose({
 
     &:disabled {
       cursor: not-allowed;
-      @apply bg-disabled text-regular-text dark:text-regular-text dark:bg-dark-disabled;
+      @apply bg-disabled text-light-text dark:border-0;
     }
   }
 }

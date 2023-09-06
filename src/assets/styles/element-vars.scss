@@ -28,6 +28,6 @@
 // // @use "element-plus/theme-chalk/src/index.scss" as *;
 
 .el-message--success{
-  --el-message-bg-color: $primary-light-1 !important;
-  --el-message-text-color: $primary !important;
+  --el-message-bg-color: var(--flomo-primary-light-2) !important;
+  --el-message-text-color: var(--flomo-light-text) !important;
 }
