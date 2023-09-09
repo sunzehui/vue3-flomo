@@ -41,10 +41,17 @@ const initContent = computed(() => {
 
   return ''
 })
+const handleMouse = (e) => {
+  const target = e.target as HTMLElement
+  if (target.tagName !== 'TEXTAREA') {
+    e.preventDefault()
+    return false
+  }
+}
 </script>
 
 <template>
-  <div class="editor" :class="{ focused: editorFocused }">
+  <div class="editor" :class="{ focused: editorFocused }" @mousedown="handleMouse">
     <Editor
       ref="editorRef"
       :suggestion-list="tagList"

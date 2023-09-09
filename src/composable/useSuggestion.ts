@@ -1,61 +1,53 @@
 import type { MaybeRef, Ref } from 'vue'
-import { computed, ref, unref, watchEffect } from 'vue'
+import { computed, nextTick, ref, unref, watchEffect } from 'vue'
 
-import { onClickOutside, useEventListener } from '@vueuse/core'
-import { isEmpty } from 'lodash-es'
+import { unrefElement, useElementBounding, useElementSize, useEventListener } from '@vueuse/core'
+import { autoUpdate, useFloating } from '@floating-ui/vue'
 import { useEditor } from './useEditor'
 import type { tagType } from '@/types/memo'
+import { getCursorPos } from '@/utils/editor'
+import type SuggestionList from '@/components/ui/editor/suggestion-list.vue'
 import { px2number } from '@/utils/Tool'
-import { whenWatch } from '@/utils/when'
-
-type pxNum = number | string
 
 interface SuggestionParams {
-  suggestionRef: Ref<HTMLDivElement>
+  suggestionRef: Ref<InstanceType<typeof SuggestionList>>
   editorRef: Ref<HTMLTextAreaElement>
   suggestionList?: MaybeRef<tagType[]>
-  editorCfg: any
 }
 export function useSuggestion({
   suggestionRef = ref(null),
   editorRef = ref(null),
-  editorCfg = {},
   suggestionList = ref([]),
 }: SuggestionParams) {
   const partialPatternRef = ref('')
+  const isSuggestionShow = ref(false)
   const filteredList = computed(() => {
     const partialValue = unref(partialPatternRef).replace('#', '')
     const list = unref(suggestionList)
-    return partialValue ? list.filter(tag => tag.content.includes(partialValue)) : list
+
+    const matched = partialValue
+      ? list.filter((tag) => {
+        if (!partialValue)
+          return true
+        return tag.content.startsWith(partialValue)
+      })
+      : list
+
+    return matched
   })
 
-  const editorHook = useEditor(editorRef, editorCfg)
-
+  const editorHook = useEditor(editorRef)
+  const cursorRef = ref({
+    x: 0,
+    y: 0,
+    height: 0,
+    containerWidth: 0,
+  })
   // 隐藏/显示联想框
-  const setSuggestionShow = () => {
-    const { x, y, containerWidth, containerHeight } = editorHook.computeSelectPos()
-    const offsetX = 15
-    const offsetY = 22
-    // 防止挡字，加点偏移
-    let offsetLeft: pxNum = `${x + offsetX}px`
-    let offsetTop: pxNum = `${y + offsetY}px`
-    // 右边如果放不下联想框则放到左边
-
-    if (containerWidth - px2number(offsetLeft) < 150)
-      offsetLeft = `calc( ${offsetLeft} + -50% )`
-
-    if (px2number(offsetTop) > containerHeight)
-      offsetTop = `${containerHeight + offsetY}px`
-
-    suggestionRef.value.style.top = `${offsetTop}`
-    suggestionRef.value.style.left = `${offsetLeft}`
+  const setSuggestionShow = async (show = true) => {
+    isSuggestionShow.value = show
     return false
   }
-
-  // 只有当tag有且设置show为true时才显示
-
-  const shouldSuggestionShow = computed(() => !isEmpty(unref(filteredList)) && unref(partialPatternRef).length)
-  whenWatch(shouldSuggestionShow, setSuggestionShow)
 
   // 设置候选项active
   let activeTagIdx: number | null = null
@@ -70,57 +62,103 @@ export function useSuggestion({
   }
 
   const onKeyDownEvent = (event: KeyboardEvent) => {
-    // 仅当联想菜单展示时
-    if (!shouldSuggestionShow.value)
-      return
-
     const key = event.key
-    if (['ArrowUp', 'Enter', ' ', 'ArrowDown'].includes(key)) {
+
+    if (['ArrowUp', 'Enter', 'ArrowDown'].includes(key)) {
+      // 仅当联想菜单展示时
+      if (!isSuggestionShow.value)
+        return
+
       event.stopPropagation()
       event.preventDefault()
+      // 当输入“上，下“方向键时切换active标签
+      if (key === 'ArrowUp') {
+        setItemActive(-1)
+        return false
+      }
+      else if (key === 'ArrowDown') {
+        setItemActive(+1)
+        return false
+      }
+      // 敲回车选中
+      else if (activeTagIdx !== null && (key === 'Enter')) {
+        const activeItem = unref(filteredList)[activeTagIdx]
+        if (activeItem) {
+          const { value: partial } = partialPatternRef
+          const leftContent = `${activeItem.content.slice(partial.length - 1)} `
+          editorHook.insertContent(leftContent)
+          // partialPatternRef.value = ''
+          nextTick(() => {
+            // suggestionControl()
+            setSuggestionShow(false)
+          })
+        }
+        else {
+          setSuggestionShow(false)
+        }
+        return false
+      }
     }
-
-    // 当输入“上，下“方向键时切换active标签
-    if (key === 'ArrowUp') {
-      setItemActive(-1)
-      return false
+    else {
+      suggestionControl()
     }
-    else if (key === 'ArrowDown') {
-      setItemActive(+1)
-      return false
-    }
-    // 敲回车选中
-    if (activeTagIdx !== null && (key === 'Enter' || key === ' ')) {
-      const activeItem = unref(filteredList)[activeTagIdx]
-      const { value: partial } = partialPatternRef
-      const leftContent = `${activeItem.content.slice(partial.length - 1)} `
-      editorHook.insertContent(leftContent)
-      partialPatternRef.value = ''
-    }
-    syncPartialPattern()
   }
 
-  // 计算#后面的内容
-  function syncPartialPattern() {
-    setTimeout(() => {
-      const { value: inputValue } = unref(editorRef)
-      const { selectionEnd } = unref(editorRef)
-      for (let i = selectionEnd - 1; i >= 0; --i) {
-        const char = inputValue[i]
-        if (char === '#') {
-          partialPatternRef.value = `#${inputValue.slice(i + 1, selectionEnd)}`
-          return
-        }
+  function visibleControl() {
+    if (!unref(editorRef))
+      return false
+    const { selectionEnd } = unref(editorRef)
+    const isFocus = selectionEnd !== null
+
+    const isActive = unref(editorRef) === document.activeElement
+    if (!isFocus || !isActive)
+      return setSuggestionShow(false)
+    const { value: inputValue } = unref(editorRef)
+    for (let i = selectionEnd - 1; i >= 0; --i) {
+      const char = inputValue[i]
+      if (char === '#') {
+        setSuggestionShow(true)
+        partialPatternRef.value = `#${inputValue.slice(i + 1, selectionEnd)}`
+        return false
       }
+    }
+
+    setSuggestionShow(false)
+  }
+  watchEffect(() => {
+    if (!unref(filteredList).length)
+      setSuggestionShow(false)
+  })
+  function syncPosisiton() {
+    if (editorRef.value == null || suggestionRef.value == null)
+      return
+    const cursor = unref(cursorRef)
+
+    let left = `${cursor.x}px`
+    const top = `${cursor.y + cursor.height}px`
+    const listWidth = suggestionRef.value.getWidth()
+
+    if (cursor.containerWidth - cursor.x < listWidth)
+      left = `${cursor.x - listWidth}px`
+
+    suggestionRef.value.syncPostion({
+      left, top,
+    })
+  }
+  function suggestionControl() {
+    setTimeout(() => {
+      cursorRef.value = getCursorPos(editorRef)
+      visibleControl()
+      nextTick(syncPosisiton)
     }, 0)
   }
 
   useEventListener(editorRef, 'keydown', onKeyDownEvent)
-  useEventListener(editorRef, 'focus', () => syncPartialPattern())
-  useEventListener(editorRef, 'input', syncPartialPattern)
-
-  // onClickOutside(editorRef, () => partialPatternRef.value = '')
-
+  useEventListener(editorRef, 'focus', suggestionControl)
+  useEventListener(editorRef, 'blur', () => {
+    setSuggestionShow(false)
+  })
+  useEventListener(editorRef, 'mousedown', suggestionControl)
   const handleItemClick = ($event: Event) => {
     const target = ($event.target as HTMLSpanElement)
     if (target instanceof HTMLSpanElement) {
@@ -134,7 +172,7 @@ export function useSuggestion({
   }
 
   return {
-    shouldSuggestionShow,
+    isSuggestionShow,
     handleItemClick,
     suggestionList: filteredList,
     editor: editorHook,

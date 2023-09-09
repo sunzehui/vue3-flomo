@@ -1,17 +1,9 @@
 import type { Ref } from 'vue'
-import { nextTick, ref, watch, watchEffect } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import { computeSelectPos } from '@/utils/editor'
-import { useMemoStore } from '@/store/memo'
-import { EditorType } from '@/types/card-type'
 
-interface OptionProp {
-  type: EditorType
-}
-
-export function useEditor(textareaRef: Ref<HTMLTextAreaElement>, opt: OptionProp = {
-  type: EditorType.create,
-}) {
+export function useEditor(textareaRef: Ref<HTMLTextAreaElement>) {
   const textareaContent = ref('')
   const cbs = {
     onSave: () => {},
@@ -51,7 +43,7 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>, opt: OptionProp
     })
   }
   useEventListener(textareaRef, 'keydown', (event: KeyboardEvent) => {
-    if (event.key == 'Enter' && event.ctrlKey) {
+    if (event.key === 'Enter' && event.ctrlKey) {
       cbs.onSave()
       textareaContent.value = ''
     }
@@ -59,10 +51,12 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>, opt: OptionProp
   return {
     textareaContent,
     insertContent,
-    computeSelectPos: () => computeSelectPos(textareaRef),
     onSave: (cb: () => void) => {
       cbs.onSave = cb
     },
     resize,
+    blur: () => {
+      textareaRef.value?.blur()
+    },
   }
 }

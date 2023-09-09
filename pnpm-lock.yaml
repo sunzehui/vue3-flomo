@@ -8,6 +8,12 @@ dependencies:
   '@element-plus/icons-vue':
     specifier: ^2.0.10
     version: registry.npmmirror.com/@element-plus/icons-vue@2.0.10(vue@3.3.4)
+  '@floating-ui/dom':
+    specifier: ^1.5.1
+    version: 1.5.1
+  '@floating-ui/vue':
+    specifier: ^1.0.2
+    version: 1.0.2(vue@3.3.4)
   '@icon-park/vue-next':
     specifier: ^1.4.2
     version: registry.npmmirror.com/@icon-park/vue-next@1.4.2(vue@3.3.4)
@@ -1905,6 +1911,43 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@floating-ui/core@0.7.3:
+    resolution: {integrity: sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg==}
+    dev: false
+
+  /@floating-ui/core@1.4.1:
+    resolution: {integrity: sha512-jk3WqquEJRlcyu7997NtR5PibI+y5bi+LS3hPmguVClypenMsCY3CBa3LAQnozRCtCrYWSEtAdiskpamuJRFOQ==}
+    dependencies:
+      '@floating-ui/utils': 0.1.1
+    dev: false
+
+  /@floating-ui/dom@0.5.3:
+    resolution: {integrity: sha512-vpjWB1uC7rajvgA58uzlJZgtWqrdDQLw+XVA3w63ZTmsWwRmVd0Gl5Dy9VMAViI9cP7hBWaJt23Jy3AVgVYnoQ==}
+    dependencies:
+      '@floating-ui/core': 0.7.3
+    dev: false
+
+  /@floating-ui/dom@1.5.1:
+    resolution: {integrity: sha512-KwvVcPSXg6mQygvA1TjbN/gh///36kKtllIF8SUm0qpFj8+rvYrpvlYdL1JoA71SHpDqgSSdGOSoQ0Mp3uY5aw==}
+    dependencies:
+      '@floating-ui/core': 1.4.1
+      '@floating-ui/utils': 0.1.1
+    dev: false
+
+  /@floating-ui/utils@0.1.1:
+    resolution: {integrity: sha512-m0G6wlnhm/AX0H12IOWtK8gASEMffnX08RtKkCgTdHb9JpHKGloI7icFfLg9ZmQeavcvR0PKmzxClyuFPSjKWw==}
+    dev: false
+
+  /@floating-ui/vue@1.0.2(vue@3.3.4):
+    resolution: {integrity: sha512-sImlAl9mAoCKZLNlwWz2P2ZMJIDlOEDXrRD6aD2sIHAka1LPC+nWtB+D3lPe7IE7FGWSbwBPTnlSdlABa3Fr0A==}
+    dependencies:
+      '@floating-ui/dom': 1.5.1
+      vue-demi: 0.14.6(vue@3.3.4)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: false
 
   /@jridgewell/gen-mapping@0.1.1:
     resolution: {integrity: sha512-sQXCasFk+U8lWYEe66WxRDOE9PjVz4vSM51fTu3Hw+ClTpUSQb718772vH3pyS5pShp6lvQM7SxgIDXXXmOX7w==}
@@ -4301,20 +4344,6 @@ packages:
       - supports-color
     dev: true
 
-  registry.npmmirror.com/@floating-ui/core@0.7.3:
-    resolution: {integrity: sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@floating-ui/core/-/core-0.7.3.tgz}
-    name: '@floating-ui/core'
-    version: 0.7.3
-    dev: false
-
-  registry.npmmirror.com/@floating-ui/dom@0.5.3:
-    resolution: {integrity: sha512-vpjWB1uC7rajvgA58uzlJZgtWqrdDQLw+XVA3w63ZTmsWwRmVd0Gl5Dy9VMAViI9cP7hBWaJt23Jy3AVgVYnoQ==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@floating-ui/dom/-/dom-0.5.3.tgz}
-    name: '@floating-ui/dom'
-    version: 0.5.3
-    dependencies:
-      '@floating-ui/core': registry.npmmirror.com/@floating-ui/core@0.7.3
-    dev: false
-
   registry.npmmirror.com/@headlessui/vue@1.6.4(vue@3.3.4):
     resolution: {integrity: sha512-axZMcfRLNuwHESPMgDb0Vj7xxlNPmsPl77pvoRZGzJh7lRdRic9kC/qbVM8G36OpIJRZzqrlADLQ2JIObhQjBg==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@headlessui/vue/-/vue-1.6.4.tgz}
     id: registry.npmmirror.com/@headlessui/vue/1.6.4
@@ -4693,7 +4722,7 @@ packages:
       '@vueuse/metadata': registry.npmmirror.com/@vueuse/metadata@8.7.4
       '@vueuse/shared': registry.npmmirror.com/@vueuse/shared@8.7.4(vue@3.3.4)
       vue: 3.3.4
-      vue-demi: registry.npmmirror.com/vue-demi@0.13.1(vue@3.3.4)
+      vue-demi: 0.14.6(vue@3.3.4)
     dev: false
 
   registry.npmmirror.com/@vueuse/core@9.6.0(vue@3.3.4):
@@ -5266,7 +5295,7 @@ packages:
     dependencies:
       '@ctrl/tinycolor': registry.npmmirror.com/@ctrl/tinycolor@3.4.1
       '@element-plus/icons-vue': registry.npmmirror.com/@element-plus/icons-vue@2.0.10(vue@3.3.4)
-      '@floating-ui/dom': registry.npmmirror.com/@floating-ui/dom@0.5.3
+      '@floating-ui/dom': 0.5.3
       '@popperjs/core': /@sxzz/popperjs-es@2.11.7
       '@types/lodash': registry.npmmirror.com/@types/lodash@4.14.182
       '@types/lodash-es': registry.npmmirror.com/@types/lodash-es@4.17.6

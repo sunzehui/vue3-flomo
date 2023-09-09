@@ -61,27 +61,28 @@ export const useMemoEditor = () => {
       throw new Error('can \'t find article id!')
     }
     loading.value = true
-    articleStore.update(_memo.id, article).finally(() => {
+    return articleStore.update(_memo.id, article).finally(() => {
       loading.value = false
     })
   }
   const saveArticle = () => {
     const article = buildArticle()
     loading.value = true
-    articleStore.save(article).then(() => {
+    return articleStore.save(article).then(() => {
       editorRef.value?.clear()
       toolbarRef.value?.clearImages()
     }).finally(() => {
       loading.value = false
     })
   }
-  const handleEditorSave = () => {
+  const handleEditorSave = async () => {
     memo.value.content = editorRef.value.getContent()
     const editorType = editorRef.value.getType()
     if (editorType === EditorType.create)
-      saveArticle()
+      await saveArticle()
     else if (editorType === EditorType.edit)
-      updateArticle()
+      await updateArticle()
+    editorRef.value?.blur()
   }
 
   // 页面选中某一标签时，自动插入标签

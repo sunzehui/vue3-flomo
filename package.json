@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
+    "@floating-ui/dom": "^1.5.1",
+    "@floating-ui/vue": "^1.0.2",
     "@icon-park/vue-next": "^1.4.2",
     "@popperjs/core": "^2.11.0",
     "@vee-validate/rules": "^4.5.11",
