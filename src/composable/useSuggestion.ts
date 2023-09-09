@@ -1,4 +1,4 @@
-import type { MaybeRef, Ref } from 'vue'
+import type { ComputedRef, MaybeRef, Ref } from 'vue'
 import { computed, nextTick, ref, unref, watchEffect } from 'vue'
 
 import { unrefElement, useElementBounding, useElementSize, useEventListener } from '@vueuse/core'
@@ -50,7 +50,10 @@ export function useSuggestion({
   }
 
   // 设置候选项active
-  let activeTagIdx: number | null = null
+  const activeItemRef: ComputedRef<any> = computed(() => {
+    const activeIdx = filteredList.value.findIndex(item => item.active)
+    return filteredList.value[activeIdx]
+  })
 
   const setItemActive = (isNext = 1) => {
     const list = unref(filteredList)
@@ -58,12 +61,12 @@ export function useSuggestion({
     const target = (currentIndex + isNext + list.length) % list.length
     list.forEach(item => item.active = false)
     list[target].active = true
-    activeTagIdx = target
   }
 
   const onKeyDownEvent = (event: KeyboardEvent) => {
     const key = event.key
 
+    console.log('🚀 ~ file: useSuggestion.ts:72 ~ onKeyDownEvent ~ isSuggestionShow:', isSuggestionShow.value)
     if (['ArrowUp', 'Enter', 'ArrowDown'].includes(key)) {
       // 仅当联想菜单展示时
       if (!isSuggestionShow.value)
@@ -81,13 +84,13 @@ export function useSuggestion({
         return false
       }
       // 敲回车选中
-      else if (activeTagIdx !== null && (key === 'Enter')) {
-        const activeItem = unref(filteredList)[activeTagIdx]
+      else if (activeItemRef.value !== null && (key === 'Enter')) {
+        const activeItem = unref(activeItemRef)
         if (activeItem) {
           const { value: partial } = partialPatternRef
           const leftContent = `${activeItem.content.slice(partial.length - 1)} `
           editorHook.insertContent(leftContent)
-          // partialPatternRef.value = ''
+          partialPatternRef.value = ''
           nextTick(() => {
             // suggestionControl()
             setSuggestionShow(false)
@@ -117,7 +120,7 @@ export function useSuggestion({
     for (let i = selectionEnd - 1; i >= 0; --i) {
       const char = inputValue[i]
       if (char === '#') {
-        setSuggestionShow(true)
+        // setSuggestionShow(true)
         partialPatternRef.value = `#${inputValue.slice(i + 1, selectionEnd)}`
         return false
       }
@@ -126,8 +129,14 @@ export function useSuggestion({
     setSuggestionShow(false)
   }
   watchEffect(() => {
-    if (!unref(filteredList).length)
+    const matched = partialPatternRef.value
+    const matchedItems = unref(filteredList)
+    if (!matched)
+      return
+    if (!matchedItems.length)
       setSuggestionShow(false)
+    else
+      setSuggestionShow(true)
   })
   function syncPosisiton() {
     if (editorRef.value == null || suggestionRef.value == null)
