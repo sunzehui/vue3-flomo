@@ -32,6 +32,36 @@
       transform: translate(-50%, -50%);
     }
 
+    html.light {
+      --flomo-defalut-bg: #fafafa;
+    }
+    html.light #loading-tag{
+      color: #121212;
+    }
+    html.dark {
+      --flomo-defalut-bg: #121212;
+    }
+    html.dark #loading-tag{
+      color: #fafafa;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html:not(.light) {
+        --flomo-defalut-bg: #121212;
+      }
+      html:not(.light) #loading-tag{
+        color: #fafafa;
+      }
+    }
+    @media (prefers-color-scheme: light) {
+      html:not(.dark) {
+        --flomo-defalut-bg: #fafafa;
+      }
+      html:not(.dark) #loading-tag{
+        color: #121212;
+      }
+    }
+
   </style>
   <link rel="stylesheet" href="/fonts/index.css" media="print" onload="this.media='all'" />
 </head>
