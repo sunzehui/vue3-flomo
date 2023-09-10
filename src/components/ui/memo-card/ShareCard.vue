@@ -134,15 +134,16 @@ const handleClose = () => {
 
 <style lang="scss" scoped>
 header {
-  @apply py-2 pl-5;
-  border-bottom-width: 1px;
+  @apply py-2 pl-5 border-0;
+  // border-bottom-width: 1px;
   border-style: solid;
-  border-color: #e5e7eb;
+  // border-color: #e5e7eb;
 
   .title {
     font-weight: 500;
     font-size: 20px;
-    color: #323232;
+    // color: #323232;
+    @apply text-primary-text;
   }
 
   .sub-title {
@@ -157,18 +158,15 @@ header {
   display: flex;
   flex-direction: column;
   text-align: left;
-  background: white;
   word-break: break-all;
   white-space: pre-wrap;
   font-size: 14px;
-  @apply py-3 px-3 w-full font-wenkai;
+  @apply py-3 px-3 w-full font-wenkai text-primary-text bg-base-fill;
 
   span.time {
-    color: #5f6775;
-    @apply text-sm font-thin;
+    @apply text-sm font-thin text-secondary-text;
 
     font-size: 14px;
-    color: #999;
     font-weight: 400;
   }
 }
@@ -188,20 +186,21 @@ header {
 
 footer {
   background-color: rgb(229, 231, 235);
+  @apply bg-dark-fill-1;
   width: 100%;
   box-sizing: border-box;
   @apply px-3 py-3 text-base flex justify-between;
 
   span.statistics {
-    color: #5f6775;
     @apply text-sm font-thin;
 
-    font-size: 14px;
     color: #999;
+    font-size: 14px;
     font-weight: 400;
 
     .num {
-      color: #333;
+      // color: #333;
+      @apply text-secondary-text;
     }
   }
 }
