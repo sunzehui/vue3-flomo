@@ -1,5 +1,4 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
-const colors = require('tailwindcss/colors')
 
 /** @type {import("@types/tailwindcss/tailwind-config").TailwindConfig } */
 module.exports = {
@@ -14,7 +13,9 @@ module.exports = {
       },
     },
     colors: {
-      ...colors,
+      'transparent': 'transparent',
+      'current': 'currentColor',
+      'white': '#ffffff',
       'primary': 'var(--flomo-primary)',
       'primary-light-1': 'var(--flomo-primary-light-1)',
       'primary-light-2': 'var(--flomo-primary-light-2)',

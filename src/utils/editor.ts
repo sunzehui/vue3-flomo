@@ -1,34 +1,8 @@
-import { computePosition, flip } from '@floating-ui/dom'
 import type { MaybeRef } from '@vueuse/core'
 import { unrefElement } from '@vueuse/core'
 
 import { px2number } from '@/utils/Tool'
 
-export const computeElSize = (elRef: MaybeRef<HTMLElement>) => {
-  const el = unrefElement(elRef)
-  if (!el)
-    return 0
-
-  // 生成看不见的div+sapn
-  const css = window.getComputedStyle(el)
-  const width = css.width || el.offsetWidth
-
-  // const height = 0
-  // for (const item of Array.from(copyStyle)) {
-  //   const itemProperty = copyStyle.getPropertyValue(item)
-  //   if (item === 'width')
-  //     width = itemProperty
-  //   if (item === 'height')
-  //     height = px2number(itemProperty)
-  //   _div.style.setProperty(item, itemProperty)
-  // }
-
-  console.log('🚀 ~ file: editor.ts:24 ~ computeElSize ~ data:', width)
-  // document.body.removeChild(_div)
-  return {
-
-  }
-}
 export const getCursorPos = (inputRef: MaybeRef<HTMLTextAreaElement>) => {
   const input = unrefElement(inputRef)
   // 初始位置
@@ -79,32 +53,6 @@ export const getCursorPos = (inputRef: MaybeRef<HTMLTextAreaElement>) => {
     // We don't use line-height since it may be too large for position. Eg. 34px
     // for input
     height: parseInt(copyStyle.fontSize) * 1.5,
-  }
-}
-export const computeSelectPos = async (inputRef: MaybeRef<HTMLTextAreaElement>, floatingRef: MaybeRef<HTMLDivElement>) => {
-  const cursur = getCursorPos(inputRef)
-  const virtualElement = {
-    getBoundingClientRect() {
-      return {
-        width: 0,
-        height: 0,
-        top: cursur.y + unrefElement(inputRef).parentElement.offsetTop,
-        left: cursur.x + unrefElement(inputRef).parentElement.offsetLeft,
-        bottom: cursur.y,
-        right: cursur.x,
-        x: cursur.x,
-        y: cursur.y,
-      }
-    },
-    // contextElement: unrefElement(inputRef),
-  }
-  const { x, y } = await computePosition(virtualElement, unrefElement(floatingRef), {
-    placement: 'right-start',
-    middleware: [flip()],
-  })
-
-  return {
-    x, y,
   }
 }
 

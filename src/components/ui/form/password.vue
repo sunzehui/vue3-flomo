@@ -54,9 +54,9 @@ const password = useVModel(props, 'modelValue', emit)
   }
 }
 .flomo-input {
-  @apply appearance-none relative block w-full px-3 py-2 border border-gray-200 placeholder-gray-300 text-gray-900 rounded-md sm:text-sm h-10;
+  @apply appearance-none relative block w-full px-3 py-2 border placeholder-secondary-text text-primary-text rounded-md sm:text-sm h-10;
   &:on-active {
-    @apply focus:outline-white focus:ring-indigo-500 focus:border-indigo-500 focus:z-10;
+    @apply focus:outline-white focus:ring-primary-light-1 focus:border-primary-light-1 focus:z-10;
   }
 }
 </style>

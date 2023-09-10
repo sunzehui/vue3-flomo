@@ -8,12 +8,6 @@ dependencies:
   '@element-plus/icons-vue':
     specifier: ^2.0.10
     version: registry.npmmirror.com/@element-plus/icons-vue@2.0.10(vue@3.3.4)
-  '@floating-ui/dom':
-    specifier: ^1.5.1
-    version: 1.5.1
-  '@floating-ui/vue':
-    specifier: ^1.0.2
-    version: 1.0.2(vue@3.3.4)
   '@icon-park/vue-next':
     specifier: ^1.4.2
     version: registry.npmmirror.com/@icon-park/vue-next@1.4.2(vue@3.3.4)
@@ -32,9 +26,6 @@ dependencies:
   axios:
     specifier: ^0.27.2
     version: 0.27.2
-  custom-vue-scrollbar:
-    specifier: ^0.0.7
-    version: 0.0.7(lodash-es@4.17.21)(vue@3.3.4)
   dayjs:
     specifier: ^1.11.7
     version: registry.npmmirror.com/dayjs@1.11.7
@@ -82,12 +73,6 @@ devDependencies:
   '@antfu/eslint-config':
     specifier: ^0.33.1
     version: registry.npmmirror.com/@antfu/eslint-config@0.33.1(eslint@8.29.0)(typescript@5.1.6)
-  '@headlessui/vue':
-    specifier: ^1.6.4
-    version: registry.npmmirror.com/@headlessui/vue@1.6.4(vue@3.3.4)
-  '@heroicons/vue':
-    specifier: ^1.0.6
-    version: registry.npmmirror.com/@heroicons/vue@1.0.6(vue@3.3.4)
   '@tailwindcss/aspect-ratio':
     specifier: ^0.2.2
     version: registry.npmmirror.com/@tailwindcss/aspect-ratio@0.2.2(tailwindcss@3.2.4)
@@ -1916,37 +1901,10 @@ packages:
     resolution: {integrity: sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg==}
     dev: false
 
-  /@floating-ui/core@1.4.1:
-    resolution: {integrity: sha512-jk3WqquEJRlcyu7997NtR5PibI+y5bi+LS3hPmguVClypenMsCY3CBa3LAQnozRCtCrYWSEtAdiskpamuJRFOQ==}
-    dependencies:
-      '@floating-ui/utils': 0.1.1
-    dev: false
-
   /@floating-ui/dom@0.5.3:
     resolution: {integrity: sha512-vpjWB1uC7rajvgA58uzlJZgtWqrdDQLw+XVA3w63ZTmsWwRmVd0Gl5Dy9VMAViI9cP7hBWaJt23Jy3AVgVYnoQ==}
     dependencies:
       '@floating-ui/core': 0.7.3
-    dev: false
-
-  /@floating-ui/dom@1.5.1:
-    resolution: {integrity: sha512-KwvVcPSXg6mQygvA1TjbN/gh///36kKtllIF8SUm0qpFj8+rvYrpvlYdL1JoA71SHpDqgSSdGOSoQ0Mp3uY5aw==}
-    dependencies:
-      '@floating-ui/core': 1.4.1
-      '@floating-ui/utils': 0.1.1
-    dev: false
-
-  /@floating-ui/utils@0.1.1:
-    resolution: {integrity: sha512-m0G6wlnhm/AX0H12IOWtK8gASEMffnX08RtKkCgTdHb9JpHKGloI7icFfLg9ZmQeavcvR0PKmzxClyuFPSjKWw==}
-    dev: false
-
-  /@floating-ui/vue@1.0.2(vue@3.3.4):
-    resolution: {integrity: sha512-sImlAl9mAoCKZLNlwWz2P2ZMJIDlOEDXrRD6aD2sIHAka1LPC+nWtB+D3lPe7IE7FGWSbwBPTnlSdlABa3Fr0A==}
-    dependencies:
-      '@floating-ui/dom': 1.5.1
-      vue-demi: 0.14.6(vue@3.3.4)
-    transitivePeerDependencies:
-      - '@vue/composition-api'
-      - vue
     dev: false
 
   /@jridgewell/gen-mapping@0.1.1:
@@ -2919,16 +2877,6 @@ packages:
 
   /csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
-
-  /custom-vue-scrollbar@0.0.7(lodash-es@4.17.21)(vue@3.3.4):
-    resolution: {integrity: sha512-ZO3mF83MBTeDwICBEqScbFFvYYzqaW9ZJzw7w2klBgly9ENL/DGe/2/CXyFfDl+Ylf81qmJrbZDH7n1t98nnbQ==}
-    peerDependencies:
-      lodash-es: ^4.17.21
-      vue: ^3.2.13
-    dependencies:
-      lodash-es: registry.npmmirror.com/lodash-es@4.17.21
-      vue: 3.3.4
-    dev: false
 
   /de-indent@1.0.2:
     resolution: {integrity: sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==}
@@ -4342,29 +4290,6 @@ packages:
       strip-json-comments: registry.npmmirror.com/strip-json-comments@3.1.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  registry.npmmirror.com/@headlessui/vue@1.6.4(vue@3.3.4):
-    resolution: {integrity: sha512-axZMcfRLNuwHESPMgDb0Vj7xxlNPmsPl77pvoRZGzJh7lRdRic9kC/qbVM8G36OpIJRZzqrlADLQ2JIObhQjBg==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@headlessui/vue/-/vue-1.6.4.tgz}
-    id: registry.npmmirror.com/@headlessui/vue/1.6.4
-    name: '@headlessui/vue'
-    version: 1.6.4
-    engines: {node: '>=10'}
-    peerDependencies:
-      vue: ^3.2.0
-    dependencies:
-      vue: 3.3.4
-    dev: true
-
-  registry.npmmirror.com/@heroicons/vue@1.0.6(vue@3.3.4):
-    resolution: {integrity: sha512-ng2YcCQrdoQWEFpw+ipFl2rZo8mZ56v0T5+MyfQQvNqfKChwgP6DMloZLW+rl17GEcHkE3H82UTAMKBKZr4+WA==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@heroicons/vue/-/vue-1.0.6.tgz}
-    id: registry.npmmirror.com/@heroicons/vue/1.0.6
-    name: '@heroicons/vue'
-    version: 1.0.6
-    peerDependencies:
-      vue: '>= 3'
-    dependencies:
-      vue: 3.3.4
     dev: true
 
   registry.npmmirror.com/@humanwhocodes/config-array@0.11.7:

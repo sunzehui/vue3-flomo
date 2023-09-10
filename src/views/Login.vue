@@ -84,7 +84,7 @@ const onSubmit = async () => {
 
 <style lang="scss" scoped>
   .submit-btn {
-    @apply select-none relative w-full flex justify-center px-4 border border-transparent text-sm py-2.5 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+    @apply select-none relative w-full flex justify-center px-4 border border-transparent text-sm py-2.5 font-medium rounded-md text-white bg-primary hover:bg-primary-light-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light-1;
     @apply my-4;
   }
 </style>

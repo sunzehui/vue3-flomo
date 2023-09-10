@@ -117,6 +117,6 @@ span > label {
   margin-right: 5px;
 }
 .lastTag {
-  @apply mx-1 text-gray-500 text-base;
+  @apply mx-1 text-secondary-text text-base;
 }
 </style>

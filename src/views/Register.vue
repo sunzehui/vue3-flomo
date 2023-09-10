@@ -155,13 +155,13 @@ const onSubmit = async () => {
 
 <style scoped lang="scss">
 .flomo-input {
-  @apply appearance-none relative block w-full px-3 py-2 border border-gray-200 placeholder-gray-300 text-gray-900 rounded-md sm:text-sm h-10;
+  @apply appearance-none relative block w-full px-3 py-2 border border-placeholder placeholder-regular-text text-secondary-text rounded-md sm:text-sm h-10;
   &:on-active {
-    @apply focus:outline-white focus:ring-indigo-500 focus:border-indigo-500 focus:z-10;
+    @apply focus:outline-white focus:ring-primary-light-1 focus:border-primary-light-1 focus:z-10;
   }
 }
  .submit-btn {
-    @apply select-none relative w-full flex justify-center px-4 border border-transparent text-sm py-2.5 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+    @apply select-none relative w-full flex justify-center px-4 border border-transparent text-sm py-2.5 font-medium rounded-md text-white bg-primary hover:bg-primary-light-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light-1;
     @apply my-4;
   }
 </style>

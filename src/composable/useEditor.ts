@@ -1,7 +1,6 @@
 import type { Ref } from 'vue'
 import { nextTick, ref, watch } from 'vue'
 import { useEventListener } from '@vueuse/core'
-import { computeSelectPos } from '@/utils/editor'
 
 export function useEditor(textareaRef: Ref<HTMLTextAreaElement>) {
   const textareaContent = ref('')

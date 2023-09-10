@@ -14,17 +14,5 @@ module.exports = {
     'tailwindcss': {},
     'autoprefixer': {},
     'postcss-preset-env': {},
-    'postcss-import': {},
-    'postcss-simple-vars': {
-      variables() {
-        /** @type {import("@types/tailwindcss/tailwind-config").TailwindConfig['theme']['colors'] } */
-        const colorsConfig = require('./tailwind.config.js').theme.colors
-        if (colorsConfig.length === 0)
-          return {}
-
-        return flattenObject(colorsConfig)
-      },
-
-    },
   },
 }

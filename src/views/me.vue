@@ -105,7 +105,7 @@ const handleLogout = () => {
     // background-color: #fff;
     @apply bg-base-fill;
     .card-title{
-      @apply text-sm font-thin text-neutral-500;
+      @apply text-sm font-thin text-secondary-text;
     }
  }
   .user-info{

@@ -44,7 +44,7 @@ onMounted(() => {
 
   @apply px-5;
   .highlight-nickname{
-    @apply text-blue-500;
+    @apply text-primary-light-1;
   }
 }
 .memo-container {

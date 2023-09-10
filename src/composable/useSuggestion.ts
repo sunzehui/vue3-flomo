@@ -1,13 +1,11 @@
 import type { ComputedRef, MaybeRef, Ref } from 'vue'
 import { computed, nextTick, ref, unref, watchEffect } from 'vue'
 
-import { unrefElement, useElementBounding, useElementSize, useEventListener } from '@vueuse/core'
-import { autoUpdate, useFloating } from '@floating-ui/vue'
+import { useEventListener } from '@vueuse/core'
 import { useEditor } from './useEditor'
 import type { tagType } from '@/types/memo'
 import { getCursorPos } from '@/utils/editor'
 import type SuggestionList from '@/components/ui/editor/suggestion-list.vue'
-import { px2number } from '@/utils/Tool'
 
 interface SuggestionParams {
   suggestionRef: Ref<InstanceType<typeof SuggestionList>>
@@ -66,7 +64,6 @@ export function useSuggestion({
   const onKeyDownEvent = (event: KeyboardEvent) => {
     const key = event.key
 
-    console.log('🚀 ~ file: useSuggestion.ts:72 ~ onKeyDownEvent ~ isSuggestionShow:', isSuggestionShow.value)
     if (['ArrowUp', 'Enter', 'ArrowDown'].includes(key)) {
       // 仅当联想菜单展示时
       if (!isSuggestionShow.value)

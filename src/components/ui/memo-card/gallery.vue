@@ -54,6 +54,6 @@ const previewList = computed(() => {
 
 }
 .el-upload-list__item-actions{
-    @apply absolute inset-0 h-full w-full flex justify-center items-center opacity-0 bg-slate-300 ;
+    @apply absolute inset-0 h-full w-full flex justify-center items-center opacity-0;
   }
 </style>
