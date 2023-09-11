@@ -44,7 +44,7 @@ defineExpose({
 </script>
 
 <template>
-  <ElDrawer v-model="isShow" custom-class="detail-drawer !w-8/12 md:!w-6/12 lg:!w-4/12" :lock-scroll="false">
+  <ElDrawer v-model="isShow" class="detail-drawer !w-8/12 md:!w-6/12 lg:!w-4/12" :lock-scroll="false">
     <template #header>
       <h4>MEMO</h4>
     </template>
