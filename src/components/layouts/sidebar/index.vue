@@ -21,7 +21,7 @@ const userStore = useUserStore()
 
 <style lang="scss" scoped>
   .left {
-    @apply h-full;
+    @apply h-full overflow-y-scroll;
     width: 240px;
     min-width: 218px;
   }

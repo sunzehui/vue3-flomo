@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { toRefs } from 'vue'
 import { RouterLink } from 'vue-router'
+import { DArrowLeft } from '@element-plus/icons-vue'
 import { useLayoutStore } from '@/store/layout'
 const props = defineProps<{
   nickname: string
@@ -9,19 +10,34 @@ const props = defineProps<{
 const { nickname, isPro } = toRefs(props)
 
 const { toggleLeftMenuOpen } = useLayoutStore()
+const { isPC } = toRefs(useLayoutStore())
+const handleToggleClick = () => {
+  toggleLeftMenuOpen(false)
+}
 </script>
 
 <template>
-  <div class="user">
-    <RouterLink class="username" to="/me" @click="toggleLeftMenuOpen(false)">
-      <span class="title">{{ nickname }}</span><span class="pro" :class="{ active: isPro }">PRO</span>
-    </RouterLink>
+  <div class="title-container">
+    <div class="user">
+      <RouterLink class="username" to="/me" @click="toggleLeftMenuOpen(false)">
+        <span class="title">{{ nickname }}</span><span class="pro" :class="{ active: isPro }">PRO</span>
+      </RouterLink>
+    </div>
+    <div v-if="isPC" class="sidebar-toggle " @click="handleToggleClick">
+      <DArrowLeft class="h-4 w-4" />
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.title-container{
+  @apply flex justify-between items-center my-3;
+}
 .user {
-  @apply flex py-3 items-center;
+  @apply flex items-center p-1 duration-150 transition rounded-md;
+  &:hover {
+    @apply bg-dark-fill-2 text-regular-text;
+  }
   .username {
     font-size: 18px;
     @apply text-secondary-text font-bold cursor-pointer flex items-center flex-1;
@@ -48,5 +64,15 @@ const { toggleLeftMenuOpen } = useLayoutStore()
   .setting {
     cursor: pointer;
   }
+}
+
+.sidebar-toggle{
+  @apply h-full flex items-center justify-center p-2 opacity-0 hover:opacity-100 duration-150 rounded-md;
+   &:hover {
+    @apply bg-dark-fill-2;
+  }
+}
+.left:hover .sidebar-toggle{
+  @apply opacity-100;
 }
 </style>

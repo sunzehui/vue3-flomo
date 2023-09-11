@@ -27,7 +27,7 @@ const clickedPath = () => {
 
 <style scoped lang="scss">
 .item {
-  @apply flex items-center cursor-pointer text-sm py-2 pl-2 rounded-md;
+  @apply flex items-center cursor-pointer text-sm py-2 pl-2 rounded-md duration-150;
   border-radius: 5px;
   .icon {
     @apply mr-2 inline-block;

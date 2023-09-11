@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { toRefs } from 'vue'
+import { DArrowRight } from '@element-plus/icons-vue'
 import { useLayoutStore } from '@/store/layout'
 
 const props = defineProps<{
@@ -7,13 +8,19 @@ const props = defineProps<{
 }>()
 const { toggleLeftMenuOpen } = useLayoutStore()
 
-const { isPC } = toRefs(useLayoutStore())
+const { isDrawerOpen, isPC, isLeftMenuOpen, toggleDrawerOpen } = toRefs(useLayoutStore())
+const handleToggleClick = () => {
+  toggleLeftMenuOpen(true)
+}
 </script>
 
 <template>
   <nav>
     <div class="title-wrp">
-      <span v-show="!isPC" class="showLeftPanelBtn" @click.stop="toggleLeftMenuOpen(true)">三</span>
+      <div v-if="!isLeftMenuOpen" class="sidebar-toggle">
+        <DArrowRight v-if="isPC" class="h-4 w-4" @click.stop="handleToggleClick" />
+        <span v-show="!isPC" class="showLeftPanelBtn" @click.stop="toggleDrawerOpen(true)">三</span>
+      </div>
       <span class="title hover-bg">
         {{ title || 'MEMO' }}
       </span>
@@ -41,12 +48,19 @@ const { isPC } = toRefs(useLayoutStore())
   }
 }
 .showLeftPanelBtn{
-  @apply text-secondary-text text-base mr-2 cursor-pointer;
+  @apply text-secondary-text text-base cursor-pointer;
 }
 nav {
   display: flex;
   @apply py-3 px-5;
   justify-content: space-between;
   height: 60px;
+}
+.sidebar-toggle{
+  @apply h-full flex items-center justify-center p-2 rounded-md;
+   &:hover {
+    @apply bg-dark-fill-2;
+  }
+
 }
 </style>

@@ -1,17 +1,21 @@
 <script lang="ts" setup>
-import { toRefs } from 'vue'
+import { computed, toRefs, watchEffect } from 'vue'
 import { ElDrawer } from 'element-plus'
 import LeftPanel from '@/components/layouts/sidebar/index.vue'
 import { useLayoutStore } from '@/store/layout'
 
-const { isLeftMenuOpen, isPC } = toRefs(useLayoutStore())
+const { isLeftMenuOpen, isDrawerOpen, isPC } = toRefs(useLayoutStore())
+const isLeftShow = computed(() => isPC.value && isLeftMenuOpen.value)
 </script>
 
 <template>
   <div class="wrapper">
-    <LeftPanel v-show="isPC" />
+    <Transition name="el-fade-in">
+      <LeftPanel v-show="isLeftShow" />
+    </Transition>
+
     <ElDrawer
-      v-model="isLeftMenuOpen"
+      v-model="isDrawerOpen"
       direction="ltr"
       size="280px"
       :with-header="false"
