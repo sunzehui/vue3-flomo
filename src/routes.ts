@@ -1,10 +1,9 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from '@ionic/vue-router'
 import NotFound from './views/NotFound.vue'
 import Mine from './layouts/Mine.vue'
 import Memo from './views/Memo.vue'
 import Login from './views/Login.vue'
-
 export const routes = [
 
   {
@@ -76,7 +75,8 @@ export const routes = [
   },
   { path: '/:path(.*)', component: NotFound },
 ] as RouteRecordRaw[]
+
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })

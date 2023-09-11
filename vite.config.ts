@@ -3,7 +3,6 @@ import Vue from '@vitejs/plugin-vue'
 import VueMacros from 'unplugin-vue-macros/vite'
 import { defineConfig, loadEnv } from 'vite'
 import VueJsx from '@vitejs/plugin-vue-jsx'
-import compression from 'vite-plugin-compression'
 import legacy from '@vitejs/plugin-legacy'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { chunkFileNames, entryFileNames, processAssetFileNames } from './vite/build-assetdir'
@@ -27,16 +26,7 @@ export default defineConfig(({ mode }) => {
       legacy({
         targets: ['defaults', 'not IE 11'],
       }),
-      compression({
-        // 可选配置项
-        ext: '.gz', // 压缩文件的扩展名，默认为 .gz
-        algorithm: 'gzip', // 压缩算法，可以是 'gzip' 或 'brotliCompress'
-        threshold: 10240, // 超过多少字节的文件才会被压缩，默认为 0
-        deleteOriginFile: false, // 是否删除原始文件，默认为 false
-        verbose: true, // 是否在控制台输出压缩结果，默认为 false
-        filter: /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i, // 指定哪些资源不被压缩，默认为 /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i
-        disable: false, // 是否禁用插件，默认为 false
-      }),
+
     ],
     resolve: {
       alias: {

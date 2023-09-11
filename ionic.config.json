@@ -1,0 +1,7 @@
+{
+  "name": "ionic-flomo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
