@@ -39,8 +39,6 @@ const { memo: article } = toRefs(props)
 
 const updateTime = computed(() => {
   const memo = unref(article)
-  if (memo.is_topic)
-    return '置顶'
   return formatDate(memo.createTime)
 })
 const userStore = useUserStore()

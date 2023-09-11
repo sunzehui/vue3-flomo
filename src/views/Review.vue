@@ -1,7 +1,21 @@
-<template lang="">
-  <div>设置每日回顾</div>
-</template>
-<script>
-export default {};
+<script lang="ts" setup>
+import TopBar from '@/components/ui/topbar/index.vue'
+import PageBody from '@/layouts/page-body.vue'
 </script>
-<style lang="scss"></style>
+
+<template>
+  <div class="memo-view">
+    <TopBar title="每日回顾" />
+    <PageBody />
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.input-container {
+  @apply px-5;
+}
+
+.memo-view {
+  height: 100%;
+}
+</style>
