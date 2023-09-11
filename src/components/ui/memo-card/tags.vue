@@ -1,10 +1,14 @@
 <script lang="ts" setup>
+import { watchEffect } from 'vue'
 import type { Memo } from '@/types/memo'
 
 const props = defineProps<{
   tags: Memo['tags']
 }>()
 const emit = defineEmits(['tagClick'])
+watchEffect(() => {
+  console.log('🚀 ~ file: tags.vue:6 ~ tags:', props.tags)
+})
 </script>
 
 <template>

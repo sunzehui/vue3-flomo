@@ -13,8 +13,8 @@ export function ApiList(query: Partial<GetListParams>) {
     params: query,
   })
 }
-export function ApiUpdate(id: number, data: Partial<Memo> | { recycle: boolean }) {
-  return request<any>({
+export async function ApiUpdate(id: number, data: Partial<Memo> | { recycle: boolean }) {
+  return await request<Memo>({
     url: `/api/article/${id}`,
     method: 'patch',
     data,

@@ -46,7 +46,7 @@ export const useMemoEditor = () => {
     const tags = extractTags(memo.value.content)
     const article: Partial<Memo> = {
       tags,
-      content: trimTag(unref(memo).content),
+      content: unref(memo).content,
       images: unref(imageList),
     }
     return article

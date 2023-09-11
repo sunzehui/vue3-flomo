@@ -103,7 +103,8 @@ export const useMemoStore = defineStore('memo', {
         if (res.code === 0) {
           this.setArticle(id, {
             type: CardType.article,
-            content: data.content,
+            content: res.data.content,
+            tags: res.data.tags,
           })
 
           ElMessage.success('保存成功')
