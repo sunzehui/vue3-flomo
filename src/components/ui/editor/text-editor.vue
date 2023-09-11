@@ -21,6 +21,7 @@ const {
   handleItemClick,
   suggestionList,
   editor: { insertContent, onSave, textareaContent, resize, blur },
+  clear,
 } = useSuggestion({
   suggestionRef,
   editorRef: textareaRef,
@@ -37,6 +38,7 @@ onMounted(() => {
 defineExpose({
   clear() {
     textareaContent.value = ''
+    clear()
   },
   insertContent,
   getContent() {

@@ -117,7 +117,7 @@ export function useSuggestion({
     for (let i = selectionEnd - 1; i >= 0; --i) {
       const char = inputValue[i]
       if (char === '#') {
-        // setSuggestionShow(true)
+        setSuggestionShow(true)
         partialPatternRef.value = `#${inputValue.slice(i + 1, selectionEnd)}`
         return false
       }
@@ -182,5 +182,8 @@ export function useSuggestion({
     handleItemClick,
     suggestionList: filteredList,
     editor: editorHook,
+    clear() {
+      partialPatternRef.value = ''
+    },
   }
 }

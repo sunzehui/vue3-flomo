@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watchEffect } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { isEmpty } from 'lodash-es'
 import Editor from './text-editor.vue'
 import ToolBar from './toolbar.vue'
@@ -22,7 +22,7 @@ const {
   loading,
   registerComponentRef,
   setEditorConfig,
-  memo,
+  memo: _memo,
 } = useMemoEditor()
 
 onMounted(() => {
@@ -64,7 +64,7 @@ const handleMouse = (e) => {
     />
     <ToolBar
       ref="toolbarRef"
-      :submit-disabled="isEmpty(memo?.content)"
+      :submit-disabled="isEmpty(_memo?.content)"
       @add-emoji="handler.handleAddEmoji"
       @add-tag="handler.handleAddTag"
       @save="handler.handleEditorSave"

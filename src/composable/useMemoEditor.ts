@@ -83,6 +83,7 @@ export const useMemoEditor = () => {
     else if (editorType === EditorType.edit)
       await updateArticle()
     editorRef.value?.blur()
+    editorRef.value?.clear()
   }
 
   // 页面选中某一标签时，自动插入标签
