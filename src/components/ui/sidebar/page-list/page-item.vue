@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, unref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useLayoutStore } from '@/store/layout'
 
@@ -8,9 +8,11 @@ const props = defineProps<{
 }>()
 const route = useRoute()
 const itemActive = computed(() => route.path === props.to ? 'active' : '')
-const { toggleLeftMenuOpen } = useLayoutStore()
+const { isPC, toggleDrawerOpen } = useLayoutStore()
 const clickedPath = () => {
-  toggleLeftMenuOpen(false)
+  const ispc = unref(isPC)
+  if (!ispc)
+    toggleDrawerOpen(false)
 }
 </script>
 

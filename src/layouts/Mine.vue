@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { computed, toRefs, watchEffect } from 'vue'
-import { ElDrawer } from 'element-plus'
+import {
+  ElDrawer,
+  ElMenu,
+} from 'element-plus'
 import LeftPanel from '@/components/layouts/sidebar/index.vue'
 import { useLayoutStore } from '@/store/layout'
 
@@ -10,8 +13,8 @@ const isLeftShow = computed(() => isPC.value && isLeftMenuOpen.value)
 
 <template>
   <div class="wrapper">
-    <Transition name="el-fade-in">
-      <LeftPanel v-show="isLeftShow" />
+    <Transition name="to-right">
+      <LeftPanel :class="{ show: isLeftShow, hide: !isLeftShow }" />
     </Transition>
 
     <ElDrawer
@@ -51,5 +54,15 @@ const isLeftShow = computed(() => isPC.value && isLeftMenuOpen.value)
   .wrapper main {
     margin-left: 0 !important;
   }
+}
+.show{
+    transition: all 0.5s ease;
+    transform: translateX(0);
+}
+.hide{
+  transition: all 0.8s ease;
+    transform: translateX(-100vw);
+    position: fixed;
+    display: none
 }
 </style>

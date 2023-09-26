@@ -105,6 +105,7 @@ export const useMemoStore = defineStore('memo', {
             type: CardType.article,
             content: res.data.content,
             tags: res.data.tags,
+            images: res.data.images
           })
 
           ElMessage.success('保存成功')
