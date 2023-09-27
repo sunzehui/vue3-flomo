@@ -1,31 +1,45 @@
 <script lang="ts" setup>
-import { computed, ref, unref, watch, watchEffect } from 'vue'
+import { ref, unref, watchEffect } from 'vue'
 import { Delete, Plus, ZoomIn } from '@element-plus/icons-vue'
 import { ElDialog, ElIcon, ElMessage, ElUpload } from 'element-plus'
 import type { UploadFile, UploadFiles, UploadHooks, UploadInstance, UploadProps, UploadRawFile, UploadUserFile } from 'element-plus'
 import { compress } from 'image-conversion'
-import { ApiIsFileExist, ApiUploadFile } from '@/api/file'
-import { calculateMD5 } from '@/utils/file'
+import { ApiUploadFile, checkFileExistOnServer } from '@/api/file'
+import { calculateMD5, isValidImageSize, isValidImageType } from '@/utils/file'
+import type { FileRecord } from '@/types/memo'
+const props = defineProps<{
+  images: FileRecord[]
+}>()
 
 const emit = defineEmits(['fileChange'])
 
-const fileList = ref<UploadFiles>([])
+const fileList = ref<UploadUserFile[]>([])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const fileIdList = ref<string[]>([])
-const fileIdAndUUid = new Map()
+const fileId2ResId = new Map()
 
-const uploadRef = ref<UploadInstance>()
+watchEffect(() => {
+  if (!props.images)
+    return
 
-const submitUpload = () => {
-  uploadRef.value!.submit()
-}
-const handleRemove = (file: UploadFile) => {
-  const fileId = fileIdAndUUid.get(file.uid)
-  // const fileId = (file.response as any).data.id
-  fileIdList.value.splice(fileIdList.value.indexOf(fileId), 1)
+  fileList.value = props.images.map(item => ({
+    name: `${item.id}`, url: item.filePath,
+  }))
+  fileIdList.value = props.images.map(item => `${item.id}`)
   emit('fileChange', unref(fileIdList))
-  fileList.value.splice(fileList.value.indexOf(file), 1)
+})
+
+const handleRemove = (file: UploadFile) => {
+  const resId = fileId2ResId.get(file.uid)
+
+  // 清除id数据
+  const removeFileId = fileIdList.value.indexOf(resId)
+  fileIdList.value.splice(removeFileId, 1)
+  emit('fileChange', unref(fileIdList))
+  // 清除界面显示
+  const removeShowFileIdx = fileList.value.findIndex(f => f.uid === file.uid)
+  fileList.value.splice(removeShowFileIdx, 1)
 }
 
 const handlePictureCardPreview = (file: UploadFile) => {
@@ -33,60 +47,41 @@ const handlePictureCardPreview = (file: UploadFile) => {
   dialogVisible.value = true
 }
 
-const isValidImageType = (file) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
-  return allowedTypes.includes(file.type)
-}
-
-const isValidImageSize = (file) => {
-  const maxSize = 5 * 1024 * 1024 // 5MB in bytes
-  return file.size <= maxSize
-}
-const checkFileExistOnServer = async (file: File) => {
-  // Replace with your API call to check if file exists on the server
-  const md5 = await calculateMD5(file)
-  return await ApiIsFileExist(md5)
-}
-
-const handleUploadSuccess = async (res, file) => {
-  fileIdAndUUid.set(file.uid, res.data.id)
-  fileIdList.value.push(res.data.id)
+const pushFiles = async (resId, fileUid) => {
+  fileId2ResId.set(fileUid, resId)
+  fileIdList.value.push(resId)
   emit('fileChange', unref(fileIdList))
 }
-const handleUpload = async (file) => {
-  try {
-    const res = await ApiUploadFile(file.raw)
-    if (res.code === 0)
-      handleUploadSuccess(res, file)
-  }
-  catch (e) {
-    handleRemove(file)
-  }
+const handleUpload = async (fileRaw, fileUid) => {
+  const res = await ApiUploadFile(fileRaw)
+  if (res.code === 0)
+    pushFiles(res.data.id, fileUid)
 }
-const handleFileChange: UploadHooks['onChange'] = async (file, files) => {
-  const compressedFile = file.raw
-  const isFileExist = await checkFileExistOnServer(compressedFile)
-  if (isFileExist.data) {
-    // File already exists on the server
-    handleUploadSuccess(isFileExist, file) // Call the success callback directly
-    return false // Cancel upload
-  }
-  await handleUpload(file)
-  fileList.value = files
-}
+
 const handleBeforeUpload = async (rawFile: UploadRawFile) => {
   const isImage = isValidImageType(rawFile)
   const isSizeValid = isValidImageSize(rawFile)
 
   if (!isImage) {
     ElMessage.error('请选择有效的图片文件')
-    return false
+    throw new Error('请选择有效的图片文件')
   }
   else if (!isSizeValid) {
     ElMessage.error('图片大小不能超过 5MB')
-    return false
+    throw new Error('图片大小不能超过 5MB')
   }
   return await compress(rawFile, 0.4) as File
+}
+const handleFileChange: UploadHooks['onChange'] = async (file, files) => {
+  const compressedFile = await handleBeforeUpload(file.raw)
+  const isFileExist = await checkFileExistOnServer(compressedFile)
+  if (isFileExist.data) {
+    // File already exists on the server
+    pushFiles(isFileExist.data.id, file.uid) // Call the success callback directly
+    return false // Cancel upload
+  }
+  await handleUpload(compressedFile, file.uid)
+  fileList.value = files
 }
 
 defineExpose({
@@ -95,42 +90,40 @@ defineExpose({
     fileIdList.value = []
     emit('fileChange', unref(fileIdList))
   },
+  setFiles(files: { url: string; name: string }[]) {
+    fileList.value = files
+  },
 })
 </script>
 
 <template>
   <div class="image-upload-wrp">
     <ElUpload
+      v-model:file-list="fileList"
       list-type="picture-card"
-      action=""
-      :http-request="handleUpload"
-      :file-list="fileList"
       :auto-upload="false"
-      :before-upload="handleBeforeUpload"
       :on-change="handleFileChange"
-      :on-success="handleUploadSuccess"
+      :on-success="pushFiles"
     >
       <ElIcon><Plus /></ElIcon>
 
       <template #file="{ file }">
-        <div>
-          <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-          <span class="el-upload-list__item-actions">
-            <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)"
-            >
-              <ElIcon><ZoomIn /></ElIcon>
-            </span>
-
-            <span
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)"
-            >
-              <ElIcon><Delete /></ElIcon>
-            </span>
+        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+        <span class="el-upload-list__item-actions">
+          <span
+            class="el-upload-list__item-preview"
+            @click="handlePictureCardPreview(file)"
+          >
+            <ElIcon><ZoomIn /></ElIcon>
           </span>
-        </div>
+
+          <span
+            class="el-upload-list__item-delete"
+            @click="handleRemove(file)"
+          >
+            <ElIcon><Delete /></ElIcon>
+          </span>
+        </span>
       </template>
     </ElUpload>
 

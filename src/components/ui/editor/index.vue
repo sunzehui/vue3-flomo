@@ -64,6 +64,7 @@ const handleMouse = (e) => {
     />
     <ToolBar
       ref="toolbarRef"
+      :images="props.memo?.images"
       :submit-disabled="isEmpty(_memo?.content)"
       @add-emoji="handler.handleAddEmoji"
       @add-tag="handler.handleAddTag"

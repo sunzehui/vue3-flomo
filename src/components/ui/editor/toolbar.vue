@@ -5,8 +5,11 @@ import EmojiPicker from './emoji-picker.vue'
 import { EditorType } from '@/types/card-type'
 import ImageUpload from '@/components/ui/editor/image-upload.vue'
 import { useMemoEditor } from '@/composable/useMemoEditor'
+import type { FileRecord } from '@/types/memo'
+
 const props = withDefaults(defineProps<{
   submitDisabled: boolean
+  images?: FileRecord[]
 }>(), {
   submitDisabled: true,
 })
@@ -24,6 +27,9 @@ const {
 const imageUploadRef = ref(null)
 
 const isImgUploadShow = ref(false)
+watchEffect(() => {
+  isImgUploadShow.value = !isEmpty(props.images)
+})
 const handleAddImage = (event: MouseEvent) => {
   isImgUploadShow.value = !isImgUploadShow.value
 }
@@ -52,6 +58,7 @@ defineExpose({
   <ImageUpload
     v-if="isImgUploadShow"
     ref="imgUploadRef"
+    :images="props.images"
     @fileChange="handleFileChange"
   />
   <EmojiPicker

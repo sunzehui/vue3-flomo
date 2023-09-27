@@ -17,13 +17,13 @@ const previewList = computed(() => {
   <div class="img-container">
     <div v-for="(file, idx) in images" :key="file.id" class="relative imgwrp">
       <ElImage
-        class="el-upload-list__item-thumbnail rounded-sm"
+        class="el-upload-list__item-thumbnail rounded-sm w-full h-full"
         :src="file.filePath"
         :zoom-rate="1"
         hide-on-click-modal
         :preview-src-list="previewList"
         :initial-index="idx"
-        fit="cover"
+        fit="contain"
       />
       <span
         class="el-upload-list__item-actions pointer-events-none"

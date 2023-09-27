@@ -32,3 +32,13 @@ export const calculateMD5 = (file): Promise<string> => {
     loadNext()
   })
 }
+
+export const isValidImageType = (file) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+  return allowedTypes.includes(file.type)
+}
+
+export const isValidImageSize = (file) => {
+  const maxSize = 5 * 1024 * 1024 // 5MB in bytes
+  return file.size <= maxSize
+}
