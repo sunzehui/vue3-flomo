@@ -14,10 +14,6 @@ const { loadDeletedMemo } = useMemoStore()
 
 const { isLoading } = useAsyncState(loadDeletedMemo, null)
 
-const cardContainerRef = ref(null)
-
-const { height } = useElementBounding(cardContainerRef)
-provide('cardContainerHeight', height)
 </script>
 
 <template>
@@ -29,7 +25,7 @@ provide('cardContainerHeight', height)
     </div>
 
     <PageBody v-loading="isLoading" class="flex-1 !px-0">
-      <div v-if="!isLoading && deletedMemoList.length" ref="cardContainerRef" class="card-container">
+      <div v-if="!isLoading && deletedMemoList.length" class="card-container">
         <template v-for="memo of deletedMemoList " :key="memo.id">
           <MemoCard :memo="memo" />
         </template>

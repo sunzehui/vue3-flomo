@@ -27,11 +27,6 @@ watchEffect(() => {
   tag = props.tag
   execute()
 })
-
-const cardContainerRef = ref(null)
-const { height } = useElementBounding(cardContainerRef)
-
-provide('cardContainerHeight', height)
 </script>
 
 <template>
@@ -40,7 +35,7 @@ provide('cardContainerHeight', height)
     <div class="input-container">
       <MemoEditor :type="EditorType.create" />
     </div>
-    <div ref="cardContainerRef" v-loading="isLoading" class="card-container">
+    <div class="card-container">
       <template v-for="memo of enhancedMemoList" :key="memo.id">
         <MemoCardOrEditor :memo="memo" />
       </template>

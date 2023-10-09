@@ -19,7 +19,7 @@ const handleToggleClick = () => {
 <template>
   <div class="title-container">
     <div class="user">
-      <RouterLink class="username" to="/me" @click="toggleLeftMenuOpen(false)">
+      <RouterLink class="username" to="/me">
         <span class="title">{{ nickname }}</span><span class="pro" :class="{ active: isPro }">PRO</span>
       </RouterLink>
     </div>

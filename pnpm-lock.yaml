@@ -21,8 +21,8 @@ dependencies:
     specifier: ^10.4.1
     version: 10.4.1(vue@3.3.4)
   '@vueuse/core':
-    specifier: ^9.6.0
-    version: registry.npmmirror.com/@vueuse/core@9.6.0(vue@3.3.4)
+    specifier: ^10.5.0
+    version: 10.5.0(vue@3.3.4)
   axios:
     specifier: ^0.27.2
     version: 0.27.2
@@ -147,7 +147,7 @@ devDependencies:
     version: 0.8.0(rollup@3.27.2)
   unplugin-vue-macros:
     specifier: ^2.4.4
-    version: 2.4.4(@vueuse/core@9.6.0)(rollup@3.27.2)(vite@4.4.9)(vue@3.3.4)
+    version: 2.4.4(@vueuse/core@10.5.0)(rollup@3.27.2)(vite@4.4.9)(vue@3.3.4)
   vite:
     specifier: ^4.4.9
     version: 4.4.9(@types/node@17.0.45)(sass@1.52.3)(terser@5.19.2)
@@ -2012,6 +2012,9 @@ packages:
     resolution: {integrity: sha512-4p9vcSmxAayx72yn70joFoL44c9MO/0+iVEBIQXe3v2h2SiAsEIo/G5v6ObFWvNKRFjbrVadNf9LqEEZeQPzdA==}
     dev: false
 
+  /@types/web-bluetooth@0.0.18:
+    resolution: {integrity: sha512-v/ZHEj9xh82usl8LMR3GarzFY1IrbXJw5L4QfQhokjRV91q+SelFqxQWSep1ucXEZ22+dSTwLFkXeur25sPIbw==}
+
   /@vee-validate/rules@4.5.11:
     resolution: {integrity: sha512-aGwxjr/5/w8LFVObPB6UrqYt0oRlHHFw8/nxZHowY4LP62GWlAi+mAp1fb15Paav/c9rgV4iiqsNYarS1zpNQw==}
     dev: false
@@ -2161,7 +2164,7 @@ packages:
       vue: 3.3.4
     dev: true
 
-  /@vue-macros/define-models@1.0.13(@vueuse/core@9.6.0)(rollup@3.27.2)(vue@3.3.4):
+  /@vue-macros/define-models@1.0.13(@vueuse/core@10.5.0)(rollup@3.27.2)(vue@3.3.4):
     resolution: {integrity: sha512-1GphMtJsR5+Dqcarm3f8pKYMHSigEiqGqijPp4njQT6O+H+i5Ja6kcqtqre5N1/fNRRgxe4l2KGKyk44IstmMA==}
     engines: {node: '>=16.14.0'}
     peerDependencies:
@@ -2171,7 +2174,7 @@ packages:
         optional: true
     dependencies:
       '@vue-macros/common': 1.7.0(rollup@3.27.2)(vue@3.3.4)
-      '@vueuse/core': registry.npmmirror.com/@vueuse/core@9.6.0(vue@3.3.4)
+      '@vueuse/core': 10.5.0(vue@3.3.4)
       ast-walker-scope: 0.5.0(rollup@3.27.2)
       unplugin: 1.4.0
     transitivePeerDependencies:
@@ -2585,8 +2588,43 @@ packages:
       - vue
     dev: false
 
+  /@vueuse/core@10.5.0(vue@3.3.4):
+    resolution: {integrity: sha512-z/tI2eSvxwLRjOhDm0h/SXAjNm8N5ld6/SC/JQs6o6kpJ6Ya50LnEL8g5hoYu005i28L0zqB5L5yAl8Jl26K3A==}
+    dependencies:
+      '@types/web-bluetooth': 0.0.18
+      '@vueuse/metadata': 10.5.0
+      '@vueuse/shared': 10.5.0(vue@3.3.4)
+      vue-demi: 0.14.6(vue@3.3.4)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+
+  /@vueuse/core@8.7.4(vue@3.3.4):
+    resolution: {integrity: sha512-dQgxjb79PDcizlaclgCkCzNoqNv12PnbXxUOFL9VacakmD/ACoSMWwTpcG3HKoDoYyl2V3kSW/8AkvXGEYEGFA==}
+    peerDependencies:
+      '@vue/composition-api': ^1.1.0
+      vue: ^2.6.0 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      vue:
+        optional: true
+    dependencies:
+      '@vueuse/metadata': 8.7.4
+      '@vueuse/shared': 8.7.4(vue@3.3.4)
+      vue: 3.3.4
+      vue-demi: 0.14.6(vue@3.3.4)
+    dev: false
+
   /@vueuse/metadata@10.4.1:
     resolution: {integrity: sha512-2Sc8X+iVzeuMGHr6O2j4gv/zxvQGGOYETYXEc41h0iZXIRnRbJZGmY/QP8dvzqUelf8vg0p/yEA5VpCEu+WpZg==}
+    dev: false
+
+  /@vueuse/metadata@10.5.0:
+    resolution: {integrity: sha512-fEbElR+MaIYyCkeM0SzWkdoMtOpIwO72x8WsZHRE7IggiOlILttqttM69AS13nrDxosnDBYdyy3C5mR1LCxHsw==}
+
+  /@vueuse/metadata@8.7.4:
+    resolution: {integrity: sha512-CwEYS6/M6JDxk9D1mUsZq3F0VnYnf39rAxOytP58vb4BrhmPKEVfiSpvxuYcJimU9ccT/xjWhwBnsdGC2H9mIQ==}
     dev: false
 
   /@vueuse/shared@10.4.1(vue@3.3.4):
@@ -2596,6 +2634,29 @@ packages:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+    dev: false
+
+  /@vueuse/shared@10.5.0(vue@3.3.4):
+    resolution: {integrity: sha512-18iyxbbHYLst9MqU1X1QNdMHIjks6wC7XTVf0KNOv5es/Ms6gjVFCAAWTVP2JStuGqydg3DT+ExpFORUEi9yhg==}
+    dependencies:
+      vue-demi: 0.14.6(vue@3.3.4)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+
+  /@vueuse/shared@8.7.4(vue@3.3.4):
+    resolution: {integrity: sha512-QhwTEd2Gr/8ZliWVEM8sbMUkXtVVV1Mt1mOkCnIbIN33D/V28FwGKUKqEPGZZCXuJchARnun/J1TAiT/UmZd1w==}
+    peerDependencies:
+      '@vue/composition-api': ^1.1.0
+      vue: ^2.6.0 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      vue:
+        optional: true
+    dependencies:
+      vue: 3.3.4
+      vue-demi: 0.14.6(vue@3.3.4)
     dev: false
 
   /acorn@8.10.0:
@@ -3899,7 +3960,7 @@ packages:
       - vue
     dev: true
 
-  /unplugin-vue-macros@2.4.4(@vueuse/core@9.6.0)(rollup@3.27.2)(vite@4.4.9)(vue@3.3.4):
+  /unplugin-vue-macros@2.4.4(@vueuse/core@10.5.0)(rollup@3.27.2)(vite@4.4.9)(vue@3.3.4):
     resolution: {integrity: sha512-f7L8GnSOhtLNXU5PSyA8svIIjP68ij+TdM9Jhq409M31szSsW9ug6hZ5oTBwNcvapFV1I3ZvK4LKqXeY5FcIhA==}
     engines: {node: '>=16.14.0'}
     peerDependencies:
@@ -3909,7 +3970,7 @@ packages:
       '@vue-macros/chain-call': 0.1.3(rollup@3.27.2)(vue@3.3.4)
       '@vue-macros/common': 1.7.0(rollup@3.27.2)(vue@3.3.4)
       '@vue-macros/define-emit': 0.1.13(vue@3.3.4)
-      '@vue-macros/define-models': 1.0.13(@vueuse/core@9.6.0)(rollup@3.27.2)(vue@3.3.4)
+      '@vue-macros/define-models': 1.0.13(@vueuse/core@10.5.0)(rollup@3.27.2)(vue@3.3.4)
       '@vue-macros/define-prop': 0.2.4(vue@3.3.4)
       '@vue-macros/define-props': 1.0.17(@vue-macros/reactivity-transform@0.3.19)(rollup@3.27.2)(vue@3.3.4)
       '@vue-macros/define-props-refs': 1.1.7(rollup@3.27.2)(vue@3.3.4)
@@ -4469,11 +4530,6 @@ packages:
     version: 2.0.6
     dev: true
 
-  registry.npmmirror.com/@types/web-bluetooth@0.0.16:
-    resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@types/web-bluetooth/-/web-bluetooth-0.0.16.tgz}
-    name: '@types/web-bluetooth'
-    version: 0.0.16
-
   registry.npmmirror.com/@typescript-eslint/eslint-plugin@5.46.0(@typescript-eslint/parser@5.46.0)(eslint@8.29.0)(typescript@5.1.6):
     resolution: {integrity: sha512-QrZqaIOzJAjv0sfjY4EjbXUi3ZOFpKfzntx22gPGr9pmFcTjcFw/1sS1LJhEubfAGwuLjNrPV0rH+D1/XZFy7Q==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.46.0.tgz}
     id: registry.npmmirror.com/@typescript-eslint/eslint-plugin/5.46.0
@@ -4629,80 +4685,6 @@ packages:
     name: '@vue/devtools-api'
     version: 6.1.4
     dev: false
-
-  registry.npmmirror.com/@vueuse/core@8.7.4(vue@3.3.4):
-    resolution: {integrity: sha512-dQgxjb79PDcizlaclgCkCzNoqNv12PnbXxUOFL9VacakmD/ACoSMWwTpcG3HKoDoYyl2V3kSW/8AkvXGEYEGFA==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@vueuse/core/-/core-8.7.4.tgz}
-    id: registry.npmmirror.com/@vueuse/core/8.7.4
-    name: '@vueuse/core'
-    version: 8.7.4
-    peerDependencies:
-      '@vue/composition-api': ^1.1.0
-      vue: ^2.6.0 || ^3.2.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-      vue:
-        optional: true
-    dependencies:
-      '@vueuse/metadata': registry.npmmirror.com/@vueuse/metadata@8.7.4
-      '@vueuse/shared': registry.npmmirror.com/@vueuse/shared@8.7.4(vue@3.3.4)
-      vue: 3.3.4
-      vue-demi: 0.14.6(vue@3.3.4)
-    dev: false
-
-  registry.npmmirror.com/@vueuse/core@9.6.0(vue@3.3.4):
-    resolution: {integrity: sha512-qGUcjKQXHgN+jqXEgpeZGoxdCbIDCdVPz3QiF1uyecVGbMuM63o96I1GjYx5zskKgRI0FKSNsVWM7rwrRMTf6A==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@vueuse/core/-/core-9.6.0.tgz}
-    id: registry.npmmirror.com/@vueuse/core/9.6.0
-    name: '@vueuse/core'
-    version: 9.6.0
-    dependencies:
-      '@types/web-bluetooth': registry.npmmirror.com/@types/web-bluetooth@0.0.16
-      '@vueuse/metadata': registry.npmmirror.com/@vueuse/metadata@9.6.0
-      '@vueuse/shared': registry.npmmirror.com/@vueuse/shared@9.6.0(vue@3.3.4)
-      vue-demi: registry.npmmirror.com/vue-demi@0.13.1(vue@3.3.4)
-    transitivePeerDependencies:
-      - '@vue/composition-api'
-      - vue
-
-  registry.npmmirror.com/@vueuse/metadata@8.7.4:
-    resolution: {integrity: sha512-CwEYS6/M6JDxk9D1mUsZq3F0VnYnf39rAxOytP58vb4BrhmPKEVfiSpvxuYcJimU9ccT/xjWhwBnsdGC2H9mIQ==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@vueuse/metadata/-/metadata-8.7.4.tgz}
-    name: '@vueuse/metadata'
-    version: 8.7.4
-    dev: false
-
-  registry.npmmirror.com/@vueuse/metadata@9.6.0:
-    resolution: {integrity: sha512-sIC8R+kWkIdpi5X2z2Gk8TRYzmczDwHRhEFfCu2P+XW2JdPoXrziqsGpDDsN7ykBx4ilwieS7JUIweVGhvZ93w==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@vueuse/metadata/-/metadata-9.6.0.tgz}
-    name: '@vueuse/metadata'
-    version: 9.6.0
-
-  registry.npmmirror.com/@vueuse/shared@8.7.4(vue@3.3.4):
-    resolution: {integrity: sha512-QhwTEd2Gr/8ZliWVEM8sbMUkXtVVV1Mt1mOkCnIbIN33D/V28FwGKUKqEPGZZCXuJchARnun/J1TAiT/UmZd1w==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@vueuse/shared/-/shared-8.7.4.tgz}
-    id: registry.npmmirror.com/@vueuse/shared/8.7.4
-    name: '@vueuse/shared'
-    version: 8.7.4
-    peerDependencies:
-      '@vue/composition-api': ^1.1.0
-      vue: ^2.6.0 || ^3.2.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-      vue:
-        optional: true
-    dependencies:
-      vue: 3.3.4
-      vue-demi: 0.14.6(vue@3.3.4)
-    dev: false
-
-  registry.npmmirror.com/@vueuse/shared@9.6.0(vue@3.3.4):
-    resolution: {integrity: sha512-/eDchxYYhkHnFyrb00t90UfjCx94kRHxc7J1GtBCqCG4HyPMX+krV9XJgVtWIsAMaxKVU4fC8NSUviG1JkwhUQ==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@vueuse/shared/-/shared-9.6.0.tgz}
-    id: registry.npmmirror.com/@vueuse/shared/9.6.0
-    name: '@vueuse/shared'
-    version: 9.6.0
-    dependencies:
-      vue-demi: 0.14.6(vue@3.3.4)
-    transitivePeerDependencies:
-      - '@vue/composition-api'
-      - vue
 
   registry.npmmirror.com/acorn-jsx@5.3.2(acorn@8.8.1):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz}
@@ -5224,7 +5206,7 @@ packages:
       '@popperjs/core': /@sxzz/popperjs-es@2.11.7
       '@types/lodash': registry.npmmirror.com/@types/lodash@4.14.182
       '@types/lodash-es': registry.npmmirror.com/@types/lodash-es@4.17.6
-      '@vueuse/core': registry.npmmirror.com/@vueuse/core@8.7.4(vue@3.3.4)
+      '@vueuse/core': 8.7.4(vue@3.3.4)
       async-validator: registry.npmmirror.com/async-validator@4.2.5
       dayjs: registry.npmmirror.com/dayjs@1.11.7
       escape-html: registry.npmmirror.com/escape-html@1.0.3
@@ -7372,23 +7354,6 @@ packages:
       spdx-correct: registry.npmmirror.com/spdx-correct@3.1.1
       spdx-expression-parse: registry.npmmirror.com/spdx-expression-parse@3.0.1
     dev: true
-
-  registry.npmmirror.com/vue-demi@0.13.1(vue@3.3.4):
-    resolution: {integrity: sha512-xmkJ56koG3ptpLnpgmIzk9/4nFf4CqduSJbUM0OdPoU87NwRuZ6x49OLhjSa/fC15fV+5CbEnrxU4oyE022svg==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.1.tgz}
-    id: registry.npmmirror.com/vue-demi/0.13.1
-    name: vue-demi
-    version: 0.13.1
-    engines: {node: '>=12'}
-    hasBin: true
-    requiresBuild: true
-    peerDependencies:
-      '@vue/composition-api': ^1.0.0-rc.1
-      vue: ^3.0.0-0 || ^2.6.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-    dependencies:
-      vue: 3.3.4
 
   registry.npmmirror.com/vue-eslint-parser@9.1.0(eslint@8.29.0):
     resolution: {integrity: sha512-NGn/iQy8/Wb7RrRa4aRkokyCZfOUWk19OP5HP6JEozQFX5AoS/t+Z0ZN7FY4LlmWc4FNI922V7cvX28zctN8dQ==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/vue-eslint-parser/-/vue-eslint-parser-9.1.0.tgz}

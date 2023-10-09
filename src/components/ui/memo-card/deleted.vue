@@ -47,12 +47,11 @@ const { emit: busEmit } = useEventBus(MEMO_CARD)
 const showDetail = () => {
   busEmit({ action: 'open-detail-card' }, props.memo)
 }
-const cardContainerHeight = inject<Ref<number>>('cardContainerHeight') || null
+const parentEl = useParentElement()
+const { height } = useElementBounding(parentEl)
 const memoContentMaxHeight = computed(() => {
-  if (!cardContainerHeight)
-    return '100%'
   // 不能超过1/3屏
-  return `${cardContainerHeight.value / 3}px`
+  return `${height.value / 3}px`
 })
 </script>
 

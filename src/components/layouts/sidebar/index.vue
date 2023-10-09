@@ -24,6 +24,7 @@ const userStore = useUserStore()
     @apply h-full overflow-y-scroll;
     width: 240px;
     min-width: 218px;
+
   }
 
   i {

@@ -10,7 +10,8 @@ import {
 import { storeToRefs } from 'pinia'
 import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
-import { useEventBus } from '@vueuse/core'
+import { useElementBounding, useEventBus, useParentElement } from '@vueuse/core'
+
 import MemoAction from './action.vue'
 import Tags from '@/components/ui/memo-card/tags.vue'
 import Gallery from '@/components/ui/memo-card/gallery.vue'
@@ -49,11 +50,13 @@ const showDetail = () => {
   busEmit({ action: 'open-detail-card' }, props.memo)
 }
 
-const cardContainerHeight = inject<Ref<number>>('cardContainerHeight')
+const parentEl = useParentElement()
+const { height } = useElementBounding(parentEl)
 const memoContentMaxHeight = computed(() => {
   // 不能超过1/3屏
-  return `${cardContainerHeight.value / 3}px`
+  return `${height.value / 3}px`
 })
+
 const { searchKeywords } = storeToRefs(useMemoStore())
 </script>
 
@@ -119,7 +122,6 @@ const { searchKeywords } = storeToRefs(useMemoStore())
     font-size: 14px;
     word-break: break-all;
     white-space: pre-wrap;
-    // max-height: v-bind(memoContentMaxHeight);
     // overflow: scroll;
 
   }
