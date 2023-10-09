@@ -121,9 +121,9 @@ export function mergeRanges(ranges) {
       currentRange[1] = Math.max(range[1], currentRange[1])
       // update the text in case the range is expanded
       const text
-          = currentRange[2].slice(0, range[0] - currentRange[0])
-          + range[2]
-          + currentRange[2].slice(range[1] - currentRange[0])
+        = currentRange[2].slice(0, range[0] - currentRange[0])
+        + range[2]
+        + currentRange[2].slice(range[1] - currentRange[0])
       currentRange[2] = text
     }
     else {
@@ -160,7 +160,7 @@ export function renderMemoContent(pre_content, highlight_words = null) {
     rendered_content = rendered_content.replace('<p></p>', '<p>&zwnj;</p>')
 
   if (!highlight_words)
-    return (rendered_content)
+    return escapeHtml(rendered_content)
 
   const matchRule = />([^>^<]*)/g
   rendered_content = rendered_content.replace(
@@ -172,5 +172,6 @@ export function renderMemoContent(pre_content, highlight_words = null) {
     },
   )
 
-  return (rendered_content)
+  const cnt = escapeHtml(rendered_content)
+  return cnt
 }
