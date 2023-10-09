@@ -160,18 +160,17 @@ export function renderMemoContent(pre_content, highlight_words = null) {
     rendered_content = rendered_content.replace('<p></p>', '<p>&zwnj;</p>')
 
   if (!highlight_words)
-    return escapeHtml(rendered_content)
+    return (rendered_content)
 
   const matchRule = />([^>^<]*)/g
   rendered_content = rendered_content.replace(
     matchRule,
     (matched) => {
-      return matched.replace(new RegExp(highlight_words, 'ig'), (p) => {
+      return (matched).replace(new RegExp(highlight_words, 'ig'), (p) => {
         return `<mark>${p}</mark>`
       })
     },
   )
 
-  const cnt = escapeHtml(rendered_content)
-  return cnt
+  return rendered_content
 }

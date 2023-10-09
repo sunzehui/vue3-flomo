@@ -1,4 +1,5 @@
 import type { Memo } from '@/types/memo'
+import { escapeHtml } from '@/utils/editor'
 import request from '@/utils/request'
 
 export interface GetListParams {
@@ -28,6 +29,7 @@ export function ApiDelete(id: number) {
 }
 
 export async function ApiSave(data: Partial<Memo>) {
+  data.content = `<p>${escapeHtml(data.content)}</p>`
   return await request<Memo>({
     url: '/api/article',
     method: 'post',
