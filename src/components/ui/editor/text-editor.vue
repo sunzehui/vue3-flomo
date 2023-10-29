@@ -78,10 +78,10 @@ watchEffect(() => {
     @blur="emit('blur')"
   />
   <SuggestionList
-    v-if="isSuggestionShow"
     ref="suggestionRef"
+    :show="isSuggestionShow"
     :list="suggestionList"
-    @click="handleItemClick"
+    @itemClick="handleItemClick"
   />
 </template>
 

@@ -5,7 +5,7 @@ import { useEventListener } from '@vueuse/core'
 export function useEditor(textareaRef: Ref<HTMLTextAreaElement>) {
   const textareaContent = ref('')
   const cbs = {
-    onSave: () => {},
+    onSave: () => { },
   }
 
   const resize = () => {
@@ -30,9 +30,9 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>) {
     const { selectionEnd } = textareaRef.value
     const currentContent = textareaContent.value
     const placement
-            = currentContent.slice(0, selectionEnd)
-            + content
-            + currentContent.slice(selectionEnd)
+      = currentContent.slice(0, selectionEnd)
+      + content
+      + currentContent.slice(selectionEnd)
     textareaContent.value = placement
     // 插入完成后，设置光标位置
     textareaRef.value.blur()
@@ -47,9 +47,13 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>) {
       textareaContent.value = ''
     }
   })
+  function setValue(val: string) {
+    textareaContent.value = val
+  }
   return {
     textareaContent,
     insertContent,
+    setValue,
     onSave: (cb: () => void) => {
       cbs.onSave = cb
     },

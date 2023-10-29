@@ -4,8 +4,8 @@ import { templateRef, unrefElement } from '@vueuse/core'
 import type { tagType } from '@/types/memo'
 import { px2number } from '@/utils/Tool'
 
-const props = defineProps<{ list: tagType[] }>()
-const emit = defineEmits(['click'])
+const props = defineProps<{ list: tagType[]; show: boolean }>()
+const emit = defineEmits(['itemClick'])
 const style = ref({
   top: 0,
   left: 0,
@@ -13,6 +13,12 @@ const style = ref({
 })
 
 const listRef = ref(null)
+
+function handleItemClick(tag: tagType) {
+  emit('itemClick', tag)
+  return false
+}
+const selectItemIdx = ref(0)
 defineExpose({
   syncPostion: (pos) => {
     style.value = {
@@ -24,6 +30,12 @@ defineExpose({
     const css = window.getComputedStyle(el)
     return px2number(css.width)
   },
+  setSelectItemIdx(idx: number) {
+    selectItemIdx.value = idx
+  },
+  getSelectItemIdx() {
+    return selectItemIdx.value
+  },
 })
 </script>
 
@@ -31,11 +43,18 @@ defineExpose({
   <div
     v-show="list.length"
     ref="listRef"
-    class="suggestion"
     :style="style"
-    @click="emit('click', $event)"
+    class="suggestion"
+    :class="{ hidden: !show }"
   >
-    <span v-for="(item) of props.list" :key="item.id" :class="{ active: item.active }">{{ item.content }}</span>
+    <span
+      v-for="(item, idx) of props.list" :key="item.id"
+      :class="{ active: selectItemIdx === idx }"
+      @mouseover="selectItemIdx = idx"
+      @mousedown="handleItemClick(idx)"
+    >
+      {{ item.content }}
+    </span>
   </div>
 </template>
 
@@ -51,7 +70,7 @@ defineExpose({
   flex-direction: column;
 
   &.hidden {
-    display: none;
+    visibility: hidden;
   }
 
   span {

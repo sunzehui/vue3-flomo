@@ -17,10 +17,10 @@ export function useSuggestion({
   editorRef = ref(null),
   suggestionList = ref([]),
 }: SuggestionParams) {
-  const partialPatternRef = ref('')
+  const searchText = ref('')
   const isSuggestionShow = ref(false)
   const filteredList = computed(() => {
-    const partialValue = unref(partialPatternRef).replace('#', '')
+    const partialValue = unref(searchText)
     const list = unref(suggestionList)
 
     const matched = partialValue
@@ -33,6 +33,7 @@ export function useSuggestion({
 
     return matched
   })
+  const listItemActiveIdx = ref(0)
 
   const editorHook = useEditor(editorRef)
   const cursorRef = ref({
@@ -41,36 +42,43 @@ export function useSuggestion({
     height: 0,
     containerWidth: 0,
   })
+  let curkeyIdx = null
+
   // 隐藏/显示联想框
-  const setSuggestionShow = async (show = true) => {
-    isSuggestionShow.value = show
+  const closeMenu = () => {
+    isSuggestionShow.value = false
+    return false
+  }
+  const openMenu = (keyIdx) => {
+    // updateCaretPosition()
+    cursorRef.value = getCursorPos(editorRef)
+    isSuggestionShow.value = true
+    curkeyIdx = keyIdx
     return false
   }
 
   // 设置候选项active
   const activeItemRef: ComputedRef<any> = computed(() => {
-    const activeIdx = filteredList.value.findIndex(item => item.active)
-    return filteredList.value[activeIdx]
+    const curIdx = suggestionRef.value.getSelectItemIdx()
+    return filteredList.value[curIdx]
   })
 
   const setItemActive = (isNext = 1) => {
-    const list = unref(filteredList)
-    const currentIndex = list.findIndex(item => item.active)
-    const target = (currentIndex + isNext + list.length) % list.length
-    list.forEach(item => item.active = false)
-    list[target].active = true
+    const total = unref(filteredList).length
+    const curIdx = suggestionRef.value.getSelectItemIdx()
+    listItemActiveIdx.value = (curIdx + isNext + total) % total
   }
 
-  const onKeyDownEvent = (event: KeyboardEvent) => {
-    const key = event.key
+  const onKeyDownEvent = (e: KeyboardEvent) => {
+    const key = e.key
 
     if (['ArrowUp', 'Enter', 'ArrowDown'].includes(key)) {
       // 仅当联想菜单展示时
       if (!isSuggestionShow.value)
         return
 
-      event.stopPropagation()
-      event.preventDefault()
+      e.stopPropagation()
+      e.preventDefault()
       // 当输入“上，下“方向键时切换active标签
       if (key === 'ArrowUp') {
         setItemActive(-1)
@@ -81,60 +89,45 @@ export function useSuggestion({
         return false
       }
       // 敲回车选中
-      else if (activeItemRef.value !== null && (key === 'Enter')) {
-        const activeItem = unref(activeItemRef)
-        if (activeItem) {
-          const { value: partial } = partialPatternRef
-          const leftContent = `${activeItem.content.slice(partial.length - 1)} `
-          editorHook.insertContent(leftContent)
-          partialPatternRef.value = ''
-          nextTick(() => {
-            // suggestionControl()
-            setSuggestionShow(false)
-          })
-        }
-        else {
-          setSuggestionShow(false)
-        }
+      else if (activeItemRef.value !== null && (key === 'Enter' || key === 'Tab')) {
+        applyMetion(listItemActiveIdx.value)
         return false
       }
     }
-    else {
-      suggestionControl()
-    }
   }
 
-  function visibleControl() {
+  function getValue() {
+    const { value: inputValue } = unref(editorRef)
+    return inputValue
+  }
+  function getLastKeyBeforeCursor(cursorIndex: number) {
+    return getValue().lastIndexOf('#', cursorIndex - 1)
+  }
+  function getLastSearchText(cursorIndex: number, keyIndex: number) {
+    if (keyIndex !== -1) {
+      const text = getValue().substring(keyIndex + 1, cursorIndex)
+      // If there is a space we close the menu
+      if (!/\s/.test(text))
+        return text
+    }
+    return null
+  }
+  function checkKey() {
     if (!unref(editorRef))
       return false
-    const { selectionEnd } = unref(editorRef)
-    const isFocus = selectionEnd !== null
+    const { selectionEnd: cursorIndex } = unref(editorRef)
+    const keyIdx = getLastKeyBeforeCursor(cursorIndex)
 
-    const isActive = unref(editorRef) === document.activeElement
-    if (!isFocus || !isActive)
-      return setSuggestionShow(false)
-    const { value: inputValue } = unref(editorRef)
-    for (let i = selectionEnd - 1; i >= 0; --i) {
-      const char = inputValue[i]
-      if (char === '#') {
-        setSuggestionShow(true)
-        partialPatternRef.value = `#${inputValue.slice(i + 1, selectionEnd)}`
-        return false
-      }
+    const text = getLastSearchText(cursorIndex, keyIdx)
+    if (text !== null) {
+      openMenu(keyIdx)
+      searchText.value = text
+      return true
     }
 
-    setSuggestionShow(false)
+    closeMenu()
+    return false
   }
-  watchEffect(() => {
-    const matched = partialPatternRef.value
-    const matchedItems = unref(filteredList)
-    if (!matched)
-      return
-    if (!matchedItems.length)
-      setSuggestionShow(false)
-    else
-      setSuggestionShow(true)
-  })
   function syncPosisiton() {
     if (editorRef.value == null || suggestionRef.value == null)
       return
@@ -151,31 +144,40 @@ export function useSuggestion({
       left, top,
     })
   }
-  function suggestionControl() {
+  function updateCaretPosition() {
     setTimeout(() => {
       cursorRef.value = getCursorPos(editorRef)
-      visibleControl()
+      checkKey()
       nextTick(syncPosisiton)
     }, 0)
   }
 
   useEventListener(editorRef, 'keydown', onKeyDownEvent)
-  useEventListener(editorRef, 'focus', suggestionControl)
+  useEventListener(editorRef, 'input', updateCaretPosition)
   useEventListener(editorRef, 'blur', () => {
-    setSuggestionShow(false)
+    closeMenu()
   })
-  useEventListener(editorRef, 'mousedown', suggestionControl)
-  const handleItemClick = ($event: Event) => {
-    const target = ($event.target as HTMLSpanElement)
-    if (target instanceof HTMLSpanElement) {
-      const targetValue = target.innerText
-      // 将联想框中的内容添加到textarea中
-      const { value: partial } = partialPatternRef
-      const leftContent = `${targetValue.slice(partial.length - 1)} `
-      editorHook.insertContent(leftContent)
-      partialPatternRef.value = ''
-    }
+  const handleItemClick = (itemIdx: number) => {
+    applyMetion(itemIdx)
   }
+
+  function replaceValue(curkeyIdx: number, itemValue: string) {
+    return `${getValue().slice(0, curkeyIdx)}${itemValue}${getValue().slice(curkeyIdx + searchText.value.length + 1, getValue().length)}`
+  }
+  function applyMetion(itemIdx: number) {
+    const activeItem = filteredList.value[itemIdx]
+    // 将联想框中的内容添加到textarea中
+    editorHook.setValue(
+      replaceValue(curkeyIdx, `#${activeItem.content} `),
+    )
+    searchText.value = ''
+    closeMenu()
+  }
+
+  watchEffect(() => {
+    const activeIdx = listItemActiveIdx.value
+    suggestionRef.value?.setSelectItemIdx(activeIdx)
+  })
 
   return {
     isSuggestionShow,
@@ -183,7 +185,7 @@ export function useSuggestion({
     suggestionList: filteredList,
     editor: editorHook,
     clear() {
-      partialPatternRef.value = ''
+      searchText.value = ''
     },
   }
 }

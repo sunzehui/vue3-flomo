@@ -16,6 +16,7 @@ export const routes = [
         meta: { title: '个人主页' },
         redirect: '/memo',
       },
+
       {
         path: '/memo',
         meta: { title: '个人主页' },
@@ -54,6 +55,11 @@ export const routes = [
     name: 'Login',
     meta: { title: '登录', publicRoute: true },
     component: Login,
+  },
+  {
+    path: '/test',
+    meta: { title: '登录', publicRoute: true },
+    component: () => import('./views/test.vue'),
   },
   {
     path: '/register',
