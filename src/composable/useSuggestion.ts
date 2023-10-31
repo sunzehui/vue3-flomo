@@ -50,7 +50,6 @@ export function useSuggestion({
     return false
   }
   const openMenu = (keyIdx) => {
-    // updateCaretPosition()
     cursorRef.value = getCursorPos(editorRef)
     isSuggestionShow.value = true
     curkeyIdx = keyIdx

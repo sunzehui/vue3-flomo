@@ -4,17 +4,17 @@ import { unrefElement } from '@vueuse/core'
 import { px2number } from '@/utils/Tool'
 
 export const getCursorPos = (inputRef: MaybeRef<HTMLTextAreaElement>) => {
-  const input = unrefElement(inputRef)
+  const inputEl = unrefElement(inputRef)
   // 初始位置
   const {
     offsetLeft: inputX,
     offsetTop: inputY,
     selectionEnd: selectionPoint,
-  } = input
+  } = inputEl
 
   // 生成看不见的div+sapn
   const _div = document.createElement('div')
-  const copyStyle = window.getComputedStyle(input)
+  const copyStyle = window.getComputedStyle(inputEl)
 
   let containerWidth = '0px'
   let containerHeight = '0px'
@@ -22,28 +22,38 @@ export const getCursorPos = (inputRef: MaybeRef<HTMLTextAreaElement>) => {
     const itemProperty = copyStyle.getPropertyValue(item)
     if (item === 'width')
       containerWidth = itemProperty
-    if (item === 'height')
-      containerHeight = itemProperty
+    // if (item === 'height')
+    //   containerHeight = itemProperty
     _div.style.setProperty(item, itemProperty)
   }
+  containerHeight = `${inputEl.offsetHeight}px`
 
   _div.style.position = 'fixed'
+  _div.style.top = '10px'
+  _div.style.background = 'red'
   _div.style.visibility = 'hidden'
   _div.style.whiteSpace = 'pre-wrap'
+  _div.style.overflow = 'hidden'
+  _div.style.wordBreak = 'break-word'
+  _div.style.wordWrap = 'break-word'
+  _div.style.whiteSpace = 'pre-wrap'
 
-  _div.innerHTML = input.value.slice(0, selectionPoint)
+  _div.innerHTML = inputEl.value.slice(0, selectionPoint)
   const _span = document.createElement('span')
-  _span.innerHTML = input.value.slice(selectionPoint)
+  _span.innerHTML = inputEl.value.slice(selectionPoint)
+
   _div.appendChild(_span)
+
   document.body.appendChild(_div)
 
   // 获取span位置
   const spanX = _span.offsetLeft
   const spanY = _span.offsetTop
-  document.body.removeChild(_div)
-  // 最终位置=初始位置+span位置
-  const x = inputX + spanX
-  const y = inputY + spanY
+  // document.body.removeChild(_div)
+  // 最终位置=初始位置+span位置 + 溢出
+  const x = inputX + spanX - inputEl.scrollLeft
+  const y = inputY + spanY - inputEl.scrollTop
+
   // xy 是相对单位
   return {
     x,
