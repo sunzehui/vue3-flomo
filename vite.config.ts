@@ -10,7 +10,6 @@ import { chunkFileNames, entryFileNames, processAssetFileNames } from './vite/bu
 
 export default defineConfig(({ mode }) => {
   const root = process.cwd()
-
   const env = loadEnv(mode, root)
 
   return {
@@ -51,7 +50,7 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: env.VITE_PROXY_URL,
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, ''),
+          // rewrite: path => path.replace(/^\/api/, ''),
         },
       },
     },
