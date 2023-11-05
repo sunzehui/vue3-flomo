@@ -14,14 +14,16 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
-      VueMacros({
-        plugins: {
-          vue: Vue(),
-          vueJsx: VueJsx(), // if needed
-        },
-        defineRender: true,
-        defineModels: true,
-      }),
+      Vue(),
+      VueJsx(),
+      // VueMacros({
+      //   plugins: {
+      //     vue: Vue(),
+      //     vueJsx: VueJsx(), // if needed
+      //   },
+      //   defineRender: true,
+      //   defineModels: true,
+      // }),
       ElementPlus({}),
       legacy({
         targets: ['defaults', 'not IE 11'],

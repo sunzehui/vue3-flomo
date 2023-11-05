@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { provide, ref, watchEffect } from 'vue'
-import { ElEmpty, vLoading } from 'element-plus'
+import { watchEffect } from 'vue'
+import { ElEmpty } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import { useAsyncState, useElementBounding } from '@vueuse/core'
 import MemoEditor from '@/components/ui/editor/index.vue'

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { resolveRef, useClipboard, usePermission } from '@vueuse/core'
+import { toRef, useClipboard } from '@vueuse/core'
 import { ElButton, ElInput, ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { computed, unref, watchEffect } from 'vue'
+import { computed } from 'vue'
 import PageBody from '@/layouts/page-body.vue'
 import TopBar from '@/components/ui/topbar/index.vue'
 import { useUserStore } from '@/store/user'
 const { userInfo } = storeToRefs(useUserStore())
 const { logout } = useUserStore()
-const username = resolveRef(userInfo.value.username)
-const nickname = resolveRef(userInfo.value.nickname)
+const username = toRef(userInfo.value.username)
+const nickname = toRef(userInfo.value.nickname)
 const shareLink = computed(() => {
   if (!userInfo.value)
     return ''

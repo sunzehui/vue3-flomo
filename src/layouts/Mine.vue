@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { computed, toRefs, watchEffect } from 'vue'
+import { computed, toRefs } from 'vue'
 import {
   ElDrawer,
-  ElMenu,
 } from 'element-plus'
 import LeftPanel from '@/components/layouts/sidebar/index.vue'
 import { useLayoutStore } from '@/store/layout'

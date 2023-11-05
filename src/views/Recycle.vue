@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-
-import { ElAlert, ElBacktop, ElEmpty, ElLoading, vLoading } from 'element-plus'
-import { provide, ref, unref, watchEffect } from 'vue'
-import { useAsyncState, useElementBounding } from '@vueuse/core'
+import { ElAlert, ElEmpty, vLoading } from 'element-plus'
+import { useAsyncState } from '@vueuse/core'
 import TopBar from '@/components/ui/topbar/index.vue'
 import PageBody from '@/layouts/page-body.vue'
 import MemoCard from '@/components/ui/memo-card/deleted.vue'

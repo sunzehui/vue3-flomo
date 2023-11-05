@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watchEffect } from 'vue'
-import EmojiPicker from 'vue3-emoji-picker'
+import EmojiPicker, { EmojiExt } from 'vue3-emoji-picker'
 import 'vue3-emoji-picker/css'
 import { createPopper } from '@popperjs/core'
 import { onClickOutside } from '@vueuse/core'
@@ -41,7 +41,7 @@ onClickOutside(pickerRef, (evt) => {
     return
   open.value = false
 })
-const handleSelect = (emoji: string) => {
+const handleSelect = (emoji: EmojiExt) => {
   emit('picked', emoji)
   open.value = false
 }

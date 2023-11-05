@@ -2,10 +2,10 @@
 import { ref, unref, watchEffect } from 'vue'
 import { Delete, Plus, ZoomIn } from '@element-plus/icons-vue'
 import { ElDialog, ElIcon, ElMessage, ElUpload } from 'element-plus'
-import type { UploadFile, UploadFiles, UploadHooks, UploadInstance, UploadProps, UploadRawFile, UploadUserFile } from 'element-plus'
+import type { UploadFile,  UploadHooks, UploadRawFile, UploadUserFile } from 'element-plus'
 import { compress } from 'image-conversion'
 import { ApiUploadFile, checkFileExistOnServer } from '@/api/file'
-import { calculateMD5, isValidImageSize, isValidImageType } from '@/utils/file'
+import { isValidImageSize, isValidImageType } from '@/utils/file'
 import type { FileRecord } from '@/types/memo'
 const props = defineProps<{
   images: FileRecord[]
