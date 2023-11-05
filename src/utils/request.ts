@@ -5,7 +5,7 @@ import { router } from '../routes'
 import { hideLoading, showLoading } from './loading'
 import type { Resp } from '@/types/api'
 import { useUserStore } from '@/store/user'
-const baseURL = import.meta.env.VITE_BASE_URL as string | undefined
+const baseURL = import.meta.env.VITE_API_URL as string || ""
 
 const axiosInstance = Axios.create({
   baseURL,

@@ -6,6 +6,6 @@ declare global {
   interface ImportMetaEnv {
     VITE_APP_TITLE: string;
     VITE_PORT: number;
-    VITE_PROXY_URL: string;
+    VITE_API_URL: string;
   }
 }
