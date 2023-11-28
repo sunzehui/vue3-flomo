@@ -11,7 +11,7 @@ import {
 
 import { Pin } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
-import { useEventBus } from '@vueuse/core'
+import { useElementBounding, useEventBus, useParentElement } from '@vueuse/core'
 import MemoAction from './action.vue'
 import Tags from '@/components/ui/memo-card/tags.vue'
 import Gallery from '@/components/ui/memo-card/gallery.vue'
