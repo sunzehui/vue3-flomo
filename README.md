@@ -1,12 +1,14 @@
 # vue3-flomo ✍️
 持续不断记录，意义自然浮现  —— 浮墨
+
+[![code style](https://antfu.me/badge-code-style.svg)](https://github.com/antfu/eslint-config)
+
 ## Instruction
 模仿浮墨页面，尽量还原
 
-使用：Vue3 + Nestjs + Typescript 
+使用：Vue3 + Nestjs + Typescript
 
 > 关联后端：[sunzehui/nestjs-flomo](https://github.com/sunzehui/nestjs-flomo)
-
 
 支持：
 - 发布memo
@@ -16,7 +18,6 @@
 ## Preview
 
 ![主界面](./doc/main.png)
-
 
 线上Demo：[预览](http://flomo.hui.zone)
 

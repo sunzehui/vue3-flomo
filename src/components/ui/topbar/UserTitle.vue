@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { toRefs } from 'vue'
+import { computed, toRefs } from 'vue'
 import { RouterLink } from 'vue-router'
 import { DArrowLeft } from '@element-plus/icons-vue'
 import { useLayoutStore } from '@/store/layout'
+
 const props = defineProps<{
   nickname: string
   isPro: boolean
@@ -14,6 +15,9 @@ const { isPC } = toRefs(useLayoutStore())
 const handleToggleClick = () => {
   toggleLeftMenuOpen(false)
 }
+const isShowToggleBtn = computed(() => {
+  return isPC.value
+})
 </script>
 
 <template>
@@ -23,7 +27,8 @@ const handleToggleClick = () => {
         <span class="title">{{ nickname }}</span><span class="pro" :class="{ active: isPro }">PRO</span>
       </RouterLink>
     </div>
-    <div v-if="isPC" class="sidebar-toggle " @click="handleToggleClick">
+
+    <div v-if="isShowToggleBtn" class="sidebar-toggle" @click="handleToggleClick">
       <DArrowLeft class="h-4 w-4" />
     </div>
   </div>

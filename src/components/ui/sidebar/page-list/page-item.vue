@@ -13,6 +13,7 @@ const clickedPath = () => {
   const ispc = unref(isPC)
   if (!ispc)
     toggleDrawerOpen(false)
+
 }
 </script>
 

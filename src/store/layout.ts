@@ -10,14 +10,12 @@ export const useLayoutStore = defineStore('layout', () => {
 
   function toggleLeftMenuOpen(isOpen = false) {
     isLeftMenuOpen.value = isOpen
-    console.log("🚀 ~ file: layout.ts:13 ~ toggleLeftMenuOpen ~ isLeftMenuOpen:", isLeftMenuOpen.value)
   }
   function toggleDrawerOpen(isOpen = false) {
     isDrawerOpen.value = isOpen
   }
   watchEffect(() => {
-    if (!unref(isPC))
-      isLeftMenuOpen.value = false
+    isLeftMenuOpen.value = unref(isPC)
   })
   return {
     isLeftMenuOpen,

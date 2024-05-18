@@ -1,6 +1,5 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import Vue from '@vitejs/plugin-vue'
-import VueMacros from 'unplugin-vue-macros/vite'
 import { defineConfig, loadEnv } from 'vite'
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import compression from 'vite-plugin-compression'
@@ -9,7 +8,9 @@ import ElementPlus from 'unplugin-element-plus/vite'
 import { chunkFileNames, entryFileNames, processAssetFileNames } from './vite/build-assetdir'
 
 export default defineConfig(({ mode }) => {
+  // eslint-disable-next-line node/prefer-global/process
   const root = process.cwd()
+
   const env = loadEnv(mode, root)
 
   return {

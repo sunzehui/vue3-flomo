@@ -2,7 +2,7 @@ export enum CardType {
     article,
     editor
 }
-export enum EditorType{
-    edit,
-    create
+export enum EditorType {
+    edit = 'edit',
+    create = 'create'
 }

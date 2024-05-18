@@ -8,7 +8,6 @@ import MemoCardOrEditor from '@/components/MemoCardOrEditor'
 import { useMemoStore } from '@/store/memo'
 import DetailPanel from '@/components/ui/memo-card/DetailPanel.vue'
 import ShareCard from '@/components/ui/memo-card/ShareCard.vue'
-
 import { EditorType } from '@/types/card-type'
 import { useUserStore } from '@/store/user'
 import MemoTopBar from '@/components/ui/topbar/memo-top-bar.vue'

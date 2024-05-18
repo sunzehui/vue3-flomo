@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { ref, unref, watchEffect } from 'vue'
 import { Download } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
@@ -17,12 +17,14 @@ watchEffect(() => {
   const { tag } = route.query
   isClickMe.value = tag?.toString() === props.link?.toString()
 })
-
-const {
-  toggleLeftMenuOpen,
-} = useLayoutStore()
+const { isPC,toggleDrawerOpen } = useLayoutStore()
 const handleClick = () => {
-  toggleLeftMenuOpen(false)
+  console.log('click');
+
+  const ispc = unref(isPC)
+  if (!ispc)
+    toggleDrawerOpen(false)
+  
   router.push({
     name: 'memo',
     query: {

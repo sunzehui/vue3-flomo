@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { toRefs } from 'vue'
-import { DArrowRight } from '@element-plus/icons-vue'
+import { DArrowRight, Menu } from '@element-plus/icons-vue'
 import { useLayoutStore } from '@/store/layout'
 
 const props = defineProps<{
@@ -8,23 +8,27 @@ const props = defineProps<{
 }>()
 const { toggleLeftMenuOpen } = useLayoutStore()
 
-const { isDrawerOpen, isPC, isLeftMenuOpen, toggleDrawerOpen } = toRefs(useLayoutStore())
-const handleToggleClick = () => {
-  toggleLeftMenuOpen(true)
-}
+const { isPC, isLeftMenuOpen, toggleDrawerOpen } = toRefs(useLayoutStore())
+
 </script>
 
 <template>
   <nav>
     <div class="title-wrp">
+      <!-- 显示隐藏左侧菜单 -->
       <div v-if="!isLeftMenuOpen" class="sidebar-toggle">
-        <DArrowRight v-if="isPC" class="h-4 w-4" @click.stop="handleToggleClick" />
-        <span v-show="!isPC" class="showLeftPanelBtn" @click.stop="toggleDrawerOpen(true)">三</span>
+        <!-- PC -->
+        <DArrowRight v-if="isPC" class="h-4 w-4" @click.stop="toggleLeftMenuOpen(true)" />
+        <!-- 移动端 -->
+        <Menu v-show="!isPC" class="h4 w-4 opacity-60 hover:opacity-100" @click.stop="toggleDrawerOpen(true)" />
       </div>
+      <!-- 标题 -->
       <span class="title hover-bg">
         {{ title || 'MEMO' }}
       </span>
+      <!-- 子标题 -->
       <slot name="sub-title" />
+      <!-- 工具栏 -->
       <slot name="tool" />
     </div>
 
@@ -48,7 +52,7 @@ const handleToggleClick = () => {
   }
 }
 .showLeftPanelBtn{
-  @apply text-secondary-text text-base cursor-pointer;
+  // @apply text-secondary-text text-base cursor-pointer;
 }
 nav {
   display: flex;

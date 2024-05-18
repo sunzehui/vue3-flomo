@@ -70,10 +70,10 @@ const onSubmit = async () => {
           登录
         </button>
         <div class="w-full flex justify-center gap-x-5">
-          <router-link to="/register" class="text-blue-400 select-none">
+          <router-link to="/user/auth/register" class="text-blue-400 select-none">
             注册
           </router-link>
-          <router-link to="/reset" class="text-blue-400 select-none">
+          <router-link to="/user/auth/reset" class="text-blue-400 select-none">
             忘记密码
           </router-link>
         </div>

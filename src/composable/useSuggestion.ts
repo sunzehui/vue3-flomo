@@ -68,33 +68,63 @@ export function useSuggestion({
     listItemActiveIdx.value = (curIdx + isNext + total) % total
   }
 
-  const onKeyDownEvent = (e: KeyboardEvent) => {
-    const key = e.key
+  // const onKeyDownEvent = (e: KeyboardEvent) => {
+  //   const key = e.key
 
-    if (['ArrowUp', 'Enter', 'ArrowDown'].includes(key)) {
-      // 仅当联想菜单展示时
-      if (!isSuggestionShow.value)
-        return
+  //   if (['ArrowUp', 'Enter', 'ArrowDown'].includes(key)) {
+  //     // 仅当联想菜单展示时
+  //     if (!isSuggestionShow.value)
+  //       return
 
-      e.stopPropagation()
-      e.preventDefault()
-      // 当输入“上，下“方向键时切换active标签
-      if (key === 'ArrowUp') {
-        setItemActive(-1)
-        return false
-      }
-      else if (key === 'ArrowDown') {
-        setItemActive(+1)
-        return false
-      }
-      // 敲回车选中
-      else if (activeItemRef.value !== null && (key === 'Enter' || key === 'Tab')) {
-        applyMetion(listItemActiveIdx.value)
-        return false
-      }
+  //     e.stopPropagation()
+  //     e.preventDefault()
+  //     // 当输入“上，下“方向键时切换active标签
+  //     if (key === 'ArrowUp') {
+  //       setItemActive(-1)
+  //       return false
+  //     }
+  //     else if (key === 'ArrowDown') {
+  //       setItemActive(+1)
+  //       return false
+  //     }
+  //     // 敲回车选中
+  //     else if (activeItemRef.value !== null && (key === 'Enter' || key === 'Tab')) {
+  //       applyMetion(listItemActiveIdx.value)
+  //       return false
+  //     }
+  //   }
+  // }
+  const handleArrowUp = () => {
+    setItemActive(-1)
+  }
+
+  const handleArrowDown = () => {
+    setItemActive(1)
+  }
+
+  const handleEnterOrTab = () => {
+    if (activeItemRef.value !== null) {
+      applyMetion(listItemActiveIdx.value)
     }
   }
 
+  const onKeyDownEvent = (e: KeyboardEvent) => {
+    if (!isSuggestionShow.value) return
+
+    e.stopPropagation()
+    e.preventDefault()
+
+    const keyActionMap = {
+      'ArrowUp': handleArrowUp,
+      'ArrowDown': handleArrowDown,
+      'Enter': handleEnterOrTab,
+      'Tab': handleEnterOrTab
+    }
+
+    if (keyActionMap[e.key]) {
+      keyActionMap[e.key]()
+    }
+  }
   function getValue() {
     const { value: inputValue } = unref(editorRef)
     return inputValue

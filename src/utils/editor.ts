@@ -32,7 +32,6 @@ export const getCursorPos = (inputRef: MaybeRef<HTMLTextAreaElement>) => {
   _div.style.top = '10px'
   _div.style.background = 'red'
   _div.style.visibility = 'hidden'
-  _div.style.whiteSpace = 'pre-wrap'
   _div.style.overflow = 'hidden'
   _div.style.wordBreak = 'break-word'
   _div.style.wordWrap = 'break-word'
@@ -54,6 +53,8 @@ export const getCursorPos = (inputRef: MaybeRef<HTMLTextAreaElement>) => {
   const x = inputX + spanX - inputEl.scrollLeft
   const y = inputY + spanY - inputEl.scrollTop
 
+  // 在获取 spanX 和 spanY 后，应移除 _div
+  document.body.removeChild(_div)
   // xy 是相对单位
   return {
     x,

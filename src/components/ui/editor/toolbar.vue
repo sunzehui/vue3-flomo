@@ -57,7 +57,7 @@ defineExpose({
 <template>
   <ImageUpload
     v-if="isImgUploadShow"
-    ref="imgUploadRef"
+    ref="imageUploadRef"
     :images="props.images"
     @fileChange="handleFileChange"
   />
@@ -75,7 +75,7 @@ defineExpose({
       :disabled="props.submitDisabled"
       @click.prevent="emit('save')"
     >
-      {{ editorType === EditorType.edit as EditorType ? '保存' : '发送' }}
+      {{ editorType == EditorType.create ? '保存' : '发送' }}
     </button>
   </div>
 </template>
@@ -112,6 +112,9 @@ defineExpose({
     border: 1px solid #dcdfe6;
     @apply dark:border-0;
     -webkit-appearance: none;
+    appearance: none;
+    text-align: center;
+    box-sizing: border-box;
     text-align: center;
     box-sizing: border-box;
     outline: 0;

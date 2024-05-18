@@ -14,7 +14,6 @@ onMounted(() => {
     user_id,
   }).then((res) => {
     memoList.value = res.data.usersMemo
-    console.log('🚀 ~ file: memo.vue:17 ~ onMounted ~ memoList:', memoList)
     userInfo.value = res.data.userInfo
   })
 })

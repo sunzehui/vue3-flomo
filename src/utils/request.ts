@@ -48,7 +48,7 @@ axiosInstance.interceptors.response.use(
       ElMessage.error(`Code: ${code}, Message: ${msg}`)
 
       router.push({
-        path: '/login',
+        path: '/user/auth/login',
       })
       return Promise.reject(error)
     }
@@ -57,7 +57,7 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error)
   },
 )
-export default async function<T = any>(config: AxiosRequestConfig): Resp<T> {
+export default async function <T = any>(config: AxiosRequestConfig): Resp<T> {
   const res = await axiosInstance.request<Resp<T>>(config)
   return res.data
 }

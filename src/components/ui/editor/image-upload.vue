@@ -3,12 +3,11 @@ import { ref, unref, watchEffect } from 'vue'
 import { Delete, Plus, ZoomIn } from '@element-plus/icons-vue'
 import { ElDialog, ElIcon, ElMessage, ElUpload } from 'element-plus'
 import type { UploadFile,  UploadHooks, UploadRawFile, UploadUserFile } from 'element-plus'
-import { compress } from 'image-conversion'
 import { ApiUploadFile, checkFileExistOnServer } from '@/api/file'
-import { isValidImageSize, isValidImageType } from '@/utils/file'
+import { compress, isValidImageSize, isValidImageType } from '@/utils/file'
 import type { FileRecord } from '@/types/memo'
 const props = defineProps<{
-  images: FileRecord[]
+  images?: FileRecord[]
 }>()
 
 const emit = defineEmits(['fileChange'])
@@ -61,33 +60,47 @@ const handleUpload = async (fileRaw, fileUid) => {
 const handleBeforeUpload = async (rawFile: UploadRawFile) => {
   const isImage = isValidImageType(rawFile)
   const isSizeValid = isValidImageSize(rawFile)
+  
 
   if (!isImage) {
     ElMessage.error('请选择有效的图片文件')
-    throw new Error('请选择有效的图片文件')
+    return null
   }
   else if (!isSizeValid) {
     ElMessage.error('图片大小不能超过 5MB')
-    throw new Error('图片大小不能超过 5MB')
+    return null
   }
-  return await compress(rawFile, 0.4) as File
+  
+  return await compress(rawFile, 0.4)
 }
 const handleFileChange: UploadHooks['onChange'] = async (file, files) => {
+  // 处理文件: 压缩、检查文件是否存在
   const compressedFile = await handleBeforeUpload(file.raw)
+  if(!compressedFile) {
+    fileList.value = fileList.value.slice(0, fileList.value.length - 1)
+    return false
+  }
   const isFileExist = await checkFileExistOnServer(compressedFile)
   if (isFileExist.data) {
     // File already exists on the server
     pushFiles(isFileExist.data.id, file.uid) // Call the success callback directly
     return false // Cancel upload
   }
-  await handleUpload(compressedFile, file.uid)
-  fileList.value = files
+  // 上传文件
+  try{
+    await handleUpload(compressedFile, file.uid)
+  } catch(e){
+    ElMessage.error('上传失败')
+  } finally {
+    fileList.value = files
+  }
 }
 
 defineExpose({
   clear() {
     fileList.value = []
     fileIdList.value = []
+    fileId2ResId.clear()
     emit('fileChange', unref(fileIdList))
   },
   setFiles(files: { url: string; name: string }[]) {
@@ -99,7 +112,7 @@ defineExpose({
 <template>
   <div class="image-upload-wrp">
     <ElUpload
-      v-model:file-list="fileList"
+      v-model:fileList="fileList"
       list-type="picture-card"
       :auto-upload="false"
       :on-change="handleFileChange"
@@ -108,7 +121,7 @@ defineExpose({
       <ElIcon><Plus /></ElIcon>
 
       <template #file="{ file }">
-        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="图片预览">
         <span class="el-upload-list__item-actions">
           <span
             class="el-upload-list__item-preview"

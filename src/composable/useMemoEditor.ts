@@ -6,7 +6,12 @@ import { extractTags, trimTag } from '@/utils/editor'
 import { EditorType } from '@/types/card-type'
 import { useMemoStore } from '@/store/memo'
 
-export const useMemoEditor = () => {
+interface MemoEditerConfig {
+  memo: Memo
+  type: EditorType
+}
+
+export function useMemoEditor() {
   let editorRef = null
   let toolbarRef = null
   const loading = ref(false)
@@ -17,13 +22,13 @@ export const useMemoEditor = () => {
     content: '',
   })
 
-  let editorType = EditorType.create
+  let editorType: EditorType = EditorType.create
 
   const registerComponentRef = (_editorRef, _toolbarRef) => {
     editorRef = _editorRef
     toolbarRef = _toolbarRef
   }
-  const setEditorConfig = (_editorConfig) => {
+  const setEditorConfig = (_editorConfig: MemoEditerConfig) => {
     if (_editorConfig.memo)
       memo.value = toRaw(_editorConfig.memo)
     editorType = _editorConfig.type

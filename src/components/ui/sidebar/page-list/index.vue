@@ -1,46 +1,17 @@
 <script setup lang="ts">
-import {
-  Comment,
-  DeleteFilled,
-  Menu,
-  TrendCharts,
-} from '@element-plus/icons-vue'
 import SideBarItem from './page-item.vue'
-const barGroup = [
-  {
-    key: 'memo',
-    to: '/memo',
-    icon: Menu,
-    title: 'MEMO',
-  },
-  {
-    key: 'wechat',
-    to: '/wechat',
-    icon: Comment,
-    title: '微信输入',
-  },
-  {
-    key: 'review',
-    to: '/review',
-    icon: TrendCharts,
-    title: '每日回顾',
-  },
-  {
-    key: 'recycle',
-    to: '/recycle',
-    icon: DeleteFilled,
-    title: '回收站',
-  },
-]
+import { router } from '@/routes'
+
+const subpages= router.getRoutes().filter((item) => item.meta.category =='subpage')
 </script>
 
 <template>
   <div class="bar-list">
-    <SideBarItem v-for="item in barGroup" :key="item.key" :to="item.to">
+    <SideBarItem v-for="item in subpages" :key="item.path" :to="item.path">
       <template #icon>
-        <Component :is="item.icon" />
+        <Component :is="item.meta.icon" />
       </template>
-      {{ item.title }}
+      {{ item.meta.title }}
     </SideBarItem>
   </div>
 </template>
