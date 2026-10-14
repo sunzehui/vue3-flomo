@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { isEmpty } from 'lodash-es'
+import { ElMessageBox } from 'element-plus'
 import Editor from './text-editor.vue'
 import ToolBar from './toolbar.vue'
 import { EditorType } from '@/types/card-type'
 import type { Memo } from '@/types/memo'
 import { useMemoEditor } from '@/composable/useMemoEditor'
+import { useUserStore } from '@/store/user'
+import { buildDraftKey, clearDraft, readDraft, saveDraft } from '@/composable/useDraft'
 import { unTrim, unescapeHtml } from '@/utils/editor'
 
 const props = defineProps<{
@@ -25,6 +28,30 @@ const {
   memo: _memo,
 } = useMemoEditor()
 
+const userStore = useUserStore()
+const draftKey = computed(() =>
+  buildDraftKey(userStore.userInfo?.id, 'create'),
+)
+
+let draftTimer: ReturnType<typeof setTimeout> | undefined
+
+/** 只在「新建」编辑器上做草稿自动保存 */
+function handleChange(content: string) {
+  handler.handleEditorChange(content)
+  if (props.type !== EditorType.create)
+    return
+
+  if (draftTimer)
+    clearTimeout(draftTimer)
+
+  // 内容为空说明已提交或用户清空，直接删掉草稿
+  if (!content || !content.trim()) {
+    clearDraft(draftKey.value)
+    return
+  }
+  draftTimer = setTimeout(() => saveDraft(draftKey.value, content), 1500)
+}
+
 onMounted(() => {
   registerComponentRef(editorRef, toolbarRef)
   // 编辑时会传入memo信息
@@ -32,6 +59,29 @@ onMounted(() => {
     type: props.type,
     memo: props.memo,
   })
+
+  // 新建时恢复未提交的草稿
+  if (props.type === EditorType.create) {
+    const draft = readDraft(draftKey.value)
+    if (draft) {
+      ElMessageBox.confirm('检测到上次未提交的草稿，是否恢复？', '草稿恢复', {
+        confirmButtonText: '恢复',
+        cancelButtonText: '丢弃',
+        type: 'info',
+      })
+        .then(() => {
+          editorRef.value?.setContent(draft)
+        })
+        .catch(() => {
+          clearDraft(draftKey.value)
+        })
+    }
+  }
+})
+
+onUnmounted(() => {
+  if (draftTimer)
+    clearTimeout(draftTimer)
 })
 
 const editorFocused = ref(false)
@@ -59,7 +109,7 @@ const handleMouse = (e) => {
       :init-content="initContent"
       @focus="editorFocused = true"
       @blur="editorFocused = false"
-      @change="handler.handleEditorChange"
+      @change="handleChange"
       @onSave="handler.handleEditorSave"
     />
     <ToolBar

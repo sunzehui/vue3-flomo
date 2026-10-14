@@ -1,12 +1,14 @@
 import { ElMessage } from 'element-plus'
 import { defineStore } from 'pinia'
-import { chain, cloneDeep, findIndex, map, orderBy } from 'lodash-es'
+import { cloneDeep, findIndex, orderBy } from 'lodash-es'
 import { useUserStore } from './user'
 import type { Memo, tagType } from '@/types/memo'
 import type { GetListParams } from '@/api/memo'
 import {
+  ApiBatchTag,
   ApiDelete as ApiDeleteMemo,
   ApiList as ApiMemoList,
+  ApiRestore,
   ApiSave as ApiSaveMemo,
   ApiUpdate as ApiUpdateMemo,
 } from '@/api/memo'
@@ -15,12 +17,24 @@ import { CardType } from '@/types/card-type'
 import { safe2Num } from '@/utils/Tool'
 import { getUinx } from '@/utils/time'
 
+const DEFAULT_PAGE_SIZE = 20
+
 interface StateTree {
   articleList: Memo[]
   tagList: tagType[]
   deletedMemoList: Memo[]
   activeTag: string
   searchKeywords: string
+  page: number
+  pageSize: number
+  total: number
+  hasMore: boolean
+  isLoading: boolean
+  query: Partial<GetListParams>
+  /** 批量操作模式 */
+  isBatchMode: boolean
+  /** 批量模式下被选中的 memo id */
+  selectedIds: Array<number | string>
 }
 
 export const useMemoStore = defineStore('memo', {
@@ -30,26 +44,72 @@ export const useMemoStore = defineStore('memo', {
     deletedMemoList: [],
     activeTag: '',
     searchKeywords: '',
+    page: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+    total: 0,
+    hasMore: false,
+    isLoading: false,
+    query: {},
+    isBatchMode: false,
+    selectedIds: [],
   }),
   actions: {
-    loadRemoteData({ ...query }: any = {}) {
+    loadRemoteData(query: any = {}) {
       return Promise.all([this.getMemoList({ ...query }), this.getTagList()])
     },
-    async loadDeletedMemo() {
-      return await ApiMemoList({ deleted: true })
-        .then(r => r.data)
-        .then((memoList) => {
-          this.deletedMemoList = memoList
+    /** 拉取第一页并替换列表 */
+    async getMemoList(query: Partial<GetListParams> = {}) {
+      this.page = 1
+      this.query = { ...query }
+      this.isLoading = true
+      try {
+        const res = await ApiMemoList({
+          ...query,
+          page: 1,
+          pageSize: this.pageSize,
         })
+        const pageData = res.data
+        this.articleList = pageData.list
+        this.total = pageData.total
+        this.hasMore = pageData.hasMore
+        this.searchKeywords = query?.content ?? ''
+      }
+      finally {
+        this.isLoading = false
+      }
+    },
+    /** 滚动到底部时加载下一页 */
+    async loadMore() {
+      if (this.isLoading || !this.hasMore)
+        return
+      this.isLoading = true
+      try {
+        const nextPage = this.page + 1
+        const res = await ApiMemoList({
+          ...this.query,
+          page: nextPage,
+          pageSize: this.pageSize,
+        })
+        const pageData = res.data
+        const existing = new Set(this.articleList.map(memo => memo.id))
+        this.articleList.push(
+          ...pageData.list.filter(memo => !existing.has(memo.id)),
+        )
+        this.page = pageData.page
+        this.total = pageData.total
+        this.hasMore = pageData.hasMore
+      }
+      finally {
+        this.isLoading = false
+      }
+    },
+    async loadDeletedMemo() {
+      const res = await ApiMemoList({ deleted: true, pageSize: 100 })
+      this.deletedMemoList = res.data.list
     },
     async getTagList() {
       const res = await ApiTagList()
       this.tagList = res.data
-    },
-    async getMemoList(query: Partial<GetListParams>) {
-      const res = await ApiMemoList(query)
-      this.searchKeywords = query?.content ?? ''
-      this.articleList = res.data
     },
     async deleteMemo(id: number) {
       const { refreshUserInfo } = useUserStore()
@@ -79,6 +139,22 @@ export const useMemoStore = defineStore('memo', {
       this.deletedMemoList = this.deletedMemoList.filter(memo => memo.id !== id)
       this.loadRemoteData()
     },
+    /** 回收站恢复（显式接口） */
+    async restoreMemo(id: number) {
+      const { refreshUserInfo } = useUserStore()
+      await ApiRestore(id)
+      ElMessage.success('恢复成功')
+      refreshUserInfo()
+      this.deletedMemoList = this.deletedMemoList.filter(memo => memo.id !== id)
+      return this.loadRemoteData()
+    },
+    /** 批量加/去标签 */
+    async batchTag(ids: Array<number | string>, payload: { add?: string[], remove?: string[] }) {
+      const res = await ApiBatchTag({ ids, ...payload })
+      ElMessage.success('批量操作成功')
+      await this.loadRemoteData(this.query)
+      return res
+    },
     async save(data: Partial<Memo>) {
       const { refreshUserInfo } = useUserStore()
       const res = await ApiSaveMemo(data)
@@ -105,7 +181,7 @@ export const useMemoStore = defineStore('memo', {
             type: CardType.article,
             content: res.data.content,
             tags: res.data.tags,
-            images: res.data.images
+            images: res.data.images,
           })
 
           ElMessage.success('保存成功')
@@ -130,6 +206,40 @@ export const useMemoStore = defineStore('memo', {
       ElMessage.success('标签置顶成功！')
       await this.loadRemoteData()
       return res
+    },
+    /** 设置 / 取消标签的父标签（标签树） */
+    async setTagParent(tagContent: string, parentId: number | null) {
+      const res = await ApiUpdateTag(tagContent, { parentId })
+      ElMessage.success(parentId ? '已归入父标签' : '已移出父标签')
+      await this.getTagList()
+      return res
+    },
+    /** 进入 / 退出批量操作模式 */
+    toggleBatchMode(enabled?: boolean) {
+      this.isBatchMode = enabled ?? !this.isBatchMode
+      if (!this.isBatchMode)
+        this.selectedIds = []
+    },
+    /** 勾选 / 取消勾选一条 memo */
+    toggleSelect(id: number | string) {
+      const key = String(id)
+      const idx = this.selectedIds.findIndex(item => String(item) === key)
+      if (idx >= 0)
+        this.selectedIds.splice(idx, 1)
+      else
+        this.selectedIds.push(id)
+    },
+    /** 判断某条 memo 是否被选中 */
+    isSelected(id: number | string) {
+      return this.selectedIds.some(item => String(item) === String(id))
+    },
+    /** 全选当前列表 */
+    selectAll(ids: Array<number | string>) {
+      this.selectedIds = [...ids]
+    },
+    /** 清空选择 */
+    clearSelection() {
+      this.selectedIds = []
     },
     async setArticleTop(articleId) {
       const res = await ApiUpdateMemo(articleId, { is_topic: true })
@@ -165,6 +275,9 @@ export const useMemoStore = defineStore('memo', {
     },
   },
   getters: {
+    selectedCount(state) {
+      return state.selectedIds.length
+    },
     // 增强：支持排序，置顶，查询高亮
     enhancedMemoList(state) {
       const list = state.articleList

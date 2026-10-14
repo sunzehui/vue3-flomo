@@ -5,6 +5,7 @@ import MainLayout from './layouts/Main.vue'
 import Memo from './views/Memo.vue'
 import Login from './views/User/Auth/Login.vue'
 import {
+  DataLine,
   DeleteFilled,
   Menu,
   TrendCharts,
@@ -41,6 +42,12 @@ export const routes = [
         component: () => import('./views/Recycle.vue'),
       },
       {
+        path: '/insights',
+        name: 'insights',
+        meta: { title: '数据洞察', icon: DataLine, category: 'subpage' },
+        component: () => import('./views/Insights.vue'),
+      },
+      {
         path: '/me',
         name: 'me',
         meta: { title: '个人资料' },
@@ -74,6 +81,13 @@ export const routes = [
         component: () => import('./views/User/memo.vue'),
       },
     ],
+  },
+  // 精选分享（公开，不可枚举 token）
+  {
+    path: '/share/selection/:token',
+    name: 'selection',
+    meta: { title: '精选分享', publicRoute: true },
+    component: () => import('./views/Selection.vue'),
   },
   { path: '/:path(.*)', component: NotFound },
 ] as RouteRecordRaw[]

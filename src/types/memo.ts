@@ -5,11 +5,13 @@ export interface NewAticle {
   content: string
 }
 export interface tagType {
-  name: string
-  id: string
+  id: number | string
+  name?: string
   active?: boolean
   is_topics?: boolean
   content: string
+  /** 父标签 id；为空表示顶层标签 */
+  parentId?: number | null
 }
 export interface FileRecord {
   id: number

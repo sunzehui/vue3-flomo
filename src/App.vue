@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ElConfigProvider } from 'element-plus'
-import { useDark } from '@vueuse/core'
-useDark()
+import { useColorMode } from '@vueuse/core'
+// 支持 跟随系统 / 浅色 / 深色 三种模式，持久化到 localStorage
+useColorMode({ emitAuto: true })
 </script>
 
 <template>

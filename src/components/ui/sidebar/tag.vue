@@ -1,15 +1,35 @@
 <script setup lang="ts">
-import { ref, unref, watchEffect } from 'vue'
+import { computed, ref, unref, watchEffect } from 'vue'
 import { Download } from '@element-plus/icons-vue'
-import { useRoute, useRouter } from 'vue-router'
-import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
+import { useRoute } from 'vue-router'
+import { ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessageBox } from 'element-plus'
 import { router } from '@/routes'
 import { useMemoStore } from '@/store/memo'
 import { useLayoutStore } from '@/store/layout'
-const props = defineProps<{
+
+interface ParentCandidate {
+  id: number | string
+  content: string
+}
+
+const props = withDefaults(defineProps<{
   link: string
   isTopic: boolean
-}>()
+  /** 标签树中的层级，用于缩进 */
+  depth?: number
+  /** 是否允许调整父子关系（整理模式） */
+  nestable?: boolean
+  /** 当前父标签 id */
+  parentId?: number | null
+  /** 可选父标签（已排除自身） */
+  parentCandidates?: ParentCandidate[]
+}>(), {
+  depth: 0,
+  nestable: false,
+  parentId: null,
+  parentCandidates: () => [],
+})
+
 const isClickMe = ref(false)
 const route = useRoute()
 
@@ -17,12 +37,19 @@ watchEffect(() => {
   const { tag } = route.query
   isClickMe.value = tag?.toString() === props.link?.toString()
 })
-const { isPC,toggleDrawerOpen } = useLayoutStore()
+
+const { isPC, toggleDrawerOpen } = useLayoutStore()
+const articleStore = useMemoStore()
+
+const indentStyle = computed(() => ({
+  paddingLeft: `${8 + (props.depth ?? 0) * 14}px`,
+}))
+
 const handleClick = () => {
   const ispc = unref(isPC)
   if (!ispc)
     toggleDrawerOpen(false)
-  
+
   router.push({
     name: 'memo',
     query: {
@@ -31,7 +58,6 @@ const handleClick = () => {
   })
 }
 
-const articleStore = useMemoStore()
 const setTop = () => {
   const title = props.isTopic ? '取消置顶' : '置顶'
   ElMessageBox.confirm(`确定${title}该标签吗?`, 'Info', {
@@ -44,11 +70,24 @@ const setTop = () => {
     )
     .catch(() => {})
 }
+
+/** 调整父子关系：data-parent-id 为空字符串表示移动到顶层 */
+const handleNest = (event: Event) => {
+  const target = event.target as HTMLElement | null
+  const item = target?.closest?.('[data-parent-id]') as HTMLElement | null
+  if (!item)
+    return
+  const raw = item.dataset.parentId
+  const nextParentId = raw ? Number(raw) : null
+  if (nextParentId === (props.parentId ? Number(props.parentId) : null))
+    return
+  articleStore.setTagParent(props.link, nextParentId)
+}
 </script>
 
 <template>
   <div class="tag-wrap" :class="{ active: isClickMe }" @click.prevent="handleClick">
-    <span class="tag">
+    <span class="tag" :style="indentStyle">
       <svg
         class="sharp-icon"
         width="18"
@@ -65,17 +104,40 @@ const setTop = () => {
           fill="currentColor"
         />
       </svg>
-      <label class="cursor-pointer">
+      <label class="cursor-pointer truncate">
         <slot />
       </label>
     </span>
-    <Download
-      class="right-arrow-icon"
-      :class="{ rotate: !props.isTopic }"
-      style="height: 1em; width: 1em"
-      :color="isClickMe ? 'white' : 'gray'"
-      @click.prevent="setTop()"
-    />
+    <!-- 阻止冒泡，避免点击操作区时误跳转到标签筛选页 -->
+    <div class="tag-actions" @click.stop>
+      <ElDropdown v-if="nestable" class="nest-trigger" trigger="click">
+        <span class="nest-icon" title="调整层级">···</span>
+        <template #dropdown>
+          <ElDropdownMenu @click="handleNest">
+            <ElDropdownItem v-if="parentId" data-parent-id="">
+              移出父标签
+            </ElDropdownItem>
+            <ElDropdownItem
+              v-for="p in parentCandidates"
+              :key="p.id"
+              :data-parent-id="String(p.id)"
+            >
+              归到 #{{ p.content }}
+            </ElDropdownItem>
+            <ElDropdownItem v-if="!parentId && !parentCandidates.length" disabled>
+              暂无可选父标签
+            </ElDropdownItem>
+          </ElDropdownMenu>
+        </template>
+      </ElDropdown>
+      <Download
+        class="right-arrow-icon"
+        :class="{ rotate: !props.isTopic }"
+        style="height: 1em; width: 1em"
+        :color="isClickMe ? 'white' : 'gray'"
+        @click.prevent="setTop()"
+      />
+    </div>
   </div>
 </template>
 
@@ -94,19 +156,40 @@ span.tag {
   line-height: 40px;
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 0;
   user-select: none;
   border-radius: 0.375rem;
-  padding-left: 0.5rem;
   .sharp-icon {
     display: inline-block;
     margin-right: 6px;
     padding-bottom: 0px;
+    flex-shrink: 0;
   }
   svg {
     display: inline-block;
   }
   position: relative;
-
+}
+.tag-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nest-trigger {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.tag-wrap:hover .nest-trigger {
+  opacity: 1;
+}
+.nest-icon {
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  font-weight: bold;
+  @apply text-regular-text;
+  &:hover { @apply text-primary-text; }
 }
 .right-arrow-icon {
   margin-right: 10px;

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { useToggle } from '@vueuse/core'
-import { Check, Edit, Loading, Refresh } from '@element-plus/icons-vue'
+import { Check, Edit, Loading, Refresh, Select } from '@element-plus/icons-vue'
 import { ElMessage, ElTooltip } from 'element-plus'
 import { computed, ref, toRefs, unref, watchEffect } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import Search from '@/components/ui/topbar/search.vue'
 import { useMemoStore } from '@/store/memo'
@@ -14,7 +15,11 @@ const tagName = computed(() => route.query.tag as string || '')
 
 const [isTagEdit, toggeEdit] = useToggle(false)
 const refreshing = ref(false)
-const { loadRemoteData } = useMemoStore()
+const memoStore = useMemoStore()
+const { loadRemoteData } = memoStore
+const { isBatchMode } = storeToRefs(memoStore)
+
+const toggleBatch = () => memoStore.toggleBatchMode()
 
 const router = useRouter()
 const handleRefresh = (query?) => {
@@ -54,6 +59,17 @@ watchEffect(() => {
 <template>
   <TopBar title="MEMO">
     <template #tool>
+      <ElTooltip
+        effect="dark"
+        :content="isBatchMode ? '退出批量' : '批量操作'"
+        placement="bottom"
+      >
+        <Select
+          class="icon hover-bg"
+          :class="{ active: isBatchMode }"
+          @click.prevent="toggleBatch"
+        />
+      </ElTooltip>
       <ElTooltip
         v-if="!refreshing"
         effect="dark"
@@ -97,6 +113,10 @@ watchEffect(() => {
 .icon {
   @apply p-2 box-content h-4 w-4 block cursor-pointer opacity-80;
   &:hover {
+    opacity: 1;
+  }
+  &.active {
+    @apply text-primary;
     opacity: 1;
   }
 }

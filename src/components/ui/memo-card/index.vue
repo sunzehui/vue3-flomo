@@ -9,6 +9,7 @@ import {
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { Pin } from '@icon-park/vue-next'
+import { Check } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { useElementBounding, useEventBus, useParentElement } from '@vueuse/core'
 
@@ -24,10 +25,29 @@ import { useMemoStore } from '@/store/memo'
 
 const props = defineProps<{
   memo: Memo
+  /** 只读展示（公开分享页）：隐藏操作菜单，且不参与批量选择 */
+  readonly?: boolean
 }>()
 
 const router = useRouter()
+const memoStore = useMemoStore()
+const { searchKeywords, isBatchMode } = storeToRefs(memoStore)
+
+/** 批量模式下，点击卡片即切换选中态 */
+const isSelected = computed(() => memoStore.isSelected(props.memo.id))
+const batchActive = computed(() => !props.readonly && unref(isBatchMode))
+const toggleSelect = () => memoStore.toggleSelect(props.memo.id)
+const onCardClick = () => {
+  if (props.readonly)
+    return
+  if (unref(isBatchMode))
+    toggleSelect()
+}
+
 const tagClick = (tag) => {
+  // 批量选择时不应触发标签跳转
+  if (unref(isBatchMode))
+    return
   router.push({
     name: 'memo',
     query: {
@@ -47,6 +67,8 @@ const userStore = useUserStore()
 const isLogin = computed(() => userStore.isAuthenticated)
 const { emit: busEmit } = useEventBus(MEMO_CARD)
 const showDetail = () => {
+  if (unref(isBatchMode))
+    return
   busEmit({ action: 'open-detail-card' }, props.memo)
 }
 
@@ -56,15 +78,20 @@ const memoContentMaxHeight = computed(() => {
   // 不能超过1/3屏
   return `${height.value / 3}px`
 })
-
-const { searchKeywords } = storeToRefs(useMemoStore())
 </script>
 
 <template>
-  <div class="card scrollable-container">
+  <div
+    class="card scrollable-container"
+    :class="{ 'batch-mode': batchActive, 'is-selected': batchActive && isSelected }"
+    @click="onCardClick"
+  >
+    <div v-if="batchActive" class="batch-check" :class="{ checked: isSelected }">
+      <Check v-if="isSelected" class="batch-check-icon" />
+    </div>
     <div class="header relative">
       <span class="time-text cursor-pointer" @click="showDetail">{{ updateTime }}</span>
-      <MemoAction v-if="isLogin" :article="memo" />
+      <MemoAction v-if="isLogin && !batchActive && !readonly" :article="memo" />
       <Pin v-show="memo.is_topic" class="absolute -right-6 -top-4" theme="outline" size="24" fill="#333" />
     </div>
     <ElScrollbar :max-height="memoContentMaxHeight">
@@ -85,6 +112,48 @@ const { searchKeywords } = storeToRefs(useMemoStore())
   &:hover {
     box-shadow: 0 2px 16px #dddddd;
     @apply dark:shadow-none;
+  }
+
+  /** 批量模式：整体可点，悬停有反馈 */
+  &.batch-mode {
+    cursor: pointer;
+    padding-left: 2.75rem;
+    @apply border border-transparent;
+
+    &:hover {
+      @apply border-primary;
+    }
+  }
+
+  &.is-selected {
+    @apply border-primary;
+    box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+  }
+
+  .batch-check {
+    position: absolute;
+    left: 0.75rem;
+    top: 1rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--el-border-color, #c0c4cc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--el-bg-color, #fff);
+    transition: all 0.15s ease;
+    z-index: 2;
+
+    &.checked {
+      @apply bg-primary border-primary;
+      color: #fff;
+    }
+
+    .batch-check-icon {
+      width: 12px;
+      height: 12px;
+    }
   }
 
   .header {

@@ -42,3 +42,30 @@ export function ApiUserRegister(data) {
     data,
   })
 }
+
+/** 修改密码 */
+export function ApiChangePassword(payload: { oldPassword: string, newPassword: string }) {
+  return axios<boolean>({
+    url: '/api/user/password',
+    method: 'put',
+    data: payload,
+  })
+}
+
+export interface UserOverview {
+  tagCount: number
+  memoCount: number
+  day: number
+  streak: number
+  activeDays: number
+  weeklyTrend: Array<{ week: string, label: string, count: number }>
+  tagDistribution: Array<{ content: string, count: number }>
+}
+
+/** 洞察面板数据 */
+export function ApiUserOverview() {
+  return axios<UserOverview>({
+    url: '/api/statistic/overview',
+    method: 'get',
+  })
+}
