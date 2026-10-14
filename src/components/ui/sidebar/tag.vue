@@ -19,8 +19,6 @@ watchEffect(() => {
 })
 const { isPC,toggleDrawerOpen } = useLayoutStore()
 const handleClick = () => {
-  console.log('click');
-
   const ispc = unref(isPC)
   if (!ispc)
     toggleDrawerOpen(false)

@@ -61,7 +61,7 @@ const onSubmit = async () => {
     }).then((res) => {
       if (res.code === 0) {
         ElMessage.success('注册成功！')
-        router.push('/login')
+        router.push({ name: 'Login' })
       }
     })
   }
@@ -141,11 +141,8 @@ const onSubmit = async () => {
           </button>
         </div>
         <div class="w-full flex justify-center gap-x-5">
-          <router-link to="/login" class="text-blue-400">
+          <router-link to="/user/auth/login" class="text-blue-400">
             登录
-          </router-link>
-          <router-link to="/reset" class="text-blue-400">
-            忘记密码
           </router-link>
         </div>
       </VForm>

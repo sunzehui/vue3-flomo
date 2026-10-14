@@ -1,2 +1,22 @@
 node_modules
 dist
+dist-ssr
+coverage
+
+# 构建/调试产物
+*.log
+.DS_Store
+.pnpm-debug.log*
+
+# IDE
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# 环境变量（保留模板）
+.env
+.env.*
+!.env.example
+!.env.development.example
+!.env.production.example

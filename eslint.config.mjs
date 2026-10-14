@@ -1,10 +1,7 @@
-const { antfu } = require('@antfu/eslint-config')
+import antfu from '@antfu/eslint-config'
 
-module.exports = antfu({
+export default antfu({
   // Enable stylistic formatting rules
-  // stylistic: true,
-
-  // Or customize the stylistic rules
   stylistic: {
     indent: 2, // 4, or 'tab'
     quotes: 'single', // or 'double'
@@ -18,13 +15,13 @@ module.exports = antfu({
   jsonc: false,
   yaml: false,
 
-  // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
   ignores: [
     'dist',
-    // ...globs
+    'node_modules',
+    // 由构建工具生成的声明文件
+    'components.d.ts',
   ],
   rules: {
     'antfu/top-level-function': 'off',
-
   },
 })

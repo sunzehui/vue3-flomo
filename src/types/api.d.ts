@@ -1,5 +1,3 @@
-import { AxiosResponse } from "axios";
-
 interface IResponse<T = any> {
   data: T;
   code: number;

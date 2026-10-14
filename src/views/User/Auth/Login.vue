@@ -9,8 +9,9 @@ import UserNameField from '@/components/ui/form/username.vue'
 const isProd = import.meta.env.MODE === 'production'
 
 const formData = reactive({
-  username: isProd ? 'testuser' : '',
-  password: isProd ? 'testuser' : '',
+  // 演示账号只用于本地开发；生产构建不要预填任何凭据，否则会随包发布
+  username: isProd ? '' : 'testuser',
+  password: isProd ? '' : 'testuser',
 })
 
 const usernameRule = (username: string) => {
@@ -72,9 +73,6 @@ const onSubmit = async () => {
         <div class="w-full flex justify-center gap-x-5">
           <router-link to="/user/auth/register" class="text-blue-400 select-none">
             注册
-          </router-link>
-          <router-link to="/user/auth/reset" class="text-blue-400 select-none">
-            忘记密码
           </router-link>
         </div>
       </VForm>

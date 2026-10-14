@@ -7,7 +7,7 @@ import legacy from '@vitejs/plugin-legacy'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { chunkFileNames, entryFileNames, processAssetFileNames } from './vite/build-assetdir'
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   // eslint-disable-next-line node/prefer-global/process
   const root = process.cwd()
 
@@ -17,18 +17,12 @@ export default defineConfig(({ mode }) => {
     plugins: [
       Vue(),
       VueJsx(),
-      // VueMacros({
-      //   plugins: {
-      //     vue: Vue(),
-      //     vueJsx: VueJsx(), // if needed
-      //   },
-      //   defineRender: true,
-      //   defineModels: true,
-      // }),
       ElementPlus({}),
-      legacy({
-        targets: ['defaults', 'not IE 11'],
-      }),
+      // legacy 只用于生产构建，开发时启用会明显拖慢启动
+      command === 'build'
+        && legacy({
+          targets: ['defaults', 'not IE 11'],
+        }),
       compression({
         // 可选配置项
         ext: '.gz', // 压缩文件的扩展名，默认为 .gz
@@ -39,7 +33,7 @@ export default defineConfig(({ mode }) => {
         filter: /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i, // 指定哪些资源不被压缩，默认为 /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i
         disable: false, // 是否禁用插件，默认为 false
       }),
-    ],
+    ].filter(Boolean),
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src'),
@@ -50,12 +44,17 @@ export default defineConfig(({ mode }) => {
       open: false,
       port: 8080,
       proxy: {
+        // 前端请求统一以 /api 开头，这里去掉前缀转发到后端
         '/api': {
-          target: env.VITE_API_URL || 'http://localhost:3000',
+          target: env.VITE_PROXY_TARGET || 'http://localhost:3000',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, ''),
         },
       },
+    },
+    // optimizeDeps 属于顶层配置，之前被误写在 build 里导致完全不生效
+    optimizeDeps: {
+      include: ['vue', 'vue-router', 'element-plus'],
     },
     css: {
       preprocessorOptions: {
@@ -90,10 +89,6 @@ export default defineConfig(({ mode }) => {
           assetFileNames: processAssetFileNames,
           chunkFileNames,
         },
-      },
-      brotliSize: false,
-      optimizeDeps: {
-        include: ['vue', 'vue-router', 'element-plus'],
       },
     },
   }

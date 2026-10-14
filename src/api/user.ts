@@ -1,5 +1,4 @@
 import type { ILoginInfo, ILoginResp } from '@/types/api'
-import { Resp } from '@/types/api'
 import type { IUserProfile } from '@/types/user'
 import axios from '@/utils/request'
 
@@ -12,7 +11,7 @@ export async function ApiUserLogin(data: ILoginInfo) {
   return res.data
 }
 export function ApiUserStatistic() {
-  return axios<any>({
+  return axios<Record<string, number>>({
     url: '/api/statistic/grid',
     method: 'get',
   })

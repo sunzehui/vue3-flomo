@@ -5,15 +5,12 @@ import MainLayout from './layouts/Main.vue'
 import Memo from './views/Memo.vue'
 import Login from './views/User/Auth/Login.vue'
 import {
-  Comment,
   DeleteFilled,
   Menu,
   TrendCharts,
 } from '@element-plus/icons-vue'
 
-
 export const routes = [
-
   {
     path: '/',
     component: MainLayout,
@@ -31,12 +28,6 @@ export const routes = [
         props: route => ({ tag: route.query.tag }),
         component: Memo,
       },
-      // {
-      //   path: '/wechat',
-      //   name: 'wechat',
-      //   meta: { title: '微信输入', icon: Comment, category: 'subpage' },
-      //   component: () => import('./views/Wechat.vue'),
-      // },
       {
         path: '/review',
         name: 'review',
@@ -46,7 +37,7 @@ export const routes = [
       {
         path: '/recycle',
         name: 'recycle',
-        meta: { title: '回收站', icon: DeleteFilled, category: "subpage" },
+        meta: { title: '回收站', icon: DeleteFilled, category: 'subpage' },
         component: () => import('./views/Recycle.vue'),
       },
       {
@@ -57,6 +48,7 @@ export const routes = [
       },
     ],
   },
+  // 注意：更具体的 /user/auth/* 必须声明在 /user/:id 之前
   {
     path: '/user/auth/login',
     name: 'Login',
@@ -69,13 +61,14 @@ export const routes = [
     meta: { title: '注册', publicRoute: true },
     component: () => import('./views/User/Auth/Register.vue'),
   },
+  // 分享页使用独立布局；原先这里与上面一样声明成 path: '/'，
+  // 造成两条同路径的顶层记录，且 redirect 会把 /user/:id 也重定向到 /memo
   {
-    path: '/',
+    path: '/user/:id',
     component: () => import('./layouts/Share.vue'),
-    redirect: '/memo',
     children: [
       {
-        path: '/user/:id',
+        path: '',
         name: 'user-memo',
         meta: { title: '用户主页', publicRoute: true },
         component: () => import('./views/User/memo.vue'),

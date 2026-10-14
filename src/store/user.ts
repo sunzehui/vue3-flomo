@@ -6,7 +6,7 @@ import jwtDecode from 'jwt-decode'
 import { computed, unref } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { ILoginResp } from '@/types/api'
-import { ApiUpdateUserInfo, ApiUserInfo, ApiUserLogin, ApiUserStatistic } from '@/api/user'
+import { ApiUpdateUserInfo, ApiUserInfo, ApiUserLogin } from '@/api/user'
 import type { UserInfo } from '@/types/user'
 
 export interface DailyGrid {
@@ -19,26 +19,28 @@ export interface UserRecord {
   dailyGrid: DailyGrid
 }
 
+const EMPTY_TOKEN = { token: '', expires: 0 }
+
 export const useUserStore = defineStore('user', () => {
-  const token = useLocalStorage('token', {
-    token: '',
-    expires: 0,
-  })
+  const token = useLocalStorage('token', { ...EMPTY_TOKEN })
   const userInfo = useLocalStorage('userInfo', {} as UserInfo)
   const userRecord = useLocalStorage('userRecord', {} as UserRecord)
-  const setToken = (loginResp: ILoginResp) => {
-    if (!loginResp)
-      return token.value = null
+  const setToken = (loginResp: ILoginResp | null | undefined) => {
+    if (!loginResp?.token) {
+      // 统一重置为空对象，避免把 null 写进 localStorage 导致类型与取值分支混乱
+      token.value = { ...EMPTY_TOKEN }
+      return
+    }
     token.value = {
-      token: loginResp?.token,
+      token: loginResp.token,
       expires: 36000,
     }
     try {
       const expires = jwtDecode<{ exp: number }>(loginResp.token).exp * 1000
       token.value.expires = expires
     }
-    catch (e) {
-      return token
+    catch {
+      // token 解析失败时沿用默认有效期
     }
   }
 
@@ -55,12 +57,13 @@ export const useUserStore = defineStore('user', () => {
         password: unref(password),
       })
 
-      if (loginRes) {
-        userInfo.value = null
-        setToken(loginRes)
-        refreshUserInfo()
-        return true
-      }
+      if (!loginRes?.token)
+        return false
+
+      userInfo.value = {} as UserInfo
+      setToken(loginRes)
+      await refreshUserInfo()
+      return true
     }
     catch (e) {
       return false
@@ -68,7 +71,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const logout = async () => {
-    userInfo.value = null
+    userInfo.value = {} as UserInfo
     setToken(null)
     return true
   }

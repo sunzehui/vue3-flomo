@@ -148,6 +148,11 @@ export function mergeRanges(ranges) {
 
   return mergedRanges
 }
+/** 转义正则特殊字符，避免用户搜索词被当作正则导致报错或 ReDoS */
+export function escapeRegExp(text: string) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 export function renderMemoContent(pre_content, highlight_words = null) {
   if (!pre_content)
     return pre_content
@@ -177,7 +182,7 @@ export function renderMemoContent(pre_content, highlight_words = null) {
   rendered_content = rendered_content.replace(
     matchRule,
     (matched) => {
-      return (matched).replace(new RegExp(highlight_words, 'ig'), (p) => {
+      return (matched).replace(new RegExp(escapeRegExp(String(highlight_words)), 'ig'), (p) => {
         return `<mark>${p}</mark>`
       })
     },
