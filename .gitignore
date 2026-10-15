@@ -20,3 +20,6 @@ coverage
 !.env.example
 !.env.development.example
 !.env.production.example
+
+# Vercel CLI
+.vercel

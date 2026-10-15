@@ -59,5 +59,9 @@
     "iOS >= 7",
     "Android > 4.1",
     "Firefox > 20"
-  ]
+  ],
+  "engines": {
+    "node": "22.x"
+  },
+  "packageManager": "pnpm@11.28.5"
 }
