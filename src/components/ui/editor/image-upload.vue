@@ -6,6 +6,9 @@ import type { UploadFile,  UploadHooks, UploadRawFile, UploadUserFile } from 'el
 import { ApiUploadFile, checkFileExistOnServer } from '@/api/file'
 import { compress, isValidImageSize, isValidImageType } from '@/utils/file'
 import type { FileRecord } from '@/types/memo'
+import { useUserStore } from '@/store/user'
+import { deleteImage, isLocalImage, putImage } from '@/utils/localImages'
+
 const props = defineProps<{
   images?: FileRecord[]
 }>()
@@ -18,19 +21,28 @@ const dialogVisible = ref(false)
 const fileIdList = ref<string[]>([])
 const fileId2ResId = new Map()
 
+const isLocalMode = () => !useUserStore().isAuthenticated
+
 watchEffect(() => {
   if (!props.images)
     return
 
+  // 本地模式的图片引用存放在 filePath（idb://key），服务端模式存数字 id
   fileList.value = props.images.map(item => ({
     name: `${item.id}`, url: item.filePath,
   }))
-  fileIdList.value = props.images.map(item => `${item.id}`)
+  fileIdList.value = props.images.map(item =>
+    isLocalImage(item.filePath) ? item.filePath : `${item.id}`,
+  )
   emit('fileChange', unref(fileIdList))
 })
 
 const handleRemove = (file: UploadFile) => {
-  const resId = fileId2ResId.get(file.uid)
+  const resId = fileId2ResId.get(file.uid) ?? `${file.name}`
+
+  // 本地模式：同步清理 IndexedDB 里的图片
+  if (isLocalImage(resId))
+    deleteImage(resId)
 
   // 清除id数据
   const removeFileId = fileIdList.value.indexOf(resId)
@@ -57,23 +69,64 @@ const handleUpload = async (fileRaw, fileUid) => {
     pushFiles(res.data.id, fileUid)
 }
 
-const handleBeforeUpload = async (rawFile: UploadRawFile) => {
-  const isImage = isValidImageType(rawFile)
-  const isSizeValid = isValidImageSize(rawFile)
-  
+function fileToDataUrl(file: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(file)
+  })
+}
 
-  if (!isImage) {
+/** 本地模式：压缩后存入 IndexedDB，memo 里只保留 idb:// 引用 */
+const handleLocalUpload = async (rawFile: UploadRawFile, fileUid: number) => {
+  const compressed = await compress(rawFile, 0.4)
+  const dataUrl = await fileToDataUrl(compressed)
+  const src = await putImage(dataUrl)
+  // 预览直接用 dataURL，避免再次读 IDB
+  const entry = fileList.value.find(f => f.uid === fileUid)
+  if (entry) {
+    entry.url = dataUrl
+    entry.name = src
+  }
+  fileId2ResId.set(fileUid, src)
+  fileIdList.value.push(src)
+  emit('fileChange', unref(fileIdList))
+}
+
+const validateImage = (rawFile?: UploadRawFile | Blob) => {
+  if (!rawFile || !isValidImageType(rawFile)) {
     ElMessage.error('请选择有效的图片文件')
-    return null
+    return false
   }
-  else if (!isSizeValid) {
+  if (!isValidImageSize(rawFile)) {
     ElMessage.error('图片大小不能超过 5MB')
-    return null
+    return false
   }
-  
+  return true
+}
+
+const handleBeforeUpload = async (rawFile: UploadRawFile) => {
+  if (!validateImage(rawFile))
+    return null
   return await compress(rawFile, 0.4)
 }
 const handleFileChange: UploadHooks['onChange'] = async (file, files) => {
+  // 本地模式：不经过服务端，图片压缩后入 IndexedDB
+  if (isLocalMode()) {
+    if (!validateImage(file.raw)) {
+      fileList.value = fileList.value.slice(0, fileList.value.length - 1)
+      return false
+    }
+    try {
+      await handleLocalUpload(file.raw, file.uid)
+    }
+    catch {
+      ElMessage.error('图片保存失败')
+      fileList.value = fileList.value.slice(0, fileList.value.length - 1)
+    }
+    return false
+  }
   // 处理文件: 压缩、检查文件是否存在
   const compressedFile = await handleBeforeUpload(file.raw)
   if(!compressedFile) {

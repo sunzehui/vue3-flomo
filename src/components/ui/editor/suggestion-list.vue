@@ -14,8 +14,8 @@ const style = ref({
 
 const listRef = ref(null)
 
-function handleItemClick(tag: tagType) {
-  emit('itemClick', tag)
+function handleItemClick(idx: number) {
+  emit('itemClick', idx)
   return false
 }
 const selectItemIdx = ref(0)

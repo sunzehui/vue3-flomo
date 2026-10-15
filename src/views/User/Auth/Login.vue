@@ -74,6 +74,9 @@ const onSubmit = async () => {
           <router-link to="/user/auth/register" class="text-blue-400 select-none">
             注册
           </router-link>
+          <router-link to="/memo" class="text-gray-400 select-none">
+            免登录试用（数据存本机）
+          </router-link>
         </div>
       </VForm>
     </div>

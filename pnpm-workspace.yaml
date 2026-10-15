@@ -1,0 +1,12 @@
+overrides:
+  "@vue/babel-plugin-jsx": ^1.5.0
+ignoredBuiltDependencies:
+  - esbuild
+  - vue-demi
+  - core-js
+  - "@parcel/watcher"
+allowBuilds:
+  '@parcel/watcher': set this to true or false
+  core-js: set this to true or false
+  esbuild: set this to true or false
+  vue-demi: set this to true or false

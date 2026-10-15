@@ -6,6 +6,8 @@ import PageBody from '@/layouts/page-body.vue'
 import MemoCard from '@/components/ui/memo-card/index.vue'
 import { ApiDailyReview, ApiMarkReview } from '@/api/review'
 import type { Memo } from '@/types/memo'
+import { useUserStore } from '@/store/user'
+import * as localMemo from '@/utils/localMemo'
 
 const list = ref<Memo[]>([])
 const finished = ref(false)
@@ -14,6 +16,11 @@ const loading = ref(true)
 async function load() {
   loading.value = true
   try {
+    if (!useUserStore().isAuthenticated) {
+      const res = localMemo.dailyReview(6)
+      list.value = (res.data ?? []) as Memo[]
+      return
+    }
     const res = await ApiDailyReview(6)
     list.value = (res.data ?? []) as Memo[]
   }
@@ -27,8 +34,13 @@ const remain = computed(() => list.value.length)
 
 /** 标记今日回顾完成，今天不会再重复推送同一批 */
 async function handleFinish() {
-  if (list.value.length)
-    await ApiMarkReview(list.value.map(memo => memo.id))
+  if (list.value.length) {
+    const ids = list.value.map(memo => memo.id)
+    if (!useUserStore().isAuthenticated)
+      localMemo.markReview(ids)
+    else
+      await ApiMarkReview(ids)
+  }
   finished.value = true
   ElMessage.success('今日回顾完成，明天见')
 }

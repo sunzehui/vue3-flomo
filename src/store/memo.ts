@@ -14,10 +14,15 @@ import {
 } from '@/api/memo'
 import { ApiList as ApiTagList, ApiUpdate as ApiUpdateTag } from '@/api/tag'
 import { CardType } from '@/types/card-type'
+import { escapeHtml } from '@/utils/editor'
+import * as localMemo from '@/utils/localMemo'
 import { safe2Num } from '@/utils/Tool'
 import { getUinx } from '@/utils/time'
 
 const DEFAULT_PAGE_SIZE = 20
+
+/** 未登录 = 本地模式：数据全部存 localStorage，不发网络请求 */
+const isLocalMode = () => !useUserStore().isAuthenticated
 
 interface StateTree {
   articleList: Memo[]
@@ -57,8 +62,18 @@ export const useMemoStore = defineStore('memo', {
     loadRemoteData(query: any = {}) {
       return Promise.all([this.getMemoList({ ...query }), this.getTagList()])
     },
-    /** 拉取第一页并替换列表 */
+    /** 拉取第一页并替换列表（未登录时走本地存储，数据不出本机） */
     async getMemoList(query: Partial<GetListParams> = {}) {
+      if (isLocalMode()) {
+        this.page = 1
+        this.query = { ...query }
+        const pageData = localMemo.listMemos({ ...query, page: 1, pageSize: this.pageSize })
+        this.articleList = pageData.list
+        this.total = pageData.total
+        this.hasMore = pageData.hasMore
+        this.searchKeywords = query?.content ?? ''
+        return
+      }
       this.page = 1
       this.query = { ...query }
       this.isLoading = true
@@ -82,6 +97,22 @@ export const useMemoStore = defineStore('memo', {
     async loadMore() {
       if (this.isLoading || !this.hasMore)
         return
+      if (isLocalMode()) {
+        this.isLoading = true
+        try {
+          const nextPage = this.page + 1
+          const pageData = localMemo.listMemos({ ...this.query, page: nextPage, pageSize: this.pageSize })
+          const existing = new Set(this.articleList.map(memo => memo.id))
+          this.articleList.push(...pageData.list.filter(memo => !existing.has(memo.id)))
+          this.page = pageData.page
+          this.total = pageData.total
+          this.hasMore = pageData.hasMore
+        }
+        finally {
+          this.isLoading = false
+        }
+        return
+      }
       this.isLoading = true
       try {
         const nextPage = this.page + 1
@@ -104,15 +135,36 @@ export const useMemoStore = defineStore('memo', {
       }
     },
     async loadDeletedMemo() {
+      if (isLocalMode()) {
+        this.deletedMemoList = localMemo.listMemos({ deleted: true, pageSize: 100 }).list
+        return
+      }
       const res = await ApiMemoList({ deleted: true, pageSize: 100 })
       this.deletedMemoList = res.data.list
     },
     async getTagList() {
+      if (isLocalMode()) {
+        this.tagList = localMemo.tagList()
+        return
+      }
       const res = await ApiTagList()
       this.tagList = res.data
     },
     async deleteMemo(id: number) {
       const { refreshUserInfo } = useUserStore()
+      if (isLocalMode()) {
+        const res = localMemo.deleteMemo(id)
+        if (res.code === 0)
+          ElMessage.success('删除成功')
+
+        else
+          ElMessage.error(res.message || '删除失败，请稍后再试')
+
+        refreshUserInfo()
+        this.delArticle(id)
+        this.getTagList()
+        return
+      }
       const res = await ApiDeleteMemo(id)
       if (res.code === 0)
         ElMessage.success('删除成功')
@@ -126,6 +178,17 @@ export const useMemoStore = defineStore('memo', {
     },
     async recycleMemo(id: number) {
       const { refreshUserInfo } = useUserStore()
+      if (isLocalMode()) {
+        const res = localMemo.updateMemo(id, { recycle: true })
+        if (res.code === 0) {
+          ElMessage.success('恢复成功')
+          refreshUserInfo()
+          this.deletedMemoList = this.deletedMemoList.filter(memo => memo.id !== id)
+          return this.loadRemoteData()
+        }
+        ElMessage.error(res.message || '恢复失败，请稍后再试')
+        return
+      }
       const res = await ApiUpdateMemo(id, {
         recycle: true,
       })
@@ -142,6 +205,13 @@ export const useMemoStore = defineStore('memo', {
     /** 回收站恢复（显式接口） */
     async restoreMemo(id: number) {
       const { refreshUserInfo } = useUserStore()
+      if (isLocalMode()) {
+        await localMemo.restoreMemo(id)
+        ElMessage.success('恢复成功')
+        refreshUserInfo()
+        this.deletedMemoList = this.deletedMemoList.filter(memo => memo.id !== id)
+        return this.loadRemoteData()
+      }
       await ApiRestore(id)
       ElMessage.success('恢复成功')
       refreshUserInfo()
@@ -150,6 +220,12 @@ export const useMemoStore = defineStore('memo', {
     },
     /** 批量加/去标签 */
     async batchTag(ids: Array<number | string>, payload: { add?: string[], remove?: string[] }) {
+      if (isLocalMode()) {
+        localMemo.batchTag({ ids, ...payload })
+        ElMessage.success('批量操作成功')
+        await this.loadRemoteData(this.query)
+        return
+      }
       const res = await ApiBatchTag({ ids, ...payload })
       ElMessage.success('批量操作成功')
       await this.loadRemoteData(this.query)
@@ -157,6 +233,15 @@ export const useMemoStore = defineStore('memo', {
     },
     async save(data: Partial<Memo>) {
       const { refreshUserInfo } = useUserStore()
+      if (isLocalMode()) {
+        // 与 ApiSaveMemo 保持一致：入库前转义并包一层 <p>
+        const res = localMemo.saveMemo({ ...data, content: `<p>${escapeHtml(data.content)}</p>` } as Partial<Memo>)
+        ElMessage.success('保存成功')
+        this.getTagList()
+        refreshUserInfo()
+        this.addArticle(res.data)
+        return Promise.resolve(res)
+      }
       const res = await ApiSaveMemo(data)
       if (res.code === 0) {
         ElMessage.success('保存成功')
@@ -175,6 +260,21 @@ export const useMemoStore = defineStore('memo', {
     },
     async update(id: Memo['id'], data: Partial<Memo>) {
       try {
+        if (isLocalMode()) {
+          const res = localMemo.updateMemo(Number(id), data)
+          if (res.code !== 0) {
+            ElMessage.error(res.message || '保存失败，请稍后再试')
+            return Promise.reject(res)
+          }
+          this.setArticle(id, {
+            type: CardType.article,
+            content: res.data.content,
+            tags: res.data.tags,
+            images: res.data.images,
+          })
+          ElMessage.success('保存成功')
+          return Promise.resolve(res)
+        }
         const res = await ApiUpdateMemo(id, data)
         if (res.code === 0) {
           this.setArticle(id, {
@@ -199,9 +299,25 @@ export const useMemoStore = defineStore('memo', {
       }
     },
     async tagRename(oldName: string, newName: string) {
+      if (isLocalMode()) {
+        const res = localMemo.updateTag(oldName, { content: newName })
+        if (res.code !== 0)
+          ElMessage.error(res.message)
+
+        else
+          await this.getTagList()
+
+        return res
+      }
       return await ApiUpdateTag(oldName, { content: newName })
     },
     async setTagTop({ tag, topic: is_topics }) {
+      if (isLocalMode()) {
+        const res = localMemo.updateTag(tag, { is_topics })
+        ElMessage.success('标签置顶成功！')
+        await this.loadRemoteData()
+        return res
+      }
       const res = await ApiUpdateTag(tag, { is_topics })
       ElMessage.success('标签置顶成功！')
       await this.loadRemoteData()
@@ -209,6 +325,12 @@ export const useMemoStore = defineStore('memo', {
     },
     /** 设置 / 取消标签的父标签（标签树） */
     async setTagParent(tagContent: string, parentId: number | null) {
+      if (isLocalMode()) {
+        const res = localMemo.updateTag(tagContent, { parentId })
+        ElMessage.success(parentId ? '已归入父标签' : '已移出父标签')
+        await this.getTagList()
+        return res
+      }
       const res = await ApiUpdateTag(tagContent, { parentId })
       ElMessage.success(parentId ? '已归入父标签' : '已移出父标签')
       await this.getTagList()
@@ -242,12 +364,24 @@ export const useMemoStore = defineStore('memo', {
       this.selectedIds = []
     },
     async setArticleTop(articleId) {
+      if (isLocalMode()) {
+        localMemo.updateMemo(Number(articleId), { is_topic: true })
+        ElMessage.success('memo置顶成功！')
+        this.setArticle(articleId, { is_topic: true })
+        return
+      }
       const res = await ApiUpdateMemo(articleId, { is_topic: true })
       ElMessage.success('memo置顶成功！')
       this.setArticle(articleId, { is_topic: true })
       return res
     },
     async cancelArticleTop(articleId) {
+      if (isLocalMode()) {
+        localMemo.updateMemo(Number(articleId), { is_topic: false })
+        ElMessage.success('memo取消置顶成功！')
+        this.setArticle(articleId, { is_topic: false })
+        return
+      }
       const res = await ApiUpdateMemo(articleId, { is_topic: false })
       ElMessage.success('memo取消置顶成功！')
       this.setArticle(articleId, { is_topic: false })

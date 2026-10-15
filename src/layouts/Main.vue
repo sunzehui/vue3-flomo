@@ -5,6 +5,9 @@ import {
 } from 'element-plus'
 import LeftPanel from '@/components/layouts/sidebar/index.vue'
 import { useLayoutStore } from '@/store/layout'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const { isLeftMenuOpen, isDrawerOpen, isPC } = toRefs(useLayoutStore())
 const isLeftPanelShow = computed(() => isPC.value && isLeftMenuOpen.value)
@@ -26,7 +29,7 @@ const isLeftPanelShow = computed(() => isPC.value && isLeftMenuOpen.value)
     <main>
       <router-view v-slot="{ Component }">
         <keep-alive>
-          <component :is="Component" :key="$route.name" />
+          <component :is="Component" :key="route.name" />
         </keep-alive>
       </router-view>
     </main>

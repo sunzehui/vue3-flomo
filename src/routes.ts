@@ -50,7 +50,7 @@ export const routes = [
       {
         path: '/me',
         name: 'me',
-        meta: { title: '个人资料' },
+        meta: { title: '个人资料', requiresAuth: true },
         component: () => import('./views/Me.vue'),
       },
     ],

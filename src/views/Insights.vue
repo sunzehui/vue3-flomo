@@ -5,6 +5,8 @@ import TopBar from '@/components/ui/topbar/index.vue'
 import PageBody from '@/layouts/page-body.vue'
 import { ApiUserOverview } from '@/api/user'
 import type { UserOverview } from '@/api/user'
+import { useUserStore } from '@/store/user'
+import * as localMemo from '@/utils/localMemo'
 
 const data = ref<UserOverview | null>(null)
 const loading = ref(true)
@@ -12,6 +14,10 @@ const loading = ref(true)
 async function load() {
   loading.value = true
   try {
+    if (!useUserStore().isAuthenticated) {
+      data.value = localMemo.localOverview() as UserOverview
+      return
+    }
     const res = await ApiUserOverview()
     data.value = res.data ?? null
   }

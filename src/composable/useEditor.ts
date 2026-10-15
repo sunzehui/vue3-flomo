@@ -42,7 +42,9 @@ export function useEditor(textareaRef: Ref<HTMLTextAreaElement>) {
     })
   }
   useEventListener(textareaRef, 'keydown', (event: KeyboardEvent) => {
-    if (event.key === 'Enter' && event.ctrlKey) {
+    // Ctrl/Cmd + Enter 发送（Ctrl 供 Windows/Linux，Cmd 供 macOS）
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault()
       cbs.onSave()
       textareaContent.value = ''
     }

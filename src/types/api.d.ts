@@ -1,14 +1,14 @@
-interface IResponse<T = any> {
+export interface IResponse<T = any> {
   data: T;
   code: number;
 }
-type Resp<T> = Promise<IResponse<T>>;
+export type Resp<T> = Promise<IResponse<T>>;
 
-interface ILoginInfo {
+export interface ILoginInfo {
   username: string;
   password: string;
 }
-interface ILoginResp {
+export interface ILoginResp {
     token: string;
     expires: string;
 }

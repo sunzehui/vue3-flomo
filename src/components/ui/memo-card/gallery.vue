@@ -3,13 +3,15 @@ import { ElIcon, ElImage } from 'element-plus'
 import { computed, unref } from 'vue'
 import { ZoomIn } from '@element-plus/icons-vue'
 import type { FileRecord } from '@/types/memo'
+import { resolveLocalImage } from '@/utils/localImages'
 
 const props = defineProps<{
   images: FileRecord[]
 }>()
 
+// idb:// 引用会被 resolveLocalImage 异步解析为 dataURL（响应式缓存）
 const previewList = computed(() => {
-  return unref(props.images).map((item: FileRecord) => item.filePath)
+  return unref(props.images).map((item: FileRecord) => resolveLocalImage(item.filePath))
 })
 </script>
 
@@ -18,7 +20,7 @@ const previewList = computed(() => {
     <div v-for="(file, idx) in images" :key="file.id" class="relative imgwrp">
       <ElImage
         class="el-upload-list__item-thumbnail rounded-sm w-full h-full"
-        :src="file.filePath"
+        :src="resolveLocalImage(file.filePath)"
         :zoom-rate="1"
         hide-on-click-modal
         :preview-src-list="previewList"

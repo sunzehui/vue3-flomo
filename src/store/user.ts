@@ -8,6 +8,7 @@ import { ElMessage } from 'element-plus'
 import type { ILoginResp } from '@/types/api'
 import { ApiUpdateUserInfo, ApiUserInfo, ApiUserLogin } from '@/api/user'
 import type { UserInfo } from '@/types/user'
+import { LOCAL_USER, userRecord as localUserRecord } from '@/utils/localMemo'
 
 export interface DailyGrid {
   [key: string]: number
@@ -45,6 +46,12 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function refreshUserInfo() {
+    if (!isAuthenticated.value) {
+      // 本地模式：资料与统计由本机数据计算，不发请求
+      userInfo.value = { ...(LOCAL_USER as unknown as UserInfo) }
+      userRecord.value = localUserRecord()
+      return
+    }
     const res = await ApiUserInfo()
     userInfo.value = res.data.userInfo
     userRecord.value = res.data.userRecord
